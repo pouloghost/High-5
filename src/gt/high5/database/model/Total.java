@@ -75,10 +75,11 @@ public class Total extends Table {
 	}
 
 	@Override
-	public String U() {
+	public String U(Table select) {
+		// TODO Auto-generated method stub
 		String sql = null;
 		try {
-			sql = super.U(this);
+			sql = super.U(select, this);
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -102,6 +103,38 @@ public class Total extends Table {
 			e.printStackTrace();
 		}
 		return sql;
+	}
+
+	@Override
+	public String increase() {
+		// TODO Auto-generated method stub
+		String sql = null;
+		try {
+			sql = super.increase(this);
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return sql;
+	}
+
+	@Override
+	public Table clone() {
+		// TODO Auto-generated method stub
+		Table result = null;
+		try {
+			result = super.clone(this);
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onEnabled(Context context) {
 		// TODO Auto-generated method stub
 		super.onEnabled(context);
-		// 开始所有监听service
+		// start up all recording service
 		try {
 			TableParser parser = new TableParser(context.getResources().getXml(
 					R.xml.tables));
@@ -78,7 +78,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onDisabled(Context context) {
 		// TODO Auto-generated method stub
 		super.onDisabled(context);
-		// 关闭所有监听service
+		// shut down all recording service
 		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
 				.cancel(getUpdateIntent(context, null));
 		mAccessor = null;
@@ -100,25 +100,25 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
 		// TODO Auto-generated method stub
-		// 初始化view
+		// init view
 		RemoteViews views = new RemoteViews(context.getPackageName(),
 				R.layout.widget);
-		// 设置intent template
+		// init intent template
 		PendingIntent templateIntent = PendingIntent.getBroadcast(context,
 				LAUNCH_REQ, new Intent(LAUNCH_ACT),
 				PendingIntent.FLAG_CANCEL_CURRENT);
 		views.setPendingIntentTemplate(R.id.launcher, templateIntent);
-		// 设置adapter
+		// init adapter
 		Intent adapterIntent = new Intent(context, GridAdapterService.class);
 		adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
 				appWidgetIds);
 		views.setRemoteAdapter(R.id.launcher, adapterIntent);
-		// 更新view
+		// update view
 		appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
 				R.id.launcher);
 		appWidgetManager.updateAppWidget(appWidgetIds, views);
 		Log.d("GT", "update");
-		// 下次更新
+		// start update interval
 		startInterval(context, UPDATE_INTERVAL,
 				getUpdateIntent(context, appWidgetIds));
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
@@ -159,10 +159,11 @@ public class WidgetProvider extends AppWidgetProvider {
 						ActivityManager.RECENT_IGNORE_UNAVAILABLE
 								| ActivityManager.RECENT_WITH_EXCLUDED).get(0);
 		String packageName = recent.baseIntent.getComponent().getPackageName();
+		// read total with current package name
 		Total total = new Total();
 		total.setName(packageName);
 		List<Table> list = mAccessor.R(total);
-		if (null == list) {
+		if (null == list) {// create a new one for new package
 			total.setCount(1);
 			mAccessor.C(total);
 			list = mAccessor.R(total);
@@ -170,11 +171,11 @@ public class WidgetProvider extends AppWidgetProvider {
 		List<Class<? extends Table>> clazzes = mAccessor.getTables();
 		if (null != list) {
 			total = (Total) list.get(0);
+			// each type of record
 			for (Class<? extends Table> clazz : clazzes) {
 				try {
 					Table table = clazz.newInstance();
 					table.setPid(total.getId());
-					
 					list = mAccessor.R(table);
 					if (null == list) {
 						table.initDefault();
@@ -182,11 +183,17 @@ public class WidgetProvider extends AppWidgetProvider {
 						mAccessor.C(table);
 						list = mAccessor.R(table);
 					}
-					table = list.get(0);
-					table.record(context);
-					mAccessor.U(table);
-				} catch (InstantiationException | IllegalAccessException e) {
+					if (null != list) {
+						table = list.get(0);
+						Table select = table.clone();
+						table.record(context);
+						mAccessor.U(select, table);
+					}
+				} catch (InstantiationException e) {
 					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO: handle exception
 					e.printStackTrace();
 				}
 			}

@@ -85,8 +85,8 @@ public class DatabaseAccessor {
 		}
 	}
 
-	public boolean U(Table table) {
-		String sql = table.U();
+	public boolean U(Table select, Table table) {
+		String sql = table.U(select);
 		if (null == sql) {
 			return false;
 		}
@@ -102,6 +102,21 @@ public class DatabaseAccessor {
 
 	public boolean D(Table table) {
 		String sql = table.D();
+		if (null == sql) {
+			return false;
+		}
+		try {
+			mDatabase.execSQL(sql);
+			return true;
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.err.println(e);
+			return false;
+		}
+	}
+
+	public boolean increase(Table table) {
+		String sql = table.increase();
 		if (null == sql) {
 			return false;
 		}
