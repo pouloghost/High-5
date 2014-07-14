@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tables
+    file="statics"
+    pack="gt.high5.database.model"
+    version="1" >
+
+    <table clazz="Total" />
+
+</tables>
