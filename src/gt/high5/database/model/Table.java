@@ -1,9 +1,13 @@
 package gt.high5.database.model;
 
+import gt.high5.activity.MainActivity;
+
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.util.Log;
 
 public abstract class Table {
 	private static HashMap<Class<?>, String> typeMap = null;
@@ -35,7 +39,7 @@ public abstract class Table {
 	public abstract String U(Table select);
 
 	public abstract String D();
-	
+
 	public abstract String increase();
 
 	/*
@@ -43,7 +47,8 @@ public abstract class Table {
 	 */
 	public abstract Table clone();
 
-	public abstract void initDefault();// all field should be inited except pid
+	public abstract void initDefault(Context context);// all field should be
+														// inited except pid
 
 	public abstract void record(Context context);
 
@@ -56,6 +61,8 @@ public abstract class Table {
 
 	public abstract void setPid(int pid);
 
+	public abstract int getCount();
+
 	protected static String C(Table table) throws IllegalAccessException,
 			IllegalArgumentException {
 		Class<? extends Table> clazz = table.getClass();
@@ -66,9 +73,10 @@ public abstract class Table {
 		StringBuilder cols = new StringBuilder(" (");
 		StringBuilder vals = new StringBuilder(" VALUES(");
 		for (Field field : fields) {
-			if ("id".equalsIgnoreCase(field.getName())) {
+			if (shouldIgnoreField(field, true)) {
 				continue;
 			}
+
 			hasValue = true;
 			cols.append(" ," + field.getName());
 			field.setAccessible(true);
@@ -83,7 +91,10 @@ public abstract class Table {
 		sql.append(cols);
 		sql.append(vals);
 
-		return sql.toString();
+		String sqlString = sql.toString();
+		Log.d(MainActivity.GT_TAG, "create " + table.getClass().getSimpleName()
+				+ " " + sqlString);
+		return sqlString;
 	}
 
 	protected static String D(Table table) throws IllegalAccessException,
@@ -93,7 +104,11 @@ public abstract class Table {
 		if (null == where) {
 			return null;
 		}
-		return "DELETE FROM " + clazz.getSimpleName() + where;
+
+		String sqlString = "DELETE FROM " + clazz.getSimpleName() + where;
+		Log.d(MainActivity.GT_TAG, "delete " + table.getClass().getSimpleName()
+				+ " " + sqlString);
+		return sqlString;
 	}
 
 	protected static String U(Table select, Table table)
@@ -110,9 +125,10 @@ public abstract class Table {
 				+ " SET ");
 
 		for (Field field : fields) {
-			if ("id".equalsIgnoreCase(field.getName())) {
+			if (shouldIgnoreField(field, true)) {
 				continue;
 			}
+
 			Object def = getDefaultValue(field);
 			Object val = getValue(table, field);
 			if (!def.equals(val)) {
@@ -120,7 +136,8 @@ public abstract class Table {
 					sql.append(", ");
 				}
 				hasValue = true;
-				sql.append(field.getName() + " = " + val);
+				sql.append(field.getName() + " = "
+						+ getFieldValueString(field, val));
 			}
 		}
 		if (!hasValue) {
@@ -128,7 +145,11 @@ public abstract class Table {
 		}
 
 		sql.append(where);
-		return sql.toString();
+
+		String sqlString = sql.toString();
+		Log.d(MainActivity.GT_TAG, "update " + table.getClass().getSimpleName()
+				+ " " + sqlString);
+		return sqlString;
 	}
 
 	protected static String R(Table table) throws IllegalAccessException,
@@ -138,7 +159,11 @@ public abstract class Table {
 		if (null == where) {
 			where = "";
 		}
-		return "SELECT * FROM " + clazz.getSimpleName() + where;
+
+		String sqlString = "SELECT * FROM " + clazz.getSimpleName() + where;
+		Log.d(MainActivity.GT_TAG, "read " + table.getClass().getSimpleName()
+				+ " " + sqlString);
+		return sqlString;
 	}
 
 	protected static String increase(Table table)
@@ -150,14 +175,15 @@ public abstract class Table {
 		StringBuilder sql = new StringBuilder("UPDATE " + clazz.getSimpleName()
 				+ " SET ");
 		StringBuilder where = new StringBuilder(" WHERE id = " + table.getId());
-	
+
 		for (Field field : fields) {
-			if ("id".equalsIgnoreCase(field.getName())) {
+			if (shouldIgnoreField(field, true)) {
 				continue;
 			}
+
 			Object def = getDefaultValue(field);
 			Object val = getValue(table, field);
-	
+
 			if (!def.equals(val)) {
 				String step = getStep(table, field);
 				if (null != step) {
@@ -170,7 +196,8 @@ public abstract class Table {
 					if (whereAdded) {
 						where.append(" AND ");
 					}
-					where.append(field.getName() + " = " + val);
+					where.append(field.getName() + " = "
+							+ getFieldValueString(field, val));
 					whereAdded = true;
 				}
 			}
@@ -178,15 +205,18 @@ public abstract class Table {
 		if (!sqlAdded) {
 			return null;
 		}
-	
+
 		sql.append(where);
-		return sql.toString();
+		String sqlString = sql.toString();
+		Log.d(MainActivity.GT_TAG, "increase " + table.getClass().getSimpleName()
+				+ " " + sqlString);
+		return sqlString;
 	}
 
 	/*
-	 * implementation using reflection
-	 * supporting all abstract method with the same name
-	 * */
+	 * implementation using reflection supporting all abstract method with the
+	 * same name
+	 */
 	protected static Table clone(Table table) throws InstantiationException,
 			IllegalAccessException {
 		Class<? extends Table> clazz = table.getClass();
@@ -205,15 +235,18 @@ public abstract class Table {
 				+ " (id INTEGER PRIMARY KEY AUTOINCREMENT");
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {
-			if ("id".equalsIgnoreCase(field.getName())) {
+			if (shouldIgnoreField(field, true)) {
 				continue;
 			}
 			sql.append(", " + field.getName() + " "
 					+ typeMap.get(field.getType()));
 		}
 		sql.append(")");
-	
-		return sql.toString();
+
+		String sqlString = sql.toString();
+		Log.d(MainActivity.GT_TAG, "creator " + clazz.getSimpleName()
+				+ " " + sqlString);
+		return sqlString;
 	}
 
 	private static String getWhereClause(Table table)
@@ -224,6 +257,10 @@ public abstract class Table {
 		StringBuilder sql = new StringBuilder(" WHERE ");
 
 		for (Field field : fields) {
+			if (shouldIgnoreField(field, false)) {
+				continue;
+			}
+
 			Object def = getDefaultValue(field);
 			Object val = getValue(table, field);
 			if (!def.equals(val)) {
@@ -231,14 +268,18 @@ public abstract class Table {
 					sql.append(" AND ");
 				}
 				hasValue = true;
-				sql.append(field.getName() + " = " + val);
+				sql.append(field.getName() + " = "
+						+ getFieldValueString(field, val));
 			}
 		}
 		if (!hasValue) {
 			return null;
 		}
 
-		return sql.toString();
+		String sqlString = sql.toString();
+//		Log.d(MainActivity.GT_TAG, "where " + table.getClass().getSimpleName()
+//				+ " " + sqlString);
+		return sqlString;
 	}
 
 	public static Object getDefaultValue(Field field) {
@@ -324,5 +365,32 @@ public abstract class Table {
 		} else {
 			return null;
 		}
+	}
+
+	/*
+	 * should ignore field using general filter
+	 */
+	private static boolean shouldIgnoreField(Field field, boolean forceIgnoreId) {
+		if (forceIgnoreId && "id".equalsIgnoreCase(field.getName())) {
+			return true;
+		}
+		if (Modifier.isStatic(field.getModifiers())) {
+			return true;
+		}
+		TableAnnotation annotation = field.getAnnotation(TableAnnotation.class);
+		if (annotation.isTransient()) {
+			return true;
+		}
+		return false;
+	}
+
+	private static String getFieldValueString(Field field, Object val) {
+		String valueString = null;
+		if (field.getType() == String.class) {
+			valueString = "'" + val + "'";
+		} else {
+			valueString = "" + val;
+		}
+		return valueString;
 	}
 }

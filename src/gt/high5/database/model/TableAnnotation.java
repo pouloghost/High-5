@@ -11,4 +11,6 @@ public @interface TableAnnotation {
 	public String defaultValue() default "";
 	//for integer or double field can be increased conveniently 
 	public boolean increaseWhenUpdate() default false;
+	
+	public boolean isTransient() default false;
 }

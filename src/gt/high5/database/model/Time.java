@@ -36,6 +36,7 @@ public class Time extends Table {
 		this.region = region;
 	}
 
+	@Override
 	public int getCount() {
 		return count;
 	}
@@ -54,7 +55,7 @@ public class Time extends Table {
 	}
 
 	@Override
-	public void initDefault() {
+	public void initDefault(Context context) {
 		// TODO Auto-generated method stub
 		updateRegion();
 		count = 1;

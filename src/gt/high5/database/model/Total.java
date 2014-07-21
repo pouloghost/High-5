@@ -1,5 +1,7 @@
 package gt.high5.database.model;
 
+import java.util.Comparator;
+
 import android.content.Context;
 
 public class Total extends Table {
@@ -10,8 +12,19 @@ public class Total extends Table {
 	private String name = "";// package
 	@TableAnnotation(defaultValue = "-1", increaseWhenUpdate = true)
 	private int count = -1;
+	@TableAnnotation(defaultValue = "1", isTransient = true)
+	private float possibility = 1;
 
 	private static String creator = null;
+	private static Comparator<Table> comparator = new Comparator<Table>() {
+
+		@Override
+		public int compare(Table arg0, Table arg1) {
+			// TODO Auto-generated method stub
+			return (int) (((Total) arg0).getPossibility() - ((Total) arg1)
+					.getPossibility());
+		}
+	};
 
 	public String getName() {
 		return name;
@@ -21,6 +34,7 @@ public class Total extends Table {
 		this.name = name;
 	}
 
+	@Override
 	public int getCount() {
 		return count;
 	}
@@ -38,8 +52,16 @@ public class Total extends Table {
 		return creator;
 	}
 
+	public static Comparator<Table> getComparator() {
+		return comparator;
+	}
+
+	public static void setComparator(Comparator<Table> comparator) {
+		Total.comparator = comparator;
+	}
+
 	@Override
-	public void initDefault() {
+	public void initDefault(Context context) {
 		// TODO Auto-generated method stub
 
 	}
@@ -157,6 +179,14 @@ public class Total extends Table {
 	public void setPid(int pid) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public float getPossibility() {
+		return possibility;
+	}
+
+	public void setPossibility(int count) {
+		this.possibility *= count / this.count;
 	}
 
 }
