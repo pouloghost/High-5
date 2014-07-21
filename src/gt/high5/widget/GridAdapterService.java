@@ -1,8 +1,14 @@
 package gt.high5.widget;
 
 import gt.high5.R;
+import gt.high5.activity.MainActivity;
+import gt.high5.database.accessor.DatabaseAccessor;
+import gt.high5.database.model.Table;
+import gt.high5.database.model.Total;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,16 +24,15 @@ import android.widget.RemoteViewsService;
 @SuppressLint("NewApi")
 public class GridAdapterService extends RemoteViewsService {
 
+	private static DatabaseAccessor mAccessor = null;
+
 	private ArrayList<String> apps = new ArrayList<String>();
 	private PackageManager mPackageManager = null;
 
 	@Override
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
 		// TODO Auto-generated method stub
-		Log.d("GT", "get factory");
-		apps.add("com.baidu.input");
-		apps.add("com.eg.android.AlipayGphone");
-		apps.add("gt.high5");
+		Log.d(MainActivity.GT_TAG, "get factory");
 		return new GridViewFactory();
 	}
 
@@ -56,7 +61,7 @@ public class GridAdapterService extends RemoteViewsService {
 		@Override
 		public RemoteViews getViewAt(int position) {
 			// TODO Auto-generated method stub
-			Log.d("GT", "view at " + position);
+			Log.d(MainActivity.GT_TAG, "view at " + position);
 			if (apps.size() < position) {
 				return null;
 			}
@@ -103,13 +108,21 @@ public class GridAdapterService extends RemoteViewsService {
 		@Override
 		public void onCreate() {
 			// TODO Auto-generated method stub
-			Log.d("GT", "create factory");
+			Log.d(MainActivity.GT_TAG, "create factory");
 		}
 
 		@Override
 		public void onDataSetChanged() {
 			// TODO Auto-generated method stub
-			apps = getHigh5();
+			try {
+				apps = getHigh5();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		@Override
@@ -120,8 +133,37 @@ public class GridAdapterService extends RemoteViewsService {
 
 	}
 
-	private ArrayList<String> getHigh5() {
+	private ArrayList<String> getHigh5() throws InstantiationException,
+			IllegalAccessException {
 		// TODO Auto-generated method stub
+		if (null == mAccessor) {
+			mAccessor = DatabaseAccessor.getAccessor(null, null, R.xml.tables);
+		}
+		if (null != mAccessor) {
+			apps.clear();
+			Total queryTotal = new Total();
+			ArrayList<Table> allTotals = mAccessor.R(queryTotal);
+			List<Class<? extends Table>> tables = mAccessor.getTables();
+
+			for (Table total : allTotals) {
+				for (Class<? extends Table> clazz : tables) {
+					Table queryTable = clazz.newInstance();
+					queryTable.initDefault(this);
+					ArrayList<Table> allTables = mAccessor.R(queryTable);
+					if (null != allTables) {
+						((Total) total).setPossibility(allTables.get(0)
+								.getCount());
+					}
+				}
+			}
+
+			Collections.sort(allTotals, Total.getComparator());
+
+			int size = Math.min(5, allTotals.size());
+			for (int i = 0; i < size; ++i) {
+				apps.add(((Total) allTotals.get(i)).getName());
+			}
+		}
 		return apps;
 	}
 }

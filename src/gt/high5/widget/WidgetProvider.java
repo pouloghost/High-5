@@ -1,6 +1,7 @@
 package gt.high5.widget;
 
 import gt.high5.R;
+import gt.high5.activity.MainActivity;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.Table;
@@ -51,7 +52,8 @@ public class WidgetProvider extends AppWidgetProvider {
 		try {
 			TableParser parser = new TableParser(context.getResources().getXml(
 					R.xml.tables));
-			mAccessor = new DatabaseAccessor(context, parser);
+			mAccessor = DatabaseAccessor.getAccessor(context, parser,
+					R.xml.tables);
 			recordCurrentStatus(context);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -117,7 +119,7 @@ public class WidgetProvider extends AppWidgetProvider {
 		appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
 				R.id.launcher);
 		appWidgetManager.updateAppWidget(appWidgetIds, views);
-		Log.d("GT", "update");
+		Log.d(MainActivity.GT_TAG, "update");
 		// start update interval
 		startInterval(context, UPDATE_INTERVAL,
 				getUpdateIntent(context, appWidgetIds));
@@ -178,7 +180,7 @@ public class WidgetProvider extends AppWidgetProvider {
 					table.setPid(total.getId());
 					list = mAccessor.R(table);
 					if (null == list) {
-						table.initDefault();
+						table.initDefault(context);
 						table.setPid(total.getId());
 						mAccessor.C(table);
 						list = mAccessor.R(table);
