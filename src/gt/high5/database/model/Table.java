@@ -77,10 +77,16 @@ public abstract class Table {
 				continue;
 			}
 
-			hasValue = true;
-			cols.append(" ," + field.getName());
+			if (hasValue) {
+				cols.append(" ,");
+				vals.append(" ,");
+			}
+
 			field.setAccessible(true);
-			vals.append(" ," + field.get(table));
+			cols.append(field.getName());
+			vals.append(getFieldValueString(field, field.get(table)));
+
+			hasValue = true;
 		}
 		if (!hasValue) {
 			return null;
@@ -92,7 +98,7 @@ public abstract class Table {
 		sql.append(vals);
 
 		String sqlString = sql.toString();
-		Log.d(MainActivity.GT_TAG, "create " + table.getClass().getSimpleName()
+		Log.d(MainActivity.LOG_TAG, "create " + table.getClass().getSimpleName()
 				+ " " + sqlString);
 		return sqlString;
 	}
@@ -106,7 +112,7 @@ public abstract class Table {
 		}
 
 		String sqlString = "DELETE FROM " + clazz.getSimpleName() + where;
-		Log.d(MainActivity.GT_TAG, "delete " + table.getClass().getSimpleName()
+		Log.d(MainActivity.LOG_TAG, "delete " + table.getClass().getSimpleName()
 				+ " " + sqlString);
 		return sqlString;
 	}
@@ -147,7 +153,7 @@ public abstract class Table {
 		sql.append(where);
 
 		String sqlString = sql.toString();
-		Log.d(MainActivity.GT_TAG, "update " + table.getClass().getSimpleName()
+		Log.d(MainActivity.LOG_TAG, "update " + table.getClass().getSimpleName()
 				+ " " + sqlString);
 		return sqlString;
 	}
@@ -161,7 +167,7 @@ public abstract class Table {
 		}
 
 		String sqlString = "SELECT * FROM " + clazz.getSimpleName() + where;
-		Log.d(MainActivity.GT_TAG, "read " + table.getClass().getSimpleName()
+		Log.d(MainActivity.LOG_TAG, "read " + table.getClass().getSimpleName()
 				+ " " + sqlString);
 		return sqlString;
 	}
@@ -208,8 +214,8 @@ public abstract class Table {
 
 		sql.append(where);
 		String sqlString = sql.toString();
-		Log.d(MainActivity.GT_TAG, "increase " + table.getClass().getSimpleName()
-				+ " " + sqlString);
+		Log.d(MainActivity.LOG_TAG, "increase "
+				+ table.getClass().getSimpleName() + " " + sqlString);
 		return sqlString;
 	}
 
@@ -244,8 +250,8 @@ public abstract class Table {
 		sql.append(")");
 
 		String sqlString = sql.toString();
-		Log.d(MainActivity.GT_TAG, "creator " + clazz.getSimpleName()
-				+ " " + sqlString);
+		Log.d(MainActivity.LOG_TAG, "creator " + clazz.getSimpleName() + " "
+				+ sqlString);
 		return sqlString;
 	}
 
@@ -277,8 +283,9 @@ public abstract class Table {
 		}
 
 		String sqlString = sql.toString();
-//		Log.d(MainActivity.GT_TAG, "where " + table.getClass().getSimpleName()
-//				+ " " + sqlString);
+		// Log.d(MainActivity.GT_TAG, "where " +
+		// table.getClass().getSimpleName()
+		// + " " + sqlString);
 		return sqlString;
 	}
 

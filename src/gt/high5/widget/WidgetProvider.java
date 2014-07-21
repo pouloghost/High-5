@@ -119,7 +119,7 @@ public class WidgetProvider extends AppWidgetProvider {
 		appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
 				R.id.launcher);
 		appWidgetManager.updateAppWidget(appWidgetIds, views);
-		Log.d(MainActivity.GT_TAG, "update");
+		Log.d(MainActivity.LOG_TAG, "update");
 		// start update interval
 		startInterval(context, UPDATE_INTERVAL,
 				getUpdateIntent(context, appWidgetIds));
@@ -151,6 +151,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	}
 
 	private void recordCurrentStatus(Context context) {
+		Log.d(MainActivity.LOG_TAG, "record");
 		if (null == mActivityManager) {
 			mActivityManager = (ActivityManager) context
 					.getSystemService(Service.ACTIVITY_SERVICE);
@@ -173,8 +174,11 @@ public class WidgetProvider extends AppWidgetProvider {
 		List<Class<? extends Table>> clazzes = mAccessor.getTables();
 		if (null != list) {
 			total = (Total) list.get(0);
+			Log.d(MainActivity.LOG_TAG, "total " + total.getName());
 			// each type of record
 			for (Class<? extends Table> clazz : clazzes) {
+				Log.d(MainActivity.LOG_TAG,
+						"updating class " + clazz.getSimpleName());
 				try {
 					Table table = clazz.newInstance();
 					table.setPid(total.getId());

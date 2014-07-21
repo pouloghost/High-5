@@ -32,7 +32,7 @@ public class GridAdapterService extends RemoteViewsService {
 	@Override
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
 		// TODO Auto-generated method stub
-		Log.d(MainActivity.GT_TAG, "get factory");
+		Log.d(MainActivity.LOG_TAG, "get factory");
 		return new GridViewFactory();
 	}
 
@@ -61,7 +61,7 @@ public class GridAdapterService extends RemoteViewsService {
 		@Override
 		public RemoteViews getViewAt(int position) {
 			// TODO Auto-generated method stub
-			Log.d(MainActivity.GT_TAG, "view at " + position);
+			Log.d(MainActivity.LOG_TAG, "view at " + position);
 			if (apps.size() < position) {
 				return null;
 			}
@@ -108,7 +108,7 @@ public class GridAdapterService extends RemoteViewsService {
 		@Override
 		public void onCreate() {
 			// TODO Auto-generated method stub
-			Log.d(MainActivity.GT_TAG, "create factory");
+			Log.d(MainActivity.LOG_TAG, "create factory");
 		}
 
 		@Override

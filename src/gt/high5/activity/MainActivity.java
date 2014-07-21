@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 public class MainActivity extends Activity {
 
-	public static final String GT_TAG = "GT";
+	public static final String LOG_TAG = "GT";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
