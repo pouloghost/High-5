@@ -80,6 +80,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onDisabled(Context context) {
 		// TODO Auto-generated method stub
 		super.onDisabled(context);
+		Log.d(MainActivity.LOG_TAG, "disable");
 		// shut down all recording service
 		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
 				.cancel(getUpdateIntent(context, null));
@@ -94,6 +95,8 @@ public class WidgetProvider extends AppWidgetProvider {
 			Intent i = context.getPackageManager().getLaunchIntentForPackage(
 					packageName);
 			context.startActivity(i);
+		} else if (RECORD_ACT.equalsIgnoreCase(intent.getAction())) {
+			recordCurrentStatus(context);
 		}
 		super.onReceive(context, intent);
 	}
@@ -151,6 +154,9 @@ public class WidgetProvider extends AppWidgetProvider {
 	}
 
 	private void recordCurrentStatus(Context context) {
+		if (null == mAccessor) {
+			return;
+		}
 		Log.d(MainActivity.LOG_TAG, "record");
 		if (null == mActivityManager) {
 			mActivityManager = (ActivityManager) context
@@ -184,12 +190,16 @@ public class WidgetProvider extends AppWidgetProvider {
 					table.setPid(total.getId());
 					list = mAccessor.R(table);
 					if (null == list) {
+						Log.d(MainActivity.LOG_TAG, "create new "
+								+ table.getClass().getSimpleName());
 						table.initDefault(context);
 						table.setPid(total.getId());
 						mAccessor.C(table);
 						list = mAccessor.R(table);
 					}
 					if (null != list) {
+						Log.d(MainActivity.LOG_TAG, "increase old "
+								+ table.getClass().getSimpleName());
 						table = list.get(0);
 						Table select = table.clone();
 						table.record(context);
