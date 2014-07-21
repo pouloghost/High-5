@@ -2,6 +2,7 @@ package gt.high5.database.accessor;
 
 import gt.high5.database.model.Table;
 
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +10,35 @@ import java.util.List;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.SparseArray;
 
 public class DatabaseAccessor {
 	private SQLiteDatabase mDatabase = null;
 	private TableParser mTableParser = null;
 
-	public DatabaseAccessor(Context context, TableParser parser) {
+	private static SparseArray<SoftReference<DatabaseAccessor>> accessorCache = new SparseArray<SoftReference<DatabaseAccessor>>();
+
+	public static DatabaseAccessor getAccessor(Context context,
+			TableParser parser, int id) {
+		SoftReference<DatabaseAccessor> reference = accessorCache.get(id);
+		DatabaseAccessor accessor = null;
+		if (null == reference) {
+			if (null != context && null != parser) {
+				accessor = new DatabaseAccessor(context, parser);
+				reference = new SoftReference<DatabaseAccessor>(accessor);
+			} else {
+				reference = new SoftReference<DatabaseAccessor>(null);// null if
+																		// not
+																		// enough
+																		// params
+																		// in
+			}
+		}
+		accessor = reference.get();
+		return accessor;
+	}
+
+	private DatabaseAccessor(Context context, TableParser parser) {
 		mTableParser = parser;
 		DatabaseManager manager = new DatabaseManager(context, parser);
 		mDatabase = manager.getWritableDatabase();
