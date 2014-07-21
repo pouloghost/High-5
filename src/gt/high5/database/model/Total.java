@@ -172,7 +172,7 @@ public class Total extends Table {
 	@Override
 	public void record(Context context) {
 		// TODO Auto-generated method stub
-
+		++count;
 	}
 
 	@Override

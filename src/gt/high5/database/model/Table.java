@@ -377,7 +377,7 @@ public abstract class Table {
 	/*
 	 * should ignore field using general filter
 	 */
-	private static boolean shouldIgnoreField(Field field, boolean forceIgnoreId) {
+	public static boolean shouldIgnoreField(Field field, boolean forceIgnoreId) {
 		if (forceIgnoreId && "id".equalsIgnoreCase(field.getName())) {
 			return true;
 		}

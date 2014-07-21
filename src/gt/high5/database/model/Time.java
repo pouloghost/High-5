@@ -13,7 +13,7 @@ public class Time extends Table {
 	@TableAnnotation(defaultValue = "-1")
 	private int pid = -1;
 	@TableAnnotation(defaultValue = "-1")
-	private int region = 0;
+	private int region = -1;
 	@TableAnnotation(defaultValue = "-1", increaseWhenUpdate = true)
 	private int count = -1;
 
@@ -64,7 +64,7 @@ public class Time extends Table {
 	@Override
 	public void record(Context context) {
 		// TODO Auto-generated method stub
-		updateRegion();
+//		updateRegion();
 		++count;
 	}
 
@@ -176,6 +176,6 @@ public class Time extends Table {
 		Calendar calendar = Calendar.getInstance();
 		int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60
 				+ calendar.get(Calendar.MINUTE);
-		region = minutes / (WidgetProvider.RECORD_INTERVAL / 1000 / 60);
+		region = minutes / (WidgetProvider.RECORD_INTERVAL / 1000);// / 60);
 	}
 }

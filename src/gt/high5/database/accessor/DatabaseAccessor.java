@@ -58,7 +58,7 @@ public class DatabaseAccessor {
 			return true;
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.err.println(e);
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -78,21 +78,24 @@ public class DatabaseAccessor {
 					Table data = clazz.newInstance();
 					Field[] fields = clazz.getDeclaredFields();
 					for (Field field : fields) {
+						if(Table.shouldIgnoreField(field, false)){
+							continue;
+						}
 						Class<?> fClass = field.getType();
 						field.setAccessible(true);
 						if (int.class == fClass || Integer.class == fClass) {
 							int value = cursor.getInt(cursor
 									.getColumnIndex(field.getName()));
-							field.set(table, value);
+							field.set(data, value);
 						} else if (String.class == fClass) {
 							String value = cursor.getString(cursor
 									.getColumnIndex(field.getName()));
-							field.set(table, value);
+							field.set(data, value);
 						} else if (double.class == fClass
 								|| Double.class == fClass) {
 							double value = cursor.getDouble(cursor
 									.getColumnIndex(field.getName()));
-							field.set(table, value);
+							field.set(data, value);
 						}
 					}
 					result.add(data);
@@ -104,7 +107,7 @@ public class DatabaseAccessor {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.err.println(e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -119,7 +122,7 @@ public class DatabaseAccessor {
 			return true;
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.err.println(e);
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -134,7 +137,7 @@ public class DatabaseAccessor {
 			return true;
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.err.println(e);
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -149,7 +152,7 @@ public class DatabaseAccessor {
 			return true;
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.err.println(e);
+			e.printStackTrace();
 			return false;
 		}
 	}
