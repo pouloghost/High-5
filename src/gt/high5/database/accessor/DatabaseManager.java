@@ -1,5 +1,6 @@
 package gt.high5.database.accessor;
 
+import gt.high5.activity.MainActivity;
 import gt.high5.database.model.Table;
 import android.content.Context;
 import android.database.SQLException;
@@ -39,8 +40,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
-		Log.i("DB", "Upgrading database from version " + oldVersion + " to "
-				+ newVersion + ", which will destroy all old data");
+		if (MainActivity.isDebugging()) {
+			Log.i("DB", "Upgrading database from version " + oldVersion
+					+ " to " + newVersion + ", which will destroy all old data");
+		}
 		db.execSQL("DROP TABLE IF EXISTS notes");
 		onCreate(db);
 	}

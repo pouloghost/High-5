@@ -61,6 +61,12 @@ public class Total extends Table {
 	}
 
 	@Override
+	public void currentQueryStatus(Context context) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void initDefault(Context context) {
 		// TODO Auto-generated method stub
 

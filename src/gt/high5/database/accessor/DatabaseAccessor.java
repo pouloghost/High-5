@@ -1,13 +1,18 @@
 package gt.high5.database.accessor;
 
+import gt.high5.R;
 import gt.high5.database.model.Table;
 
+import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.content.Context;
+import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.SparseArray;
@@ -36,6 +41,32 @@ public class DatabaseAccessor {
 		}
 		accessor = reference.get();
 		return accessor;
+	}
+
+	public static DatabaseAccessor getAccessor(Context context, int id) {
+		TableParser parser = null;
+		try {
+			parser = new TableParser(context.getResources().getXml(id));
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XmlPullParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return getAccessor(context, parser, id);
 	}
 
 	private DatabaseAccessor(Context context, TableParser parser) {
@@ -78,7 +109,7 @@ public class DatabaseAccessor {
 					Table data = clazz.newInstance();
 					Field[] fields = clazz.getDeclaredFields();
 					for (Field field : fields) {
-						if(Table.shouldIgnoreField(field, false)){
+						if (Table.shouldIgnoreField(field, false)) {
 							continue;
 						}
 						Class<?> fClass = field.getType();

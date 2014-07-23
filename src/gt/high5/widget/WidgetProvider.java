@@ -29,12 +29,14 @@ import android.widget.RemoteViews;
 @SuppressLint("NewApi")
 public class WidgetProvider extends AppWidgetProvider {
 
+	private boolean isDebugging = true;
+
 	public static final String LAUNCH_PACKAGE = "gt.high5.launch.package";
 	public static final String UPDATE_PACKAGE = "gt.high5.update.package";
 
 	private static final int LAUNCH_REQ = 0;
 	private static final String LAUNCH_ACT = "gt.high5.launch";
-	private static final int UPDATE_INTERVAL = 15 * 60 * 1000;
+	private static final int UPDATE_INTERVAL = 1000; // 15 * 60 * 1000;
 
 	private static final int RECORD_REQ = 1;
 	private static final String RECORD_ACT = "gt.high5.record";
@@ -80,7 +82,9 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onDisabled(Context context) {
 		// TODO Auto-generated method stub
 		super.onDisabled(context);
-		Log.d(MainActivity.LOG_TAG, "disable");
+		if (isDebugging || MainActivity.isDebugging()) {
+			Log.d(MainActivity.LOG_TAG, "disable");
+		}
 		// shut down all recording service
 		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
 				.cancel(getUpdateIntent(context, null));
@@ -106,6 +110,9 @@ public class WidgetProvider extends AppWidgetProvider {
 			int[] appWidgetIds) {
 		// TODO Auto-generated method stub
 		// init view
+		if (isDebugging || MainActivity.isDebugging()) {
+			Log.d(MainActivity.LOG_TAG, "action update");
+		}
 		RemoteViews views = new RemoteViews(context.getPackageName(),
 				R.layout.widget);
 		// init intent template
@@ -118,11 +125,10 @@ public class WidgetProvider extends AppWidgetProvider {
 		adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
 				appWidgetIds);
 		views.setRemoteAdapter(R.id.launcher, adapterIntent);
-		// update view
+		appWidgetManager.updateAppWidget(appWidgetIds, views);
+		// // update view
 		appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
 				R.id.launcher);
-		appWidgetManager.updateAppWidget(appWidgetIds, views);
-		Log.d(MainActivity.LOG_TAG, "update");
 		// start update interval
 		startInterval(context, UPDATE_INTERVAL,
 				getUpdateIntent(context, appWidgetIds));
@@ -157,7 +163,9 @@ public class WidgetProvider extends AppWidgetProvider {
 		if (null == mAccessor) {
 			return;
 		}
-		Log.d(MainActivity.LOG_TAG, "record");
+		if (isDebugging || MainActivity.isDebugging()) {
+			Log.d(MainActivity.LOG_TAG, "action record");
+		}
 		if (null == mActivityManager) {
 			mActivityManager = (ActivityManager) context
 					.getSystemService(Service.ACTIVITY_SERVICE);
@@ -180,26 +188,37 @@ public class WidgetProvider extends AppWidgetProvider {
 		List<Class<? extends Table>> clazzes = mAccessor.getTables();
 		if (null != list) {
 			total = (Total) list.get(0);
-			Log.d(MainActivity.LOG_TAG, "total " + total.getName());
+			if ((isDebugging || MainActivity.isDebugging())) {
+				Log.d(MainActivity.LOG_TAG, "total " + total.getName());
+			}
 			// each type of record
 			for (Class<? extends Table> clazz : clazzes) {
-				Log.d(MainActivity.LOG_TAG,
-						"updating class " + clazz.getSimpleName());
+				if (isDebugging || MainActivity.isDebugging()) {
+					Log.d(MainActivity.LOG_TAG,
+							"updating class " + clazz.getSimpleName());
+				}
 				try {
+					//read an existing record with the current pid and status
 					Table table = clazz.newInstance();
 					table.setPid(total.getId());
+					table.initDefault(context);
 					list = mAccessor.R(table);
+					
 					if (null == list) {
-						Log.d(MainActivity.LOG_TAG, "create new "
-								+ table.getClass().getSimpleName());
+						if (isDebugging || MainActivity.isDebugging()) {
+							Log.d(MainActivity.LOG_TAG, "create new "
+									+ table.getClass().getSimpleName());
+						}
 						table.initDefault(context);
 						table.setPid(total.getId());
 						mAccessor.C(table);
 						list = mAccessor.R(table);
 					}
 					if (null != list) {
-						Log.d(MainActivity.LOG_TAG, "increase old "
-								+ table.getClass().getSimpleName());
+						if (isDebugging || MainActivity.isDebugging()) {
+							Log.d(MainActivity.LOG_TAG, "increase old "
+									+ table.getClass().getSimpleName());
+						}
 						table = list.get(0);
 						Table select = table.clone();
 						table.record(context);

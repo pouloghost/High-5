@@ -57,7 +57,7 @@ public class Time extends Table {
 	@Override
 	public void initDefault(Context context) {
 		// TODO Auto-generated method stub
-		updateRegion();
+		currentQueryStatus(context);
 		count = 1;
 	}
 
@@ -171,8 +171,9 @@ public class Time extends Table {
 		// TODO Auto-generated method stub
 		this.id = id;
 	}
-
-	public void updateRegion() {
+	
+	@Override
+	public void currentQueryStatus(Context context) {
 		Calendar calendar = Calendar.getInstance();
 		int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60
 				+ calendar.get(Calendar.MINUTE);

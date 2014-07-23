@@ -24,6 +24,8 @@ import android.widget.RemoteViewsService;
 @SuppressLint("NewApi")
 public class GridAdapterService extends RemoteViewsService {
 
+	private boolean isDebugging = true;
+
 	private static DatabaseAccessor mAccessor = null;
 
 	private ArrayList<String> apps = new ArrayList<String>();
@@ -32,7 +34,9 @@ public class GridAdapterService extends RemoteViewsService {
 	@Override
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
 		// TODO Auto-generated method stub
-		Log.d(MainActivity.LOG_TAG, "get factory");
+		if (MainActivity.isDebugging()) {
+			Log.d(MainActivity.LOG_TAG, "get factory");
+		}
 		return new GridViewFactory();
 	}
 
@@ -41,6 +45,9 @@ public class GridAdapterService extends RemoteViewsService {
 		@Override
 		public int getCount() {
 			// TODO Auto-generated method stub
+			if (isDebugging || MainActivity.isDebugging()) {
+				Log.d(MainActivity.LOG_TAG, "data set size " + apps.size());
+			}
 			return apps.size();
 		}
 
@@ -61,7 +68,9 @@ public class GridAdapterService extends RemoteViewsService {
 		@Override
 		public RemoteViews getViewAt(int position) {
 			// TODO Auto-generated method stub
-			Log.d(MainActivity.LOG_TAG, "view at " + position);
+			if (isDebugging || MainActivity.isDebugging()) {
+				Log.d(MainActivity.LOG_TAG, "view at " + position);
+			}
 			if (apps.size() < position) {
 				return null;
 			}
@@ -108,7 +117,9 @@ public class GridAdapterService extends RemoteViewsService {
 		@Override
 		public void onCreate() {
 			// TODO Auto-generated method stub
-			Log.d(MainActivity.LOG_TAG, "create factory");
+			if (MainActivity.isDebugging()) {
+				Log.d(MainActivity.LOG_TAG, "create factory");
+			}
 		}
 
 		@Override
@@ -116,6 +127,9 @@ public class GridAdapterService extends RemoteViewsService {
 			// TODO Auto-generated method stub
 			try {
 				apps = getHigh5();
+				if (isDebugging || MainActivity.isDebugging()) {
+					Log.d(MainActivity.LOG_TAG, "data set changed");
+				}
 			} catch (InstantiationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -137,7 +151,10 @@ public class GridAdapterService extends RemoteViewsService {
 			IllegalAccessException {
 		// TODO Auto-generated method stub
 		if (null == mAccessor) {
-			mAccessor = DatabaseAccessor.getAccessor(null, null, R.xml.tables);
+			if (isDebugging || MainActivity.isDebugging()) {
+				Log.d(MainActivity.LOG_TAG, "get a new accessor");
+			}
+			mAccessor = DatabaseAccessor.getAccessor(getApplicationContext(), R.xml.tables);
 		}
 		if (null != mAccessor) {
 			apps.clear();
@@ -162,6 +179,10 @@ public class GridAdapterService extends RemoteViewsService {
 			int size = Math.min(5, allTotals.size());
 			for (int i = 0; i < size; ++i) {
 				apps.add(((Total) allTotals.get(i)).getName());
+			}
+		} else {
+			if (isDebugging || MainActivity.isDebugging()) {
+				Log.d(MainActivity.LOG_TAG, "data accessor is null");
 			}
 		}
 		return apps;

@@ -10,6 +10,9 @@ import android.content.Context;
 import android.util.Log;
 
 public abstract class Table {
+	
+	private static boolean isDebugging = false;
+	
 	private static HashMap<Class<?>, String> typeMap = null;
 	static {
 		typeMap = new HashMap<Class<?>, String>();
@@ -63,6 +66,8 @@ public abstract class Table {
 
 	public abstract int getCount();
 
+	public abstract void currentQueryStatus(Context context);
+	
 	protected static String C(Table table) throws IllegalAccessException,
 			IllegalArgumentException {
 		Class<? extends Table> clazz = table.getClass();
@@ -98,8 +103,10 @@ public abstract class Table {
 		sql.append(vals);
 
 		String sqlString = sql.toString();
-		Log.d(MainActivity.LOG_TAG, "create " + table.getClass().getSimpleName()
-				+ " " + sqlString);
+		if (isDebugging || MainActivity.isDebugging()) {
+			Log.d(MainActivity.LOG_TAG, "create "
+					+ table.getClass().getSimpleName() + " " + sqlString);
+		}
 		return sqlString;
 	}
 
@@ -112,8 +119,10 @@ public abstract class Table {
 		}
 
 		String sqlString = "DELETE FROM " + clazz.getSimpleName() + where;
-		Log.d(MainActivity.LOG_TAG, "delete " + table.getClass().getSimpleName()
-				+ " " + sqlString);
+		if (isDebugging || MainActivity.isDebugging()) {
+			Log.d(MainActivity.LOG_TAG, "delete "
+					+ table.getClass().getSimpleName() + " " + sqlString);
+		}
 		return sqlString;
 	}
 
@@ -153,8 +162,10 @@ public abstract class Table {
 		sql.append(where);
 
 		String sqlString = sql.toString();
-		Log.d(MainActivity.LOG_TAG, "update " + table.getClass().getSimpleName()
-				+ " " + sqlString);
+		if (isDebugging || MainActivity.isDebugging()) {
+			Log.d(MainActivity.LOG_TAG, "update "
+					+ table.getClass().getSimpleName() + " " + sqlString);
+		}
 		return sqlString;
 	}
 
@@ -167,8 +178,10 @@ public abstract class Table {
 		}
 
 		String sqlString = "SELECT * FROM " + clazz.getSimpleName() + where;
-		Log.d(MainActivity.LOG_TAG, "read " + table.getClass().getSimpleName()
-				+ " " + sqlString);
+		if (isDebugging || MainActivity.isDebugging()) {
+			Log.d(MainActivity.LOG_TAG, "read "
+					+ table.getClass().getSimpleName() + " " + sqlString);
+		}
 		return sqlString;
 	}
 
@@ -214,8 +227,10 @@ public abstract class Table {
 
 		sql.append(where);
 		String sqlString = sql.toString();
-		Log.d(MainActivity.LOG_TAG, "increase "
-				+ table.getClass().getSimpleName() + " " + sqlString);
+		{
+			Log.d(MainActivity.LOG_TAG, "increase "
+					+ table.getClass().getSimpleName() + " " + sqlString);
+		}
 		return sqlString;
 	}
 
@@ -250,8 +265,10 @@ public abstract class Table {
 		sql.append(")");
 
 		String sqlString = sql.toString();
-		Log.d(MainActivity.LOG_TAG, "creator " + clazz.getSimpleName() + " "
-				+ sqlString);
+		if (isDebugging || MainActivity.isDebugging()) {
+			Log.d(MainActivity.LOG_TAG, "creator " + clazz.getSimpleName()
+					+ " " + sqlString);
+		}
 		return sqlString;
 	}
 
