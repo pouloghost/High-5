@@ -5,7 +5,7 @@ import gt.high5.activity.MainActivity;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.Table;
-import gt.high5.database.model.Total;
+import gt.high5.database.tables.Total;
 
 import java.io.IOException;
 import java.util.List;

@@ -44,8 +44,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
 			Log.i("DB", "Upgrading database from version " + oldVersion
 					+ " to " + newVersion + ", which will destroy all old data");
 		}
-		db.execSQL("DROP TABLE IF EXISTS notes");
 		onCreate(db);
 	}
-
 }

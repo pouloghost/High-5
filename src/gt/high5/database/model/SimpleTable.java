@@ -1,7 +1,9 @@
 package gt.high5.database.model;
 
 import android.content.Context;
-
+/*
+ * representing a simple table with field pid id and count
+ * */
 public abstract class SimpleTable extends Table {
 
 	@TableAnnotation(defaultValue = "-1")

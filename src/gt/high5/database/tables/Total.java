@@ -1,4 +1,8 @@
-package gt.high5.database.model;
+package gt.high5.database.tables;
+
+import gt.high5.database.model.Table;
+import gt.high5.database.model.TableAnnotation;
+import gt.high5.database.model.TableUtils;
 
 import java.util.Comparator;
 

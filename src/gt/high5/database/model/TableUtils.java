@@ -23,7 +23,7 @@ public class TableUtils {
 		typeMap.put(double.class, "DOUBLE");
 	}
 
-	protected static String C(Table table) throws IllegalAccessException,
+	public static String C(Table table) throws IllegalAccessException,
 			IllegalArgumentException {
 		Class<? extends Table> clazz = table.getClass();
 		// Field[] fields = clazz.getDeclaredFields();
@@ -66,7 +66,7 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	protected static String D(Table table) throws IllegalAccessException,
+	public static String D(Table table) throws IllegalAccessException,
 			IllegalArgumentException {
 		Class<? extends Table> clazz = table.getClass();
 		String where = getWhereClause(table);
@@ -82,7 +82,7 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	protected static String U(Table select, Table table)
+	public static String U(Table select, Table table)
 			throws IllegalAccessException, IllegalArgumentException {
 		Class<? extends Table> clazz = table.getClass();
 		String where = getWhereClause(select);
@@ -126,7 +126,7 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	protected static String R(Table table) throws IllegalAccessException,
+	public static String R(Table table) throws IllegalAccessException,
 			IllegalArgumentException {
 		Class<? extends Table> clazz = table.getClass();
 		String where = getWhereClause(table);
@@ -142,8 +142,8 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	protected static String increase(Table table)
-			throws IllegalAccessException, IllegalArgumentException {
+	public static String increase(Table table) throws IllegalAccessException,
+			IllegalArgumentException {
 		Class<? extends Table> clazz = table.getClass();
 		// Field[] fields = clazz.getDeclaredFields();
 		Field[] fields = getAllFields(clazz);
@@ -196,7 +196,7 @@ public class TableUtils {
 	 * implementation using reflection supporting all abstract method with the
 	 * same name
 	 */
-	protected static Table clone(Table table) throws InstantiationException,
+	public static Table clone(Table table) throws InstantiationException,
 			IllegalAccessException {
 		Class<? extends Table> clazz = table.getClass();
 		Table result = (Table) clazz.newInstance();
@@ -209,8 +209,8 @@ public class TableUtils {
 		return result;
 	}
 
-	protected static String buildCreator(Class<? extends Table> clazz) {
-		StringBuilder sql = new StringBuilder("CREATE TABLE "
+	public static String buildCreator(Class<? extends Table> clazz) {
+		StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS "
 				+ clazz.getSimpleName()
 				+ " (id INTEGER PRIMARY KEY AUTOINCREMENT");
 		// Field[] fields = clazz.getDeclaredFields();

@@ -4,7 +4,7 @@ import gt.high5.R;
 import gt.high5.activity.MainActivity;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.Table;
-import gt.high5.database.model.Total;
+import gt.high5.database.tables.Total;
 
 import java.util.ArrayList;
 import java.util.Collections;

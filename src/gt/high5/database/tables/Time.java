@@ -1,5 +1,7 @@
-package gt.high5.database.model;
+package gt.high5.database.tables;
 
+import gt.high5.database.model.SimpleTable;
+import gt.high5.database.model.TableAnnotation;
 import gt.high5.widget.WidgetProvider;
 
 import java.util.Calendar;
