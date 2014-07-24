@@ -14,24 +14,19 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 	public DatabaseManager(Context context, TableParser parser) {
 		super(context, parser.getFile(), null, parser.getVersion());
-		// TODO Auto-generated constructor stub
 		this.parser = parser;
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		// TODO Auto-generated method stub
 		for (Class<? extends Table> clazz : parser.getTables()) {
 			try {
 				db.execSQL(clazz.newInstance().getCreator());
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -39,10 +34,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
 		if (MainActivity.isDebugging()) {
-			Log.i("DB", "Upgrading database from version " + oldVersion
-					+ " to " + newVersion + ", which will destroy all old data");
+			Log.d(MainActivity.LOG_TAG, "Upgrading database from version " + oldVersion
+					+ " to " + newVersion);
 		}
 		onCreate(db);
 	}
