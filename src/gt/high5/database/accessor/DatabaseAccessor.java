@@ -1,7 +1,7 @@
 package gt.high5.database.accessor;
 
-import gt.high5.R;
 import gt.high5.database.model.Table;
+import gt.high5.database.model.TableUtils;
 
 import java.io.IOException;
 import java.lang.ref.SoftReference;
@@ -107,9 +107,9 @@ public class DatabaseAccessor {
 				Class<? extends Table> clazz = table.getClass();
 				do {
 					Table data = clazz.newInstance();
-					Field[] fields = clazz.getDeclaredFields();
+					Field[] fields = TableUtils.getAllFields(clazz);
 					for (Field field : fields) {
-						if (Table.shouldIgnoreField(field, false)) {
+						if (TableUtils.shouldIgnoreField(field, false)) {
 							continue;
 						}
 						Class<?> fClass = field.getType();

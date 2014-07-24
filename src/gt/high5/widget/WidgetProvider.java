@@ -29,7 +29,7 @@ import android.widget.RemoteViews;
 @SuppressLint("NewApi")
 public class WidgetProvider extends AppWidgetProvider {
 
-	private boolean isDebugging = true;
+	private boolean isDebugging = false;
 
 	public static final String LAUNCH_PACKAGE = "gt.high5.launch.package";
 	public static final String UPDATE_PACKAGE = "gt.high5.update.package";
@@ -48,7 +48,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
 	@Override
 	public void onEnabled(Context context) {
-		// TODO Auto-generated method stub
+
 		super.onEnabled(context);
 		// start up all recording service
 		try {
@@ -58,29 +58,29 @@ public class WidgetProvider extends AppWidgetProvider {
 					R.xml.tables);
 			recordCurrentStatus(context);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (NotFoundException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void onDisabled(Context context) {
-		// TODO Auto-generated method stub
+
 		super.onDisabled(context);
 		if (isDebugging || MainActivity.isDebugging()) {
 			Log.d(MainActivity.LOG_TAG, "disable");
@@ -93,7 +93,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		// TODO Auto-generated method stub
+
 		if (LAUNCH_ACT.equalsIgnoreCase(intent.getAction())) {
 			String packageName = intent.getStringExtra(LAUNCH_PACKAGE);
 			Intent i = context.getPackageManager().getLaunchIntentForPackage(
@@ -108,7 +108,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
-		// TODO Auto-generated method stub
+
 		// init view
 		if (isDebugging || MainActivity.isDebugging()) {
 			Log.d(MainActivity.LOG_TAG, "action update");
@@ -198,12 +198,12 @@ public class WidgetProvider extends AppWidgetProvider {
 							"updating class " + clazz.getSimpleName());
 				}
 				try {
-					//read an existing record with the current pid and status
+					// read an existing record with the current pid and status
 					Table table = clazz.newInstance();
 					table.setPid(total.getId());
-					table.initDefault(context);
+					table.currentQueryStatus(context);
 					list = mAccessor.R(table);
-					
+
 					if (null == list) {
 						if (isDebugging || MainActivity.isDebugging()) {
 							Log.d(MainActivity.LOG_TAG, "create new "
@@ -225,10 +225,8 @@ public class WidgetProvider extends AppWidgetProvider {
 						mAccessor.U(select, table);
 					}
 				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					// TODO: handle exception
 					e.printStackTrace();
 				}
 			}

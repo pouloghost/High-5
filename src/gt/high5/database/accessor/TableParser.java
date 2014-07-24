@@ -72,6 +72,7 @@ public class TableParser {
 						ATTR attr = ATTR.valueOf(parser.getAttributeName(i));
 						switch (attr) {
 						case clazz:
+							@SuppressWarnings("unchecked")
 							Class<Table> clazz = (Class<Table>) Class
 									.forName(mPackage + "."
 											+ parser.getAttributeValue(i));
