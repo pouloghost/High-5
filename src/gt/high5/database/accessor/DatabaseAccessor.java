@@ -80,7 +80,7 @@ public class DatabaseAccessor {
 		return mTableParser.getTables();
 	}
 
-	public boolean C(RecordTable table) {
+	public boolean C(Table table) {
 		String sql = table.C();
 		if (null == sql) {
 			return false;
@@ -95,19 +95,19 @@ public class DatabaseAccessor {
 		}
 	}
 
-	public ArrayList<RecordTable> R(RecordTable table) {
+	public ArrayList<Table> R(Table table) {
 		String sql = table.R();
 		if (null == sql) {
 			return null;
 		}
 		try {
 			Cursor cursor = mDatabase.rawQuery(sql, null);
-			ArrayList<RecordTable> result = new ArrayList<RecordTable>();
+			ArrayList<Table> result = new ArrayList<Table>();
 			if (cursor.getCount() > 0) {
 				cursor.moveToFirst();
-				Class<? extends RecordTable> clazz = table.getClass();
+				Class<? extends Table> clazz = table.getClass();
 				do {
-					RecordTable data = clazz.newInstance();
+					Table data = clazz.newInstance();
 					Field[] fields = TableUtils
 							.getAllFields(clazz, Table.class);
 					for (Field field : fields) {
@@ -145,7 +145,7 @@ public class DatabaseAccessor {
 		}
 	}
 
-	public boolean U(RecordTable select, RecordTable table) {
+	public boolean U(Table select, Table table) {
 		String sql = table.U(select);
 		if (null == sql) {
 			return false;
@@ -160,7 +160,7 @@ public class DatabaseAccessor {
 		}
 	}
 
-	public boolean D(RecordTable table) {
+	public boolean D(Table table) {
 		String sql = table.D();
 		if (null == sql) {
 			return false;
@@ -188,5 +188,10 @@ public class DatabaseAccessor {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public boolean exists(Table table) {
+		ArrayList<Table> query = R(table);
+		return null == query || 0 == query.size();
 	}
 }

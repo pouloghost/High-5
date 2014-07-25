@@ -20,10 +20,10 @@ public class Total extends RecordTable {
 	@TableAnnotation(defaultValue = "1", isTransient = true)
 	private float possibility = 1;
 
-	private static Comparator<RecordTable> comparator = new Comparator<RecordTable>() {
+	private static Comparator<Table> comparator = new Comparator<Table>() {
 
 		@Override
-		public int compare(RecordTable arg0, RecordTable arg1) {
+		public int compare(Table arg0, Table arg1) {
 			return (int) (((Total) arg0).getPossibility() - ((Total) arg1)
 					.getPossibility());
 		}
@@ -51,11 +51,11 @@ public class Total extends RecordTable {
 		return TableUtils.buildCreator(this.getClass(), Table.class);
 	}
 
-	public static Comparator<RecordTable> getComparator() {
+	public static Comparator<Table> getComparator() {
 		return comparator;
 	}
 
-	public static void setComparator(Comparator<RecordTable> comparator) {
+	public static void setComparator(Comparator<Table> comparator) {
 		Total.comparator = comparator;
 	}
 
@@ -100,7 +100,7 @@ public class Total extends RecordTable {
 	}
 
 	@Override
-	public String U(RecordTable select) {
+	public String U(Table select) {
 		String sql = null;
 		try {
 			sql = TableUtils.U(select, this, Table.class);

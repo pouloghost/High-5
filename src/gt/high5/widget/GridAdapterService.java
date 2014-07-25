@@ -4,6 +4,7 @@ import gt.high5.R;
 import gt.high5.activity.MainActivity;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
+import gt.high5.database.model.Table;
 import gt.high5.database.tables.Total;
 
 import java.util.ArrayList;
@@ -160,17 +161,18 @@ public class GridAdapterService extends RemoteViewsService {
 		if (null != mAccessor) {
 			apps.clear();
 			Total queryTotal = new Total();
-			ArrayList<RecordTable> allTotals = mAccessor.R(queryTotal);
+			ArrayList<Table> allTotals = mAccessor.R(queryTotal);
 			List<Class<? extends RecordTable>> tables = mAccessor.getTables();
 			if (null != allTotals) {
-				for (RecordTable total : allTotals) {
+				for (Table total : allTotals) {
 					for (Class<? extends RecordTable> clazz : tables) {
 						RecordTable queryTable = clazz.newInstance();
 						queryTable.initDefault(this);
-						ArrayList<RecordTable> allTables = mAccessor.R(queryTable);
+						ArrayList<Table> allTables = mAccessor.R(queryTable);
 						if (null != allTables) {
-							((Total) total).setPossibility(allTables.get(0)
-									.getCount());
+							((Total) total)
+									.setPossibility(((RecordTable) allTables
+											.get(0)).getCount());
 						}
 					}
 				}

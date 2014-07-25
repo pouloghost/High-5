@@ -5,6 +5,7 @@ import gt.high5.activity.MainActivity;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.RecordTable;
+import gt.high5.database.model.Table;
 import gt.high5.database.tables.Total;
 
 import java.io.IOException;
@@ -179,7 +180,7 @@ public class WidgetProvider extends AppWidgetProvider {
 		// read total with current package name
 		Total total = new Total();
 		total.setName(packageName);
-		List<RecordTable> list = mAccessor.R(total);
+		List<Table> list = mAccessor.R(total);
 		if (null == list) {// create a new one for new package
 			total.setCount(1);
 			mAccessor.C(total);
@@ -219,7 +220,7 @@ public class WidgetProvider extends AppWidgetProvider {
 							Log.d(MainActivity.LOG_TAG, "increase old "
 									+ table.getClass().getSimpleName());
 						}
-						table = list.get(0);
+						table = (RecordTable) list.get(0);
 						RecordTable select = table.clone();
 						table.record(context);
 						mAccessor.U(select, table);

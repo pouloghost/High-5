@@ -46,7 +46,7 @@ public abstract class SimpleRecordTable extends RecordTable {
 	}
 
 	@Override
-	public String U(RecordTable select) {
+	public String U(Table select) {
 		String sql = null;
 		try {
 			sql = TableUtils.U(select, this, Table.class);
