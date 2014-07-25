@@ -24,7 +24,7 @@ import android.widget.RemoteViewsService;
 @SuppressLint("NewApi")
 public class GridAdapterService extends RemoteViewsService {
 
-	private boolean isDebugging = true;
+	private boolean isDebugging = false;
 
 	private static DatabaseAccessor mAccessor = null;
 
@@ -154,31 +154,33 @@ public class GridAdapterService extends RemoteViewsService {
 			if (isDebugging || MainActivity.isDebugging()) {
 				Log.d(MainActivity.LOG_TAG, "get a new accessor");
 			}
-			mAccessor = DatabaseAccessor.getAccessor(getApplicationContext(), R.xml.tables);
+			mAccessor = DatabaseAccessor.getAccessor(getApplicationContext(),
+					R.xml.tables);
 		}
 		if (null != mAccessor) {
 			apps.clear();
 			Total queryTotal = new Total();
 			ArrayList<Table> allTotals = mAccessor.R(queryTotal);
 			List<Class<? extends Table>> tables = mAccessor.getTables();
-
-			for (Table total : allTotals) {
-				for (Class<? extends Table> clazz : tables) {
-					Table queryTable = clazz.newInstance();
-					queryTable.initDefault(this);
-					ArrayList<Table> allTables = mAccessor.R(queryTable);
-					if (null != allTables) {
-						((Total) total).setPossibility(allTables.get(0)
-								.getCount());
+			if (null != allTotals) {
+				for (Table total : allTotals) {
+					for (Class<? extends Table> clazz : tables) {
+						Table queryTable = clazz.newInstance();
+						queryTable.initDefault(this);
+						ArrayList<Table> allTables = mAccessor.R(queryTable);
+						if (null != allTables) {
+							((Total) total).setPossibility(allTables.get(0)
+									.getCount());
+						}
 					}
 				}
-			}
 
-			Collections.sort(allTotals, Total.getComparator());
+				Collections.sort(allTotals, Total.getComparator());
 
-			int size = Math.min(5, allTotals.size());
-			for (int i = 0; i < size; ++i) {
-				apps.add(((Total) allTotals.get(i)).getName());
+				int size = Math.min(5, allTotals.size());
+				for (int i = 0; i < size; ++i) {
+					apps.add(((Total) allTotals.get(i)).getName());
+				}
 			}
 		} else {
 			if (isDebugging || MainActivity.isDebugging()) {

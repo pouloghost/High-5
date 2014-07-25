@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tables
     file="statics.db"
-    pack="gt.high5.database.model"
-    version="1" >
+    pack="gt.high5.database.tables"
+    version="2" >
 
     <table clazz="Total" />
     <table clazz="Time" />
-
+    <table clazz="WifiName" />
 
 </tables>
