@@ -1,5 +1,6 @@
 package gt.high5.database.accessor;
 
+import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableUtils;
 
@@ -75,11 +76,11 @@ public class DatabaseAccessor {
 		mDatabase = manager.getWritableDatabase();
 	}
 
-	public List<Class<? extends Table>> getTables() {
+	public List<Class<? extends RecordTable>> getTables() {
 		return mTableParser.getTables();
 	}
 
-	public boolean C(Table table) {
+	public boolean C(RecordTable table) {
 		String sql = table.C();
 		if (null == sql) {
 			return false;
@@ -94,20 +95,21 @@ public class DatabaseAccessor {
 		}
 	}
 
-	public ArrayList<Table> R(Table table) {
+	public ArrayList<RecordTable> R(RecordTable table) {
 		String sql = table.R();
 		if (null == sql) {
 			return null;
 		}
 		try {
 			Cursor cursor = mDatabase.rawQuery(sql, null);
-			ArrayList<Table> result = new ArrayList<Table>();
+			ArrayList<RecordTable> result = new ArrayList<RecordTable>();
 			if (cursor.getCount() > 0) {
 				cursor.moveToFirst();
-				Class<? extends Table> clazz = table.getClass();
+				Class<? extends RecordTable> clazz = table.getClass();
 				do {
-					Table data = clazz.newInstance();
-					Field[] fields = TableUtils.getAllFields(clazz);
+					RecordTable data = clazz.newInstance();
+					Field[] fields = TableUtils
+							.getAllFields(clazz, Table.class);
 					for (Field field : fields) {
 						if (TableUtils.shouldIgnoreField(field, false)) {
 							continue;
@@ -143,7 +145,7 @@ public class DatabaseAccessor {
 		}
 	}
 
-	public boolean U(Table select, Table table) {
+	public boolean U(RecordTable select, RecordTable table) {
 		String sql = table.U(select);
 		if (null == sql) {
 			return false;
@@ -158,7 +160,7 @@ public class DatabaseAccessor {
 		}
 	}
 
-	public boolean D(Table table) {
+	public boolean D(RecordTable table) {
 		String sql = table.D();
 		if (null == sql) {
 			return false;
@@ -173,7 +175,7 @@ public class DatabaseAccessor {
 		}
 	}
 
-	public boolean increase(Table table) {
+	public boolean increase(RecordTable table) {
 		String sql = table.increase();
 		if (null == sql) {
 			return false;

@@ -1,11 +1,11 @@
 package gt.high5.database.tables;
 
-import gt.high5.database.model.SimpleTable;
+import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 
-public class WifiName extends SimpleTable {
+public class WifiName extends SimpleRecordTable {
 
 	@TableAnnotation(defaultValue = "")
 	private String bssid = "";

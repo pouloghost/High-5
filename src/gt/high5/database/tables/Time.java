@@ -1,6 +1,6 @@
 package gt.high5.database.tables;
 
-import gt.high5.database.model.SimpleTable;
+import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.widget.WidgetProvider;
 
@@ -8,7 +8,7 @@ import java.util.Calendar;
 
 import android.content.Context;
 
-public class Time extends SimpleTable {
+public class Time extends SimpleRecordTable {
 
 	@TableAnnotation(defaultValue = "-1")
 	private int region = -1;

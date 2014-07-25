@@ -1,10 +1,11 @@
 package gt.high5.database.model;
 
 import android.content.Context;
+
 /*
  * representing a simple table with field pid id and count
  * */
-public abstract class SimpleTable extends Table {
+public abstract class SimpleRecordTable extends RecordTable {
 
 	@TableAnnotation(defaultValue = "-1")
 	private int id = -1;
@@ -15,14 +16,14 @@ public abstract class SimpleTable extends Table {
 
 	@Override
 	public String getCreator() {
-		return TableUtils.buildCreator(this.getClass());
+		return TableUtils.buildCreator(this.getClass(), Table.class);
 	}
 
 	@Override
 	public String C() {
 		String sql = null;
 		try {
-			sql = TableUtils.C(this);
+			sql = TableUtils.C(this, Table.class);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -35,7 +36,7 @@ public abstract class SimpleTable extends Table {
 	public String R() {
 		String sql = null;
 		try {
-			sql = TableUtils.R(this);
+			sql = TableUtils.R(this, Table.class);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -45,10 +46,10 @@ public abstract class SimpleTable extends Table {
 	}
 
 	@Override
-	public String U(Table select) {
+	public String U(RecordTable select) {
 		String sql = null;
 		try {
-			sql = TableUtils.U(select, this);
+			sql = TableUtils.U(select, this, Table.class);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -61,7 +62,7 @@ public abstract class SimpleTable extends Table {
 	public String D() {
 		String sql = null;
 		try {
-			sql = TableUtils.D(this);
+			sql = TableUtils.D(this, Table.class);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -84,10 +85,10 @@ public abstract class SimpleTable extends Table {
 	}
 
 	@Override
-	public Table clone() {
-		Table result = null;
+	public RecordTable clone() {
+		RecordTable result = null;
 		try {
-			result = TableUtils.clone(this);
+			result = (RecordTable) TableUtils.clone(this, Table.class);
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -122,9 +123,10 @@ public abstract class SimpleTable extends Table {
 		this.pid = pid;
 	}
 
-	public int getPid(){
+	public int getPid() {
 		return this.pid;
 	}
+
 	@Override
 	public int getCount() {
 		return count;

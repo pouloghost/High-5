@@ -23,11 +23,12 @@ public class TableUtils {
 		typeMap.put(double.class, "DOUBLE");
 	}
 
-	public static String C(Table table) throws IllegalAccessException,
-			IllegalArgumentException {
-		Class<? extends Table> clazz = table.getClass();
+	public static <T> String C(T table, Class<T> base)
+			throws IllegalAccessException, IllegalArgumentException {
+		@SuppressWarnings("unchecked")
+		Class<? extends T> clazz = (Class<? extends T>) table.getClass();
 		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = getAllFields(clazz);
+		Field[] fields = getAllFields(clazz, base);
 		boolean hasValue = false;
 		StringBuilder sql = new StringBuilder("INSERT INTO "
 				+ clazz.getSimpleName());
@@ -66,10 +67,11 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	public static String D(Table table) throws IllegalAccessException,
-			IllegalArgumentException {
-		Class<? extends Table> clazz = table.getClass();
-		String where = getWhereClause(table);
+	public static <T> String D(T table, Class<T> base)
+			throws IllegalAccessException, IllegalArgumentException {
+		@SuppressWarnings("unchecked")
+		Class<? extends T> clazz = (Class<? extends T>) table.getClass();
+		String where = getWhereClause(table, base);
 		if (null == where) {
 			return null;
 		}
@@ -82,16 +84,17 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	public static String U(Table select, Table table)
+	public static <T> String U(T select, T table, Class<T> base)
 			throws IllegalAccessException, IllegalArgumentException {
-		Class<? extends Table> clazz = table.getClass();
-		String where = getWhereClause(select);
+		@SuppressWarnings("unchecked")
+		Class<? extends T> clazz = (Class<? extends T>) table.getClass();
+		String where = getWhereClause(select, base);
 		if (null == where) {
 			return null;
 		}
 
 		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = getAllFields(clazz);
+		Field[] fields = getAllFields(clazz, base);
 		boolean hasValue = false;
 		StringBuilder sql = new StringBuilder("UPDATE " + clazz.getSimpleName()
 				+ " SET ");
@@ -126,10 +129,11 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	public static String R(Table table) throws IllegalAccessException,
-			IllegalArgumentException {
-		Class<? extends Table> clazz = table.getClass();
-		String where = getWhereClause(table);
+	public static <T> String R(T table, Class<T> base)
+			throws IllegalAccessException, IllegalArgumentException {
+		@SuppressWarnings("unchecked")
+		Class<? extends T> clazz = (Class<? extends T>) table.getClass();
+		String where = getWhereClause(table, base);
 		if (null == where) {
 			where = "";
 		}
@@ -142,11 +146,11 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	public static String increase(Table table) throws IllegalAccessException,
-			IllegalArgumentException {
-		Class<? extends Table> clazz = table.getClass();
+	public static String increase(RecordTable table)
+			throws IllegalAccessException, IllegalArgumentException {
+		Class<? extends RecordTable> clazz = table.getClass();
 		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = getAllFields(clazz);
+		Field[] fields = getAllFields(clazz, RecordTable.class);
 		boolean sqlAdded = false;
 		boolean whereAdded = false;
 		StringBuilder sql = new StringBuilder("UPDATE " + clazz.getSimpleName()
@@ -196,12 +200,13 @@ public class TableUtils {
 	 * implementation using reflection supporting all abstract method with the
 	 * same name
 	 */
-	public static Table clone(Table table) throws InstantiationException,
-			IllegalAccessException {
-		Class<? extends Table> clazz = table.getClass();
-		Table result = (Table) clazz.newInstance();
+	public static <T> T clone(T table, Class<T> base)
+			throws InstantiationException, IllegalAccessException {
+		@SuppressWarnings("unchecked")
+		Class<? extends T> clazz = (Class<? extends T>) table.getClass();
+		T result = (T) clazz.newInstance();
 		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = getAllFields(clazz);
+		Field[] fields = getAllFields(clazz, base);
 		for (Field field : fields) {
 			field.setAccessible(true);
 			field.set(result, field.get(table));
@@ -209,12 +214,13 @@ public class TableUtils {
 		return result;
 	}
 
-	public static String buildCreator(Class<? extends Table> clazz) {
+	public static <T> String buildCreator(Class<? extends T> clazz,
+			Class<T> base) {
 		StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS "
 				+ clazz.getSimpleName()
 				+ " (id INTEGER PRIMARY KEY AUTOINCREMENT");
 		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = getAllFields(clazz);
+		Field[] fields = getAllFields(clazz, base);
 		for (Field field : fields) {
 			if (shouldIgnoreField(field, true)) {
 				continue;
@@ -232,11 +238,12 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	private static String getWhereClause(Table table)
+	private static <T> String getWhereClause(T table, Class<T> base)
 			throws IllegalAccessException, IllegalArgumentException {
-		Class<? extends Table> clazz = table.getClass();
+		@SuppressWarnings("unchecked")
+		Class<? extends T> clazz = (Class<? extends T>) table.getClass();
 		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = getAllFields(clazz);
+		Field[] fields = getAllFields(clazz, base);
 		boolean hasValue = false;
 		StringBuilder sql = new StringBuilder(" WHERE ");
 
@@ -281,7 +288,7 @@ public class TableUtils {
 		return result;
 	}
 
-	public static Object getValue(Table table, Field field)
+	public static <T> Object getValue(T table, Field field)
 			throws IllegalAccessException, IllegalArgumentException {
 		Class<?> clazz = field.getType();
 		field.setAccessible(true);
@@ -300,7 +307,7 @@ public class TableUtils {
 		return result;
 	}
 
-	public static void setValue(Table table, Field field, Object value)
+	public static <T> void setValue(T table, Field field, Object value)
 			throws IllegalAccessException, IllegalArgumentException {
 		Class<?> clazz = field.getType();
 		field.setAccessible(true);
@@ -317,7 +324,7 @@ public class TableUtils {
 		}
 	}
 
-	private static String getStep(Table table, Field field)
+	private static String getStep(RecordTable table, Field field)
 			throws IllegalAccessException, IllegalArgumentException {
 		Class<?> clazz = field.getType();
 		if (!(int.class == clazz || double.class == clazz
@@ -380,9 +387,10 @@ public class TableUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Field[] getAllFields(Class<? extends Table> clazz) {
+	public static <T> Field[] getAllFields(Class<? extends T> clazz,
+			Class<T> base) {
 		ArrayMap<String, Field> name2Field = new ArrayMap<String, Field>();
-		while (clazz != Table.class) {
+		while (clazz != base) {
 			Field[] fields = clazz.getDeclaredFields();
 			String name = null;
 			for (Field field : fields) {
@@ -392,7 +400,7 @@ public class TableUtils {
 				}
 			}
 
-			clazz = (Class<? extends Table>) clazz.getSuperclass();
+			clazz = (Class<? extends T>) clazz.getSuperclass();
 		}
 
 		Field[] fields = new Field[name2Field.size()];

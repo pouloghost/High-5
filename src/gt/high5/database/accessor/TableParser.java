@@ -1,10 +1,9 @@
 package gt.high5.database.accessor;
 
-import gt.high5.database.model.Table;
+import gt.high5.database.model.RecordTable;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -21,7 +20,7 @@ public class TableParser {
 	private int mVersion = 1;
 	private String mFile = null;
 	private String mPackage = null;
-	private List<Class<? extends Table>> tables = null;
+	private ArrayList<Class<? extends RecordTable>> tables = null;
 
 	public TableParser(XmlPullParser parser) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException,
@@ -29,17 +28,18 @@ public class TableParser {
 		setTables(loadTables(parser));
 	}
 
-	public List<Class<? extends Table>> loadTables(XmlPullParser parser)
-			throws XmlPullParserException, IOException, ClassNotFoundException,
-			InstantiationException, IllegalAccessException {
-		LinkedList<Class<? extends Table>> result = null;
+	public ArrayList<Class<? extends RecordTable>> loadTables(
+			XmlPullParser parser) throws XmlPullParserException, IOException,
+			ClassNotFoundException, InstantiationException,
+			IllegalAccessException {
+		ArrayList<Class<? extends RecordTable>> result = null;
 
 		int eventType = parser.getEventType();
 
 		while (XmlPullParser.END_DOCUMENT != eventType) {
 			switch (eventType) {
 			case XmlPullParser.START_DOCUMENT:
-				result = new LinkedList<Class<? extends Table>>();
+				result = new ArrayList<Class<? extends RecordTable>>();
 				break;
 			case XmlPullParser.START_TAG:
 				String name = parser.getName();
@@ -73,7 +73,7 @@ public class TableParser {
 						switch (attr) {
 						case clazz:
 							@SuppressWarnings("unchecked")
-							Class<Table> clazz = (Class<Table>) Class
+							Class<RecordTable> clazz = (Class<RecordTable>) Class
 									.forName(mPackage + "."
 											+ parser.getAttributeValue(i));
 							result.add(clazz);
@@ -126,11 +126,11 @@ public class TableParser {
 		this.mPackage = mPackage;
 	}
 
-	public List<Class<? extends Table>> getTables() {
+	public ArrayList<Class<? extends RecordTable>> getTables() {
 		return tables;
 	}
 
-	public void setTables(List<Class<? extends Table>> tables) {
+	public void setTables(ArrayList<Class<? extends RecordTable>> tables) {
 		this.tables = tables;
 	}
 }

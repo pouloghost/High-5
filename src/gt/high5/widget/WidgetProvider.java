@@ -4,7 +4,7 @@ import gt.high5.R;
 import gt.high5.activity.MainActivity;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.accessor.TableParser;
-import gt.high5.database.model.Table;
+import gt.high5.database.model.RecordTable;
 import gt.high5.database.tables.Total;
 
 import java.io.IOException;
@@ -179,27 +179,27 @@ public class WidgetProvider extends AppWidgetProvider {
 		// read total with current package name
 		Total total = new Total();
 		total.setName(packageName);
-		List<Table> list = mAccessor.R(total);
+		List<RecordTable> list = mAccessor.R(total);
 		if (null == list) {// create a new one for new package
 			total.setCount(1);
 			mAccessor.C(total);
 			list = mAccessor.R(total);
 		}
-		List<Class<? extends Table>> clazzes = mAccessor.getTables();
+		List<Class<? extends RecordTable>> clazzes = mAccessor.getTables();
 		if (null != list) {
 			total = (Total) list.get(0);
 			if ((isDebugging || MainActivity.isDebugging())) {
 				Log.d(MainActivity.LOG_TAG, "total " + total.getName());
 			}
 			// each type of record
-			for (Class<? extends Table> clazz : clazzes) {
+			for (Class<? extends RecordTable> clazz : clazzes) {
 				if (isDebugging || MainActivity.isDebugging()) {
 					Log.d(MainActivity.LOG_TAG,
 							"updating class " + clazz.getSimpleName());
 				}
 				try {
 					// read an existing record with the current pid and status
-					Table table = clazz.newInstance();
+					RecordTable table = clazz.newInstance();
 					table.setPid(total.getId());
 					table.currentQueryStatus(context);
 					list = mAccessor.R(table);
@@ -220,7 +220,7 @@ public class WidgetProvider extends AppWidgetProvider {
 									+ table.getClass().getSimpleName());
 						}
 						table = list.get(0);
-						Table select = table.clone();
+						RecordTable select = table.clone();
 						table.record(context);
 						mAccessor.U(select, table);
 					}
