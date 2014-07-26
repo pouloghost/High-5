@@ -8,11 +8,22 @@ import java.util.ArrayList;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+/**
+ * @author GT
+ * 
+ *         loader to parsing xml
+ */
 public class TableParser {
+	/**
+	 * @author GT Tags allowed in xml
+	 */
 	private static enum TAGS {
 		tables, table
 	}
 
+	/**
+	 * @author GT Attributes allowed in xml
+	 */
 	private static enum ATTR {
 		file, version, pack, clazz
 	}
@@ -20,6 +31,9 @@ public class TableParser {
 	private int mVersion = 1;
 	private String mFile = null;
 	private String mPackage = null;
+	/**
+	 * table types in xml
+	 */
 	private ArrayList<Class<? extends RecordTable>> tables = null;
 
 	public TableParser(XmlPullParser parser) throws ClassNotFoundException,

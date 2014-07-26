@@ -9,6 +9,11 @@ import java.util.Comparator;
 
 import android.content.Context;
 
+/**
+ * @author GT
+ * 
+ *         running statics for a certain package
+ */
 public class Total extends RecordTable {
 
 	@TableAnnotation(defaultValue = "-1")
@@ -20,6 +25,9 @@ public class Total extends RecordTable {
 	@TableAnnotation(defaultValue = "1", isTransient = true)
 	private float possibility = 1;
 
+	/**
+	 * comparator for sorting total to get high 5
+	 */
 	private static Comparator<Table> comparator = new Comparator<Table>() {
 
 		@Override
@@ -183,6 +191,11 @@ public class Total extends RecordTable {
 		return possibility;
 	}
 
+	/**
+	 * naive bayes
+	 * 
+	 * @param count
+	 */
 	public void setPossibility(int count) {
 		this.possibility *= count / this.count;
 	}

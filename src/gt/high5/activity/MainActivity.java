@@ -26,6 +26,12 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.ToggleButton;
 
+/**
+ * @author GT
+ * 
+ *         Ignore list manage activity
+ */
+
 public class MainActivity extends Activity {
 
 	public static final String LOG_TAG = "GT";
@@ -63,7 +69,15 @@ public class MainActivity extends Activity {
 		new LoadDataTask().execute();
 	}
 
+	/**
+	 * load package list and ignore list
+	 * 
+	 * mDataList will be modified
+	 * 
+	 * @return the data list for adapter
+	 */
 	private ArrayList<HashMap<String, Object>> loadData() {
+		// load all packages
 		List<ApplicationInfo> infos = mPackageManager
 				.getInstalledApplications(PackageManager.GET_META_DATA);
 		mDataList = new ArrayList<HashMap<String, Object>>();
@@ -78,7 +92,7 @@ public class MainActivity extends Activity {
 
 			mDataList.add(data);
 		}
-
+		// load ignore list
 		Ignore ignoreQuery = new Ignore();
 		ArrayList<Table> ignores = mAccessor.R(ignoreQuery);
 		if (null != ignores) {
@@ -90,7 +104,14 @@ public class MainActivity extends Activity {
 		return mDataList;
 	}
 
+	/**
+	 * set data to listview
+	 * 
+	 * @param data
+	 *            data loaded from {@link loadData()}
+	 */
 	private void setData(ArrayList<HashMap<String, Object>> data) {
+		// set adapter
 		String[] from = { KEYS.ICON.toString(), KEYS.NAME.toString(),
 				KEYS.PACKAGE.toString(), KEYS.IGNORED.toString() };
 		int[] to = { R.id.ignore_list_icon_image, R.id.ignore_list_app_name,
@@ -117,7 +138,7 @@ public class MainActivity extends Activity {
 		});
 
 		mIgnoreList.setAdapter(mAdapter);
-
+		// set onclicklistener
 		mIgnoreList
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -157,6 +178,16 @@ public class MainActivity extends Activity {
 		MainActivity.debugging = debugging;
 	}
 
+	/**
+	 * @author GT
+	 * 
+	 *         asynctask for load data
+	 * 
+	 *         a progress dialog will be showing when loading
+	 * 
+	 *         all implementation will use {@link loadData()} and {@link
+	 *         setData()}
+	 */
 	class LoadDataTask extends
 			AsyncTask<Void, Integer, ArrayList<HashMap<String, Object>>> {
 
@@ -185,6 +216,17 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	/**
+	 * @author GT
+	 * 
+	 *         async task for loading app icon from packagemanager and set to
+	 *         imageview
+	 * 
+	 * @param Object
+	 *            [0] String the package name for retrieving app icon
+	 * @param Object
+	 *            [1] ImageView the image view for showing app icon
+	 */
 	class AsyncImageTask extends AsyncTask<Object, Void, Bitmap> {
 
 		private ImageView imageView = null;

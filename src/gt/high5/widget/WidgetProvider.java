@@ -30,6 +30,10 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+/**
+ * @author GT
+ * 
+ */
 @SuppressLint("NewApi")
 public class WidgetProvider extends AppWidgetProvider {
 

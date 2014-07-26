@@ -8,6 +8,11 @@ import java.util.Calendar;
 
 import android.content.Context;
 
+/**
+ * @author GT
+ * 
+ *         time region statics
+ */
 public class Time extends SimpleRecordTable {
 
 	@TableAnnotation(defaultValue = "-1")

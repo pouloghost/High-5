@@ -1,5 +1,10 @@
 package gt.high5.database.model;
 
+/**
+ * @author GT
+ * 
+ *         most common representor for a table in DB
+ */
 public abstract class Table {
 
 	public abstract String getCreator();

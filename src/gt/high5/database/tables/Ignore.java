@@ -5,6 +5,11 @@ import gt.high5.database.model.Table;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.model.TableUtils;
 
+/**
+ * @author GT
+ * 
+ *         ignores the packages in database when recording
+ */
 public class Ignore extends Table {
 
 	@TableAnnotation(defaultValue = "-1")

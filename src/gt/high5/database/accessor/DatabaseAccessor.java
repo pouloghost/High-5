@@ -18,12 +18,35 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.SparseArray;
 
+/**
+ * @author GT
+ * 
+ *         database modifier interface
+ * 
+ *         all sql command are provided by an object representing the table
+ * 
+ *         this is only a wrapper for real DB operation
+ */
 public class DatabaseAccessor {
 	private SQLiteDatabase mDatabase = null;
 	private TableParser mTableParser = null;
 
+	/**
+	 * cached accessor for each xml file
+	 * 
+	 * xml.id -> accessor
+	 */
 	private static SparseArray<SoftReference<DatabaseAccessor>> accessorCache = new SparseArray<SoftReference<DatabaseAccessor>>();
 
+	/**
+	 * for the caller need a TableParser for other usage
+	 * 
+	 * @param context
+	 * @param parser
+	 * @param id
+	 *            R.xml.id
+	 * @return the DatabaseAccessor associated with id
+	 */
 	public static DatabaseAccessor getAccessor(Context context,
 			TableParser parser, int id) {
 		SoftReference<DatabaseAccessor> reference = accessorCache.get(id);
@@ -44,42 +67,53 @@ public class DatabaseAccessor {
 		return accessor;
 	}
 
+	/**
+	 * automatically create a TableParser
+	 * 
+	 * @param context
+	 * @param id
+	 * @return the DatabaseAccessor associated with id
+	 */
 	public static DatabaseAccessor getAccessor(Context context, int id) {
 		TableParser parser = null;
 		try {
 			parser = new TableParser(context.getResources().getXml(id));
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return getAccessor(context, parser, id);
 	}
 
+	/**
+	 * singleton constructor
+	 * 
+	 * @param context
+	 * @param parser
+	 */
 	private DatabaseAccessor(Context context, TableParser parser) {
 		mTableParser = parser;
 		DatabaseManager manager = new DatabaseManager(context, parser);
 		mDatabase = manager.getWritableDatabase();
 	}
 
+	/**
+	 * @return record tables defined in xml
+	 */
 	public List<Class<? extends RecordTable>> getTables() {
 		return mTableParser.getTables();
 	}
 
+	// ---------------------CRUD--------------------------
 	public boolean C(Table table) {
 		String sql = table.C();
 		if (null == sql) {
@@ -89,7 +123,6 @@ public class DatabaseAccessor {
 			mDatabase.execSQL(sql);
 			return true;
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			return false;
 		}
@@ -139,7 +172,6 @@ public class DatabaseAccessor {
 			}
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			return null;
 		}
@@ -154,7 +186,6 @@ public class DatabaseAccessor {
 			mDatabase.execSQL(sql);
 			return true;
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			return false;
 		}
@@ -169,12 +200,17 @@ public class DatabaseAccessor {
 			mDatabase.execSQL(sql);
 			return true;
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			return false;
 		}
 	}
 
+	/**
+	 * increase count of the table
+	 * 
+	 * @param table
+	 * @return whether update works
+	 */
 	public boolean increase(RecordTable table) {
 		String sql = table.increase();
 		if (null == sql) {
@@ -184,7 +220,6 @@ public class DatabaseAccessor {
 			mDatabase.execSQL(sql);
 			return true;
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			return false;
 		}

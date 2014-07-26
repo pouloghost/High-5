@@ -22,6 +22,10 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+/**
+ * @author GT
+ * 
+ */
 @SuppressLint("NewApi")
 public class GridAdapterService extends RemoteViewsService {
 

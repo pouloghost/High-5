@@ -21,6 +21,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		this.parser = parser;
 	}
 
+	/**
+	 * tables defined in record table and other no-record tables
+	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		@SuppressWarnings("unchecked")

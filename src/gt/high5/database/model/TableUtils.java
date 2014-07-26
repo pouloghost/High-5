@@ -13,6 +13,9 @@ public class TableUtils {
 
 	private static boolean isDebugging = true;
 
+	/**
+	 * type from class to sql type
+	 */
 	private static HashMap<Class<?>, String> typeMap = null;
 	static {
 		typeMap = new HashMap<Class<?>, String>();
@@ -23,6 +26,8 @@ public class TableUtils {
 		typeMap.put(double.class, "DOUBLE");
 	}
 
+	// -------------------sql command generators using
+	// reflection----------------------------
 	public static <T> String C(T table, Class<T> base)
 			throws IllegalAccessException, IllegalArgumentException {
 		@SuppressWarnings("unchecked")
@@ -196,9 +201,17 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	/*
+	/**
 	 * implementation using reflection supporting all abstract method with the
 	 * same name
+	 * 
+	 * @param table
+	 * @param base
+	 *            first parent class that should not be cloned in extend
+	 *            hierarchy
+	 * @return a clone of table
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
 	 */
 	public static <T> T clone(T table, Class<T> base)
 			throws InstantiationException, IllegalAccessException {
@@ -359,8 +372,13 @@ public class TableUtils {
 		}
 	}
 
-	/*
+	/**
 	 * should ignore field using general filter
+	 * 
+	 * @param field
+	 * @param forceIgnoreId
+	 *            should ignore id
+	 * @return whether should ignore this field in reflection
 	 */
 	public static boolean shouldIgnoreField(Field field, boolean forceIgnoreId) {
 		if (forceIgnoreId && "id".equalsIgnoreCase(field.getName())) {
@@ -386,6 +404,15 @@ public class TableUtils {
 		return valueString;
 	}
 
+	/**
+	 * get fields from clazz and all its super classes
+	 * 
+	 * @param clazz
+	 * @param base
+	 *            first parent class that should not be reflected in extend
+	 *            hierarchy
+	 * @return all fields
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Field[] getAllFields(Class<? extends T> clazz,
 			Class<T> base) {
