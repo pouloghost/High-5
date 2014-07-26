@@ -57,6 +57,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.ignore_list_layout);
+		setTitle(R.string.ignore_list_manage);
 
 		mIgnoreList = (ListView) findViewById(R.id.ignore_list);
 
@@ -126,7 +127,13 @@ public class MainActivity extends Activity {
 					String textRepresentation) {
 				if (R.id.ignore_list_icon_image == view.getId()
 						&& view instanceof ImageView) {
-					new AsyncImageTask().execute(new Object[] { data, view });
+					AsyncImageTask task = (AsyncImageTask) view.getTag();
+					if (null != task) {
+						task.cancel(true);
+					}
+					task = new AsyncImageTask();
+					task.execute(new Object[] { data, view });
+					view.setTag(task);
 					return true;
 				} else if (R.id.ignore_list_ignore_toggle == view.getId()
 						&& view instanceof ToggleButton) {
