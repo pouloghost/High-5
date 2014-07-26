@@ -2,7 +2,7 @@ package gt.high5.database.accessor;
 
 import gt.high5.activity.MainActivity;
 import gt.high5.database.model.Table;
-import gt.high5.database.tables.Ignores;
+import gt.high5.database.tables.Ignore;
 
 import java.util.ArrayList;
 
@@ -26,7 +26,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		@SuppressWarnings("unchecked")
 		ArrayList<Class<? extends Table>> tablesToInit = (ArrayList<Class<? extends Table>>) parser
 				.getTables().clone();
-		tablesToInit.add(Ignores.class);
+		tablesToInit.add(Ignore.class);
 		for (Class<? extends Table> clazz : tablesToInit) {
 			try {
 				db.execSQL(clazz.newInstance().getCreator());

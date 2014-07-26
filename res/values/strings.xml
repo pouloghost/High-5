@@ -1,5 +1,8 @@
 <resources>
 
     <string name="app_name">High5</string>
+    <string name="ignore_toggle_on">Ignore</string>
+    <string name="ignore_toggle_off">Record</string>
+    <string name="ignore_unknown">Unknown</string>
 
 </resources>

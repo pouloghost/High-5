@@ -6,9 +6,12 @@ import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
+import gt.high5.database.tables.Ignore;
 import gt.high5.database.tables.Total;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -104,6 +107,10 @@ public class WidgetProvider extends AppWidgetProvider {
 			recordCurrentStatus(context);
 		}
 		super.onReceive(context, intent);
+
+		if (isDebugging || MainActivity.isDebugging()) {
+			Log.d(MainActivity.LOG_TAG, this.toString());
+		}
 	}
 
 	@Override
@@ -161,22 +168,8 @@ public class WidgetProvider extends AppWidgetProvider {
 	}
 
 	private void recordCurrentStatus(Context context) {
-		if (null == mAccessor) {
-			return;
-		}
-		if (isDebugging || MainActivity.isDebugging()) {
-			Log.d(MainActivity.LOG_TAG, "action record");
-		}
-		if (null == mActivityManager) {
-			mActivityManager = (ActivityManager) context
-					.getSystemService(Service.ACTIVITY_SERVICE);
-		}
-		ActivityManager.RecentTaskInfo recent = mActivityManager
-				.getRecentTasks(
-						1,
-						ActivityManager.RECENT_IGNORE_UNAVAILABLE
-								| ActivityManager.RECENT_WITH_EXCLUDED).get(0);
-		String packageName = recent.baseIntent.getComponent().getPackageName();
+
+		String packageName = getCurrentPackageName(context);
 		// read total with current package name
 		Total total = new Total();
 		total.setName(packageName);
@@ -233,5 +226,38 @@ public class WidgetProvider extends AppWidgetProvider {
 			}
 		}
 		startInterval(context, RECORD_INTERVAL, getRecordIntent(context));
+	}
+
+	private String getCurrentPackageName(Context context) {
+		if (null == mAccessor) {
+			return null;
+		}
+		if (isDebugging || MainActivity.isDebugging()) {
+			Log.d(MainActivity.LOG_TAG, "action record");
+		}
+		if (null == mActivityManager) {
+			mActivityManager = (ActivityManager) context
+					.getSystemService(Service.ACTIVITY_SERVICE);
+		}
+		ActivityManager.RecentTaskInfo recent = mActivityManager
+				.getRecentTasks(
+						1,
+						ActivityManager.RECENT_IGNORE_UNAVAILABLE
+								| ActivityManager.RECENT_WITH_EXCLUDED).get(0);
+		String packageName = recent.baseIntent.getComponent().getPackageName();
+		// read ignore list
+		Ignore ignoreQuery = new Ignore();
+		ArrayList<Table> ignores = mAccessor.R(ignoreQuery);
+		HashSet<String> ignoredSet = new HashSet<String>();
+		if (null != ignores) {
+			for (Table ignore : ignores) {
+				ignoredSet.add(((Ignore) ignore).getName());
+			}
+		}
+		if (ignoredSet.contains(packageName)) {
+			return null;
+		} else {
+			return packageName;
+		}
 	}
 }

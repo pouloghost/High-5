@@ -34,7 +34,6 @@ public class GridAdapterService extends RemoteViewsService {
 
 	@Override
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
-		// TODO Auto-generated method stub
 		if (MainActivity.isDebugging()) {
 			Log.d(MainActivity.LOG_TAG, "get factory");
 		}
@@ -45,7 +44,6 @@ public class GridAdapterService extends RemoteViewsService {
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			if (isDebugging || MainActivity.isDebugging()) {
 				Log.d(MainActivity.LOG_TAG, "data set size " + apps.size());
 			}
@@ -54,21 +52,18 @@ public class GridAdapterService extends RemoteViewsService {
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
 			return position;
 		}
 
 		@SuppressLint("NewApi")
 		@Override
 		public RemoteViews getLoadingView() {
-			// TODO Auto-generated method stub
 			return new RemoteViews(GridAdapterService.this.getPackageName(),
 					R.layout.widget_loading);
 		}
 
 		@Override
 		public RemoteViews getViewAt(int position) {
-			// TODO Auto-generated method stub
 			if (isDebugging || MainActivity.isDebugging()) {
 				Log.d(MainActivity.LOG_TAG, "view at " + position);
 			}
@@ -79,6 +74,7 @@ public class GridAdapterService extends RemoteViewsService {
 			if (null == mPackageManager) {
 				mPackageManager = context.getPackageManager();
 			}
+			// retrieve application icon and name
 			String packageName = apps.get(position);
 			RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
 					R.layout.widget_item);
@@ -92,11 +88,11 @@ public class GridAdapterService extends RemoteViewsService {
 				remoteViews.setTextViewText(R.id.app_name,
 						mPackageManager.getApplicationLabel(info));
 			} catch (NameNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				remoteViews.setImageViewResource(R.id.app_icon,
 						R.drawable.ic_launcher);
 			}
+			// launch broadcast
 			Intent fillInIntent = new Intent();
 			fillInIntent.putExtra(WidgetProvider.LAUNCH_PACKAGE, packageName);
 			remoteViews.setOnClickFillInIntent(R.id.app_wrapper, fillInIntent);
@@ -105,19 +101,16 @@ public class GridAdapterService extends RemoteViewsService {
 
 		@Override
 		public int getViewTypeCount() {
-			// TODO Auto-generated method stub
 			return 1;
 		}
 
 		@Override
 		public boolean hasStableIds() {
-			// TODO Auto-generated method stub
 			return true;
 		}
 
 		@Override
 		public void onCreate() {
-			// TODO Auto-generated method stub
 			if (MainActivity.isDebugging()) {
 				Log.d(MainActivity.LOG_TAG, "create factory");
 			}
@@ -125,32 +118,26 @@ public class GridAdapterService extends RemoteViewsService {
 
 		@Override
 		public void onDataSetChanged() {
-			// TODO Auto-generated method stub
 			try {
 				apps = getHigh5();
 				if (isDebugging || MainActivity.isDebugging()) {
 					Log.d(MainActivity.LOG_TAG, "data set changed");
 				}
 			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
 		@Override
 		public void onDestroy() {
-			// TODO Auto-generated method stub
-
 		}
 
 	}
 
 	private ArrayList<String> getHigh5() throws InstantiationException,
 			IllegalAccessException {
-		// TODO Auto-generated method stub
 		if (null == mAccessor) {
 			if (isDebugging || MainActivity.isDebugging()) {
 				Log.d(MainActivity.LOG_TAG, "get a new accessor");

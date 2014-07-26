@@ -5,7 +5,7 @@ import gt.high5.database.model.Table;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.model.TableUtils;
 
-public class Ignores extends Table {
+public class Ignore extends Table {
 
 	@TableAnnotation(defaultValue = "-1")
 	private int id = -1;
