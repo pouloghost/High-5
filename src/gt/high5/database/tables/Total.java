@@ -14,6 +14,10 @@ import android.content.Context;
  * 
  *         running statics for a certain package
  */
+/**
+ * @author GT
+ * 
+ */
 public class Total extends RecordTable {
 
 	@TableAnnotation(defaultValue = "-1")
@@ -192,12 +196,22 @@ public class Total extends RecordTable {
 	}
 
 	/**
+	 * set P(Status|CurrentApp) or P(Current)
+	 * 
 	 * naive bayes
 	 * 
 	 * @param count
+	 *            other status count
+	 * 
+	 * @param isAll
+	 *            is setting P(Current)
 	 */
-	public void setPossibility(int count) {
-		this.possibility *= count / this.count;
+	public void setPossibility(int count, boolean isAll) {
+		if (isAll) {
+			this.possibility *= this.count / count;
+		} else {
+			this.possibility *= count / this.count;
+		}
 	}
 
 }

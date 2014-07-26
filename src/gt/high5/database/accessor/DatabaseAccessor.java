@@ -133,8 +133,9 @@ public class DatabaseAccessor {
 		if (null == sql) {
 			return null;
 		}
+		Cursor cursor = null;
 		try {
-			Cursor cursor = mDatabase.rawQuery(sql, null);
+			cursor = mDatabase.rawQuery(sql, null);
 			ArrayList<Table> result = new ArrayList<Table>();
 			if (cursor.getCount() > 0) {
 				cursor.moveToFirst();
@@ -174,6 +175,10 @@ public class DatabaseAccessor {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		} finally {
+			if (null != cursor) {
+				cursor.close();
+			}
 		}
 	}
 
@@ -203,6 +208,21 @@ public class DatabaseAccessor {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	// ----------------------sql command interface-------------------
+	public void excute(String sql) {
+		mDatabase.execSQL(sql);
+	}
+
+	/**
+	 * raw query remember to close cursor
+	 * 
+	 * @param sql
+	 * @return
+	 */
+	public Cursor query(String sql) {
+		return mDatabase.rawQuery(sql, null);
 	}
 
 	/**

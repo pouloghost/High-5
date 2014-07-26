@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -153,11 +154,20 @@ public class GridAdapterService extends RemoteViewsService {
 		}
 		if (null != mAccessor) {
 			apps.clear();
+			// read all packages
 			Total queryTotal = new Total();
 			ArrayList<Table> allTotals = mAccessor.R(queryTotal);
+			// read all counts in total
+			String column = "SUM(count)";
+			Cursor cursor = mAccessor.query("SELECT " + column + " FROM "
+					+ Total.class.getSimpleName());
+			cursor.moveToFirst();
+			int all = cursor.getInt(cursor.getColumnIndex(column));
+
 			List<Class<? extends RecordTable>> tables = mAccessor.getTables();
 			if (null != allTotals) {
 				for (Table total : allTotals) {
+					((Total) total).setPossibility(all, true);
 					for (Class<? extends RecordTable> clazz : tables) {
 						RecordTable queryTable = clazz.newInstance();
 						queryTable.initDefault(this);
@@ -165,7 +175,7 @@ public class GridAdapterService extends RemoteViewsService {
 						if (null != allTables) {
 							((Total) total)
 									.setPossibility(((RecordTable) allTables
-											.get(0)).getCount());
+											.get(0)).getCount(), false);
 						}
 					}
 				}

@@ -31,6 +31,7 @@ public class Time extends SimpleRecordTable {
 		Calendar calendar = Calendar.getInstance();
 		int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60
 				+ calendar.get(Calendar.MINUTE);
-		region = minutes / (WidgetProvider.UPDATE_INTERVAL / 1000 / 60);
+		int devition = (WidgetProvider.UPDATE_INTERVAL / 1000 / 60);
+		region = minutes / devition;
 	}
 }

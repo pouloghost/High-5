@@ -37,7 +37,7 @@ import android.widget.RemoteViews;
 @SuppressLint("NewApi")
 public class WidgetProvider extends AppWidgetProvider {
 
-	private boolean isDebugging = true;
+	private boolean isDebugging = false;
 
 	public static final String LAUNCH_PACKAGE = "gt.high5.launch.package";
 	public static final String UPDATE_PACKAGE = "gt.high5.update.package";
@@ -45,10 +45,12 @@ public class WidgetProvider extends AppWidgetProvider {
 	private static final int LAUNCH_REQ = 0;
 	private static final String LAUNCH_ACT = "gt.high5.launch";
 	public static final int UPDATE_INTERVAL = 15 * 60 * 1000;
+	// public static final int UPDATE_INTERVAL = 1000;
 
 	private static final int RECORD_REQ = 1;
 	private static final String RECORD_ACT = "gt.high5.record";
 	public static final int RECORD_INTERVAL = 60 * 1000;
+	// public static final int RECORD_INTERVAL = 1000;
 
 	private static DatabaseAccessor mAccessor = null;
 
@@ -66,22 +68,16 @@ public class WidgetProvider extends AppWidgetProvider {
 					R.xml.tables);
 			recordCurrentStatus(context);
 		} catch (ClassNotFoundException e) {
-
 			e.printStackTrace();
 		} catch (InstantiationException e) {
-
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-
 			e.printStackTrace();
 		} catch (NotFoundException e) {
-
 			e.printStackTrace();
 		} catch (XmlPullParserException e) {
-
 			e.printStackTrace();
 		} catch (IOException e) {
-
 			e.printStackTrace();
 		}
 	}
@@ -111,10 +107,6 @@ public class WidgetProvider extends AppWidgetProvider {
 			recordCurrentStatus(context);
 		}
 		super.onReceive(context, intent);
-
-		if (isDebugging || MainActivity.isDebugging()) {
-			Log.d(MainActivity.LOG_TAG, this.toString());
-		}
 	}
 
 	@Override
@@ -174,61 +166,63 @@ public class WidgetProvider extends AppWidgetProvider {
 	private void recordCurrentStatus(Context context) {
 
 		String packageName = getCurrentPackageName(context);
-		if (null == packageName) {
-			return;
-		}
-		// read total with current package name
-		Total total = new Total();
-		total.setName(packageName);
-		List<Table> list = mAccessor.R(total);
-		if (null == list) {// create a new one for new package
-			total.setCount(1);
-			mAccessor.C(total);
-			list = mAccessor.R(total);
-		}
-		List<Class<? extends RecordTable>> clazzes = mAccessor.getTables();
-		if (null != list) {
-			total = (Total) list.get(0);
-			if ((isDebugging || MainActivity.isDebugging())) {
-				Log.d(MainActivity.LOG_TAG, "total " + total.getName());
-			}
-			// each type of record
-			for (Class<? extends RecordTable> clazz : clazzes) {
-				if (isDebugging || MainActivity.isDebugging()) {
-					Log.d(MainActivity.LOG_TAG,
-							"updating class " + clazz.getSimpleName());
-				}
-				try {
-					// read an existing record with the current pid and status
-					RecordTable table = clazz.newInstance();
-					table.setPid(total.getId());
-					table.currentQueryStatus(context);
-					list = mAccessor.R(table);
 
-					if (null == list) {
-						if (isDebugging || MainActivity.isDebugging()) {
-							Log.d(MainActivity.LOG_TAG, "create new "
-									+ table.getClass().getSimpleName());
-						}
-						table.initDefault(context);
+		if (null != packageName) {
+			// read total with current package name
+			Total total = new Total();
+			total.setName(packageName);
+			List<Table> list = mAccessor.R(total);
+			if (null == list) {// create a new one for new package
+				total.setCount(1);
+				mAccessor.C(total);
+				list = mAccessor.R(total);
+			}
+			// record
+			List<Class<? extends RecordTable>> clazzes = mAccessor.getTables();
+			if (null != list) {
+				total = (Total) list.get(0);
+				if ((isDebugging || MainActivity.isDebugging())) {
+					Log.d(MainActivity.LOG_TAG, "total " + total.getName());
+				}
+				// each type of record
+				for (Class<? extends RecordTable> clazz : clazzes) {
+					if (isDebugging || MainActivity.isDebugging()) {
+						Log.d(MainActivity.LOG_TAG,
+								"updating class " + clazz.getSimpleName());
+					}
+					try {
+						// read an existing record with the current pid and
+						// status
+						RecordTable table = clazz.newInstance();
 						table.setPid(total.getId());
-						mAccessor.C(table);
+						table.currentQueryStatus(context);
 						list = mAccessor.R(table);
-					}
-					if (null != list) {
-						if (isDebugging || MainActivity.isDebugging()) {
-							Log.d(MainActivity.LOG_TAG, "increase old "
-									+ table.getClass().getSimpleName());
+
+						if (null == list) {
+							if (isDebugging || MainActivity.isDebugging()) {
+								Log.d(MainActivity.LOG_TAG, "create new "
+										+ table.getClass().getSimpleName());
+							}
+							table.initDefault(context);
+							table.setPid(total.getId());
+							mAccessor.C(table);
+							list = mAccessor.R(table);
 						}
-						table = (RecordTable) list.get(0);
-						RecordTable select = table.clone();
-						table.record(context);
-						mAccessor.U(select, table);
+						if (null != list) {
+							if (isDebugging || MainActivity.isDebugging()) {
+								Log.d(MainActivity.LOG_TAG, "increase old "
+										+ table.getClass().getSimpleName());
+							}
+							table = (RecordTable) list.get(0);
+							RecordTable select = table.clone();
+							table.record(context);
+							mAccessor.U(select, table);
+						}
+					} catch (InstantiationException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
 					}
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
 				}
 			}
 		}

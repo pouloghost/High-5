@@ -11,7 +11,7 @@ import android.util.Log;
 
 public class TableUtils {
 
-	private static boolean isDebugging = true;
+	private static boolean isDebugging = false;
 
 	/**
 	 * type from class to sql type
