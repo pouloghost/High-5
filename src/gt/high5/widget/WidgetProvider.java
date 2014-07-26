@@ -44,11 +44,11 @@ public class WidgetProvider extends AppWidgetProvider {
 
 	private static final int LAUNCH_REQ = 0;
 	private static final String LAUNCH_ACT = "gt.high5.launch";
-	private static final int UPDATE_INTERVAL = 1000; // 15 * 60 * 1000;
+	private static final int UPDATE_INTERVAL = 15 * 60 * 1000;
 
 	private static final int RECORD_REQ = 1;
 	private static final String RECORD_ACT = "gt.high5.record";
-	public static final int RECORD_INTERVAL = 1000;// 15 * 60 * 1000;
+	public static final int RECORD_INTERVAL = 15 * 60 * 1000;
 
 	private static DatabaseAccessor mAccessor = null;
 
