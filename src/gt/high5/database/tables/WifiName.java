@@ -3,6 +3,7 @@ package gt.high5.database.tables;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
 import android.content.Context;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
 /**
@@ -27,10 +28,17 @@ public class WifiName extends SimpleRecordTable {
 
 	@Override
 	public void currentQueryStatus(Context context) {
-		// TODO Auto-generated method stub
 		WifiManager manager = (WifiManager) context
 				.getSystemService(Context.WIFI_SERVICE);
-		setBssid(manager.getConnectionInfo().getBSSID());
+		WifiInfo info = manager.getConnectionInfo();
+		String bssid = info.getBSSID();
+		if (null == bssid) {
+			if (manager.isWifiEnabled()) {
+				bssid = "ON";
+			} else {
+				bssid = "OFF";
+			}
+		}
+		setBssid(bssid);
 	}
-
 }

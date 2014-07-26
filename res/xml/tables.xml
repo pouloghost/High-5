@@ -2,10 +2,11 @@
 <tables
     file="statics.db"
     pack="gt.high5.database.tables"
-    version="2" >
+    version="1" >
 
     <table clazz="Total" />
     <table clazz="Time" />
     <table clazz="WifiName" />
+    <table clazz="Network" />
 
 </tables>
