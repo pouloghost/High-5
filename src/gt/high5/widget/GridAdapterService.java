@@ -5,10 +5,12 @@ import gt.high5.activity.MainActivity;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
+import gt.high5.database.tables.Ignore;
 import gt.high5.database.tables.Total;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -170,9 +172,23 @@ public class GridAdapterService extends RemoteViewsService {
 
 				Collections.sort(allTotals, Total.getComparator());
 
-				int size = Math.min(5, allTotals.size());
-				for (int i = 0; i < size; ++i) {
-					apps.add(((Total) allTotals.get(i)).getName());
+				Ignore ignoreQuery = new Ignore();
+				ArrayList<Table> ignores = mAccessor.R(ignoreQuery);
+				HashSet<String> ignoredSet = new HashSet<String>();
+				if (null != ignores) {
+					for (Table ignore : ignores) {
+						ignoredSet.add(((Ignore) ignore).getName());
+					}
+				}
+
+				int listSize = allTotals.size();
+				int size = Math.min(5, listSize);
+				for (int i = 0, j = 0; j < size && i < listSize; ++i) {
+					String name = ((Total) allTotals.get(i)).getName();
+					if (!ignoredSet.contains(name)) {
+						apps.add(name);
+						++j;
+					}
 				}
 			}
 		} else {
