@@ -7,7 +7,8 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 
 import android.support.v4.util.ArrayMap;
-import android.util.Log;
+
+import com.github.curioustechizen.xlog.Log;
 
 public class TableUtils {
 

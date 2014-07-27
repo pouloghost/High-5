@@ -27,8 +27,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.RemoteViews;
+
+import com.github.curioustechizen.xlog.Log;
 
 /**
  * @author GT
@@ -37,7 +38,7 @@ import android.widget.RemoteViews;
 @SuppressLint("NewApi")
 public class WidgetProvider extends AppWidgetProvider {
 
-	private boolean isDebugging = false;
+	private boolean isDebugging = true;
 
 	public static final String LAUNCH_PACKAGE = "gt.high5.launch.package";
 	public static final String UPDATE_PACKAGE = "gt.high5.update.package";

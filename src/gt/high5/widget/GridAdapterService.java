@@ -21,9 +21,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import com.github.curioustechizen.xlog.Log;
 
 /**
  * @author GT
@@ -32,7 +33,7 @@ import android.widget.RemoteViewsService;
 @SuppressLint("NewApi")
 public class GridAdapterService extends RemoteViewsService {
 
-	private boolean isDebugging = false;
+	private boolean isDebugging = true;
 
 	private static DatabaseAccessor mAccessor = null;
 
@@ -181,6 +182,18 @@ public class GridAdapterService extends RemoteViewsService {
 				}
 
 				Collections.sort(allTotals, Total.getComparator());
+
+				if (isDebugging || MainActivity.isDebugging()) {
+					StringBuilder sb = new StringBuilder();
+					for (Table total : allTotals) {
+						sb.append(((Total) total).getName());
+						sb.append(":");
+						sb.append(((Total) total).getCount());
+						sb.append("\n");
+					}
+
+					Log.d(MainActivity.LOG_TAG, "after sort " + sb.toString());
+				}
 
 				Ignore ignoreQuery = new Ignore();
 				ArrayList<Table> ignores = mAccessor.R(ignoreQuery);
