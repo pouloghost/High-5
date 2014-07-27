@@ -188,7 +188,7 @@ public class GridAdapterService extends RemoteViewsService {
 					for (Table total : allTotals) {
 						sb.append(((Total) total).getName());
 						sb.append(":");
-						sb.append(((Total) total).getCount());
+						sb.append(((Total) total).getPossibility());
 						sb.append("\n");
 					}
 
