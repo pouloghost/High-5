@@ -171,12 +171,16 @@ public class GridAdapterService extends RemoteViewsService {
 					((Total) total).setPossibility(all, true);
 					for (Class<? extends RecordTable> clazz : tables) {
 						RecordTable queryTable = clazz.newInstance();
-						queryTable.initDefault(this);
+						queryTable.currentQueryStatus(this);
 						ArrayList<Table> allTables = mAccessor.R(queryTable);
 						if (null != allTables) {
 							((Total) total)
 									.setPossibility(((RecordTable) allTables
 											.get(0)).getCount(), false);
+						} else {
+							// no existing record meaning user won't use this
+							// app in current condition
+							((Total) total).setPossibility(0, false);
 						}
 					}
 				}
