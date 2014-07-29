@@ -188,7 +188,7 @@ public class Total extends RecordTable {
 
 	@Override
 	public void setPid(int pid) {
-
+		this.id = pid;
 	}
 
 	public float getPossibility() {
