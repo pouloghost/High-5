@@ -15,6 +15,7 @@ public class High5Application extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		//init log file
 		android.util.Log.d(MainActivity.LOG_TAG, "create application");
 		if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
 				.getExternalStorageState())) {

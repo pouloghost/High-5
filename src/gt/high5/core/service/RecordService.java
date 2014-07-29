@@ -21,13 +21,18 @@ import android.content.res.Resources.NotFoundException;
 
 import com.github.curioustechizen.xlog.Log;
 
+/**
+ * @author ayi.zty
+ * 
+ *         service for record current state
+ */
 public class RecordService {
 
 	private boolean isDebugging = false;
 
 	private ActivityManager mActivityManager = null;
 	private DatabaseAccessor mAccessor = null;
-
+	// singleton
 	private static RecordService instance = null;
 
 	public static RecordService getRecordService(Context context)
@@ -48,6 +53,12 @@ public class RecordService {
 		mAccessor = DatabaseAccessor.getAccessor(context, parser, R.xml.tables);
 	}
 
+	/**
+	 * record current status
+	 * 
+	 * @param context
+	 *            application context for accessing system state
+	 */
 	public void record(Context context) {
 		String packageName = getCurrentPackageName(context);
 

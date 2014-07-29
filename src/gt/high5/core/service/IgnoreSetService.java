@@ -11,6 +11,11 @@ import java.util.HashSet;
 
 import android.content.Context;
 
+/**
+ * @author ayi.zty
+ * 
+ *         a service class to access and cache ignore set
+ */
 public class IgnoreSetService {
 
 	private boolean isDebugging = true;
@@ -38,6 +43,11 @@ public class IgnoreSetService {
 		}
 	}
 
+	/**
+	 * get ignore set, when not properly initialized may return null
+	 * 
+	 * @return ignore set
+	 */
 	public HashSet<String> getIgnoreSet() {
 		if (null == mAccessor) {
 			return null;
@@ -45,6 +55,11 @@ public class IgnoreSetService {
 		return getIgnoreSet(mAccessor);
 	}
 
+	/**
+	 * get ignore set always return something, empty set at least
+	 * 
+	 * @return ignore set
+	 */
 	public HashSet<String> getIgnoreSet(DatabaseAccessor accessor) {
 		if (null == mIgnoreSet) {
 			mIgnoreSet = new HashSet<String>();
@@ -59,6 +74,15 @@ public class IgnoreSetService {
 		return mIgnoreSet;
 	}
 
+	/**
+	 * change the status of package {@value name}, ignored or record
+	 * 
+	 * @param name
+	 *            package name
+	 * @param ignored
+	 *            current state of this package
+	 * @return updated ignore set
+	 */
 	public HashSet<String> update(String name, boolean ignored) {
 		if (null == mIgnoreSet) {
 			getIgnoreSet();

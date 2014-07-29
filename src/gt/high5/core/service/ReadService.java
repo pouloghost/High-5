@@ -17,6 +17,11 @@ import android.database.Cursor;
 
 import com.github.curioustechizen.xlog.Log;
 
+/**
+ * @author ayi.zty
+ * 
+ *         service for read records without specified type
+ */
 public class ReadService {
 
 	private boolean isDebugging = true;
@@ -41,6 +46,17 @@ public class ReadService {
 		}
 	}
 
+	/**
+	 * get highest 5 possible package
+	 * 
+	 * @param context
+	 *            context to access system state
+	 * @param last
+	 *            last highest 5 package
+	 * @return high 5 package
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
 	public ArrayList<String> getHigh5(Context context, ArrayList<String> last)
 			throws InstantiationException, IllegalAccessException {
 

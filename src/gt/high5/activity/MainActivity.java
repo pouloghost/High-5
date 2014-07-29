@@ -42,10 +42,11 @@ public class MainActivity extends Activity {
 
 	private ListView mIgnoreList = null;
 	private SimpleAdapter mAdapter = null;
-	private ProgressDialog mDialog = null;
-	private PackageManager mPackageManager = null;
-
 	private ArrayList<HashMap<String, Object>> mDataList = null;
+	
+	private ProgressDialog mDialog = null;
+	
+	private PackageManager mPackageManager = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
