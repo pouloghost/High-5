@@ -5,7 +5,6 @@ import gt.high5.activity.MainActivity;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
-import gt.high5.database.tables.Ignore;
 import gt.high5.database.tables.Total;
 
 import java.util.ArrayList;
@@ -21,10 +20,19 @@ import com.github.curioustechizen.xlog.Log;
 public class ReadService {
 
 	private boolean isDebugging = true;
+	// singleton
+	private static ReadService instance = null;
+
+	public static ReadService getReadService(Context context) {
+		if (null == instance) {
+			instance = new ReadService(context);
+		}
+		return instance;
+	}
 
 	private DatabaseAccessor mAccessor = null;
 
-	public ReadService(Context context) {
+	private ReadService(Context context) {
 		if (null == mAccessor) {
 			if (isDebugging || MainActivity.isDebugging()) {
 				// Log.d(MainActivity.LOG_TAG, "get a new accessor");
@@ -81,14 +89,8 @@ public class ReadService {
 					Log.d(MainActivity.LOG_TAG, "after sort " + sb.toString());
 				}
 
-				Ignore ignoreQuery = new Ignore();
-				ArrayList<Table> ignores = mAccessor.R(ignoreQuery);
-				HashSet<String> ignoredSet = new HashSet<String>();
-				if (null != ignores) {
-					for (Table ignore : ignores) {
-						ignoredSet.add(((Ignore) ignore).getName());
-					}
-				}
+				HashSet<String> ignoredSet = IgnoreSetService
+						.getIgnoreSetService(context).getIgnoreSet(mAccessor);
 
 				int listSize = allTotals.size();
 				int size = Math.min(5, listSize);

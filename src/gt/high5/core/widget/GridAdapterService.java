@@ -30,7 +30,6 @@ public class GridAdapterService extends RemoteViewsService {
 	private ArrayList<String> apps = new ArrayList<String>();
 
 	private static PackageManager mPackageManager = null;
-	private static ReadService mReadService = null;
 
 	@Override
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -114,15 +113,13 @@ public class GridAdapterService extends RemoteViewsService {
 			if (MainActivity.isDebugging()) {
 				// Log.d(MainActivity.LOG_TAG, "create factory");
 			}
-			if (null == mReadService) {
-				mReadService = new ReadService(getApplicationContext());
-			}
 		}
 
 		@Override
 		public void onDataSetChanged() {
 			try {
-				apps = mReadService.getHigh5(getApplicationContext(), apps);
+				apps = ReadService.getReadService(getApplicationContext())
+						.getHigh5(getApplicationContext(), apps);
 				if (isDebugging || MainActivity.isDebugging()) {
 					// Log.d(MainActivity.LOG_TAG, "data set changed");
 				}

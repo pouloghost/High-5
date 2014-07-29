@@ -6,11 +6,9 @@ import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
-import gt.high5.database.tables.Ignore;
 import gt.high5.database.tables.Total;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -30,7 +28,19 @@ public class RecordService {
 	private ActivityManager mActivityManager = null;
 	private DatabaseAccessor mAccessor = null;
 
-	public RecordService(Context context) throws ClassNotFoundException,
+	private static RecordService instance = null;
+
+	public static RecordService getRecordService(Context context)
+			throws ClassNotFoundException, InstantiationException,
+			IllegalAccessException, NotFoundException, XmlPullParserException,
+			IOException {
+		if (null == instance) {
+			instance = new RecordService(context);
+		}
+		return instance;
+	}
+
+	private RecordService(Context context) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException, NotFoundException,
 			XmlPullParserException, IOException {
 		TableParser parser = new TableParser(context.getResources().getXml(
@@ -120,14 +130,8 @@ public class RecordService {
 				.get(0);
 		String packageName = recent.baseIntent.getComponent().getPackageName();
 		// read ignore list
-		Ignore ignoreQuery = new Ignore();
-		ArrayList<Table> ignores = mAccessor.R(ignoreQuery);
-		HashSet<String> ignoredSet = new HashSet<String>();
-		if (null != ignores) {
-			for (Table ignore : ignores) {
-				ignoredSet.add(((Ignore) ignore).getName());
-			}
-		}
+		HashSet<String> ignoredSet = IgnoreSetService.getIgnoreSetService(
+				context).getIgnoreSet();
 		if (ignoredSet.contains(packageName)) {
 			return null;
 		} else {

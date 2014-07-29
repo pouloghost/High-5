@@ -1,9 +1,7 @@
 package gt.high5.activity;
 
 import gt.high5.R;
-import gt.high5.database.accessor.DatabaseAccessor;
-import gt.high5.database.model.Table;
-import gt.high5.database.tables.Ignore;
+import gt.high5.core.service.IgnoreSetService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,9 +44,7 @@ public class MainActivity extends Activity {
 	private SimpleAdapter mAdapter = null;
 	private ProgressDialog mDialog = null;
 	private PackageManager mPackageManager = null;
-	private DatabaseAccessor mAccessor = null;
 
-	private HashSet<String> mIgnoredSet = new HashSet<String>();
 	private ArrayList<HashMap<String, Object>> mDataList = null;
 
 	@Override
@@ -93,14 +89,6 @@ public class MainActivity extends Activity {
 
 			mDataList.add(data);
 		}
-		// load ignore list
-		Ignore ignoreQuery = new Ignore();
-		ArrayList<Table> ignores = mAccessor.R(ignoreQuery);
-		if (null != ignores) {
-			for (Table ignore : ignores) {
-				mIgnoredSet.add(((Ignore) ignore).getName());
-			}
-		}
 
 		return mDataList;
 	}
@@ -117,9 +105,11 @@ public class MainActivity extends Activity {
 				KEYS.PACKAGE.toString(), KEYS.IGNORED.toString() };
 		int[] to = { R.id.ignore_list_icon_image, R.id.ignore_list_app_name,
 				R.id.ignore_list_package_name, R.id.ignore_list_ignore_toggle };
-
 		mAdapter = new SimpleAdapter(getApplicationContext(), data,
 				R.layout.ignore_list_item, from, to);
+
+		final HashSet<String> ignoreSet = IgnoreSetService.getIgnoreSetService(
+				getApplicationContext()).getIgnoreSet();
 		mAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
 
 			@Override
@@ -137,7 +127,10 @@ public class MainActivity extends Activity {
 					return true;
 				} else if (R.id.ignore_list_ignore_toggle == view.getId()
 						&& view instanceof ToggleButton) {
-					((ToggleButton) view).setChecked(mIgnoredSet.contains(data));
+					if (null != ignoreSet) {
+						((ToggleButton) view).setChecked(ignoreSet
+								.contains(data));
+					}
 					return true;
 				}
 				return false;
@@ -157,19 +150,13 @@ public class MainActivity extends Activity {
 							// get package name
 							String name = (String) mDataList.get(pos).get(
 									KEYS.PACKAGE.toString());
-							Ignore ignoreQuery = new Ignore();
-							ignoreQuery.setName(name);
-							// change ignore status
 							ToggleButton toggle = (ToggleButton) view
 									.findViewById(R.id.ignore_list_ignore_toggle);
-							if (toggle.isChecked()) {// in database
-								mAccessor.D(ignoreQuery);
-								mIgnoredSet.remove(name);
-							} else {
-								mAccessor.C(ignoreQuery);
-								mIgnoredSet.add(name);
-							}
-							toggle.setChecked(mIgnoredSet.contains(name));
+							HashSet<String> ignoreSet = IgnoreSetService
+									.getIgnoreSetService(
+											getApplicationContext()).update(
+											name, toggle.isChecked());
+							toggle.setChecked(ignoreSet.contains(name));
 							// update
 							// mAdapter.notifyDataSetChanged();
 						}
@@ -205,8 +192,6 @@ public class MainActivity extends Activity {
 			mDialog.show();
 
 			mPackageManager = getPackageManager();
-			mAccessor = DatabaseAccessor.getAccessor(getApplicationContext(),
-					R.xml.tables);
 		}
 
 		@Override

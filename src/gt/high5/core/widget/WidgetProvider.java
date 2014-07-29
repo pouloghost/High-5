@@ -43,31 +43,12 @@ public class WidgetProvider extends AppWidgetProvider {
 	// public static final int RECORD_INTERVAL = 60 * 1000;
 	public static final int RECORD_INTERVAL = UPDATE_INTERVAL / 15;
 
-	private static RecordService mRecordService = null;
-
 	@Override
 	public void onEnabled(Context context) {
 
 		super.onEnabled(context);
 		// start up all recording service
-		try {
-			if (null == mRecordService) {
-				mRecordService = new RecordService(context);
-			}
-			recordCurrentStatus(context);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (NotFoundException e) {
-			e.printStackTrace();
-		} catch (XmlPullParserException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		recordCurrentStatus(context);
 	}
 
 	@Override
@@ -80,7 +61,6 @@ public class WidgetProvider extends AppWidgetProvider {
 		// shut down all recording service
 		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
 				.cancel(getUpdateIntent(context, null));
-		mRecordService = null;
 	}
 
 	@Override
@@ -152,12 +132,15 @@ public class WidgetProvider extends AppWidgetProvider {
 	}
 
 	private void recordCurrentStatus(Context context) {
-		if (null == mRecordService) {
-			// not well initialized
-			return;
-		}
-		mRecordService.record(context);
+		try {
+			RecordService.getRecordService(context).record(context);
 
-		startInterval(context, RECORD_INTERVAL, getRecordIntent(context));
+			startInterval(context, RECORD_INTERVAL, getRecordIntent(context));
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | NotFoundException
+				| XmlPullParserException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
