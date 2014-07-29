@@ -208,9 +208,9 @@ public class Total extends RecordTable {
 	 */
 	public void setPossibility(int count, boolean isAll) {
 		if (isAll) {
-			this.possibility *= this.count / count;
+			this.possibility *= (float) this.count / count;
 		} else {
-			this.possibility *= count / this.count;
+			this.possibility *= (float) count / this.count;
 		}
 	}
 
