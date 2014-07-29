@@ -47,9 +47,9 @@ public class IgnoreSetService {
 
 	public HashSet<String> getIgnoreSet(DatabaseAccessor accessor) {
 		if (null == mIgnoreSet) {
+			mIgnoreSet = new HashSet<String>();
 			Ignore ignoreQuery = new Ignore();
 			ArrayList<Table> ignores = accessor.R(ignoreQuery);
-			mIgnoreSet.clear();
 			if (null != ignores) {
 				for (Table ignore : ignores) {
 					mIgnoreSet.add(((Ignore) ignore).getName());
@@ -60,6 +60,9 @@ public class IgnoreSetService {
 	}
 
 	public HashSet<String> update(String name, boolean ignored) {
+		if (null == mIgnoreSet) {
+			getIgnoreSet();
+		}
 		Ignore ignoreQuery = new Ignore();
 		ignoreQuery.setName(name);
 		// change ignore status
