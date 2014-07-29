@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".widget.WidgetProvider" >
+        <receiver android:name="gt.high5.core.widget.WidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.ACTION_APPWIDGET_DISABLED" />
@@ -48,7 +48,7 @@
         </receiver>
 
         <service
-            android:name=".widget.GridAdapterService"
+            android:name="gt.high5.core.widget.GridAdapterService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
