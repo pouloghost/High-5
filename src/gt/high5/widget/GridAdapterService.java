@@ -53,7 +53,7 @@ public class GridAdapterService extends RemoteViewsService {
 		@Override
 		public int getCount() {
 			if (isDebugging || MainActivity.isDebugging()) {
-				Log.d(MainActivity.LOG_TAG, "data set size " + apps.size());
+				// Log.d(MainActivity.LOG_TAG, "data set size " + apps.size());
 			}
 			return apps.size();
 		}
@@ -73,7 +73,7 @@ public class GridAdapterService extends RemoteViewsService {
 		@Override
 		public RemoteViews getViewAt(int position) {
 			if (isDebugging || MainActivity.isDebugging()) {
-				Log.d(MainActivity.LOG_TAG, "view at " + position);
+				// Log.d(MainActivity.LOG_TAG, "view at " + position);
 			}
 			if (apps.size() < position) {
 				return null;
@@ -120,7 +120,7 @@ public class GridAdapterService extends RemoteViewsService {
 		@Override
 		public void onCreate() {
 			if (MainActivity.isDebugging()) {
-				Log.d(MainActivity.LOG_TAG, "create factory");
+				// Log.d(MainActivity.LOG_TAG, "create factory");
 			}
 		}
 
@@ -129,7 +129,7 @@ public class GridAdapterService extends RemoteViewsService {
 			try {
 				apps = getHigh5();
 				if (isDebugging || MainActivity.isDebugging()) {
-					Log.d(MainActivity.LOG_TAG, "data set changed");
+					// Log.d(MainActivity.LOG_TAG, "data set changed");
 				}
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -148,7 +148,7 @@ public class GridAdapterService extends RemoteViewsService {
 			IllegalAccessException {
 		if (null == mAccessor) {
 			if (isDebugging || MainActivity.isDebugging()) {
-				Log.d(MainActivity.LOG_TAG, "get a new accessor");
+				// Log.d(MainActivity.LOG_TAG, "get a new accessor");
 			}
 			mAccessor = DatabaseAccessor.getAccessor(getApplicationContext(),
 					R.xml.tables);
@@ -174,9 +174,8 @@ public class GridAdapterService extends RemoteViewsService {
 						queryTable.currentQueryStatus(this);
 						ArrayList<Table> allTables = mAccessor.R(queryTable);
 						if (null != allTables) {
-							((Total) total)
-									.setPossibility(((RecordTable) allTables
-											.get(0)).getCount(), false);
+							((Total) total).setPossibility(
+									((RecordTable) total).getCount(), false);
 						} else {
 							// no existing record meaning user won't use this
 							// app in current condition
@@ -193,7 +192,7 @@ public class GridAdapterService extends RemoteViewsService {
 						sb.append(((Total) total).getName());
 						sb.append(":");
 						sb.append(((Total) total).getPossibility());
-						sb.append("\n");
+						sb.append("\t");
 					}
 
 					Log.d(MainActivity.LOG_TAG, "after sort " + sb.toString());

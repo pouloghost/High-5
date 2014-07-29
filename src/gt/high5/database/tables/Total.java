@@ -36,8 +36,9 @@ public class Total extends RecordTable {
 
 		@Override
 		public int compare(Table arg0, Table arg1) {
-			return (int) (((Total) arg1).getPossibility() - ((Total) arg0)
-					.getPossibility());
+			float p0 = ((Total) arg0).getPossibility();
+			float p1 = ((Total) arg1).getPossibility();
+			return p1 > p0 ? 1 : p1 == p0 ? 0 : -1;
 		}
 	};
 

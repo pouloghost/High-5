@@ -38,7 +38,7 @@ import com.github.curioustechizen.xlog.Log;
 @SuppressLint("NewApi")
 public class WidgetProvider extends AppWidgetProvider {
 
-	private boolean isDebugging = true;
+	private boolean isDebugging = false;
 
 	public static final String LAUNCH_PACKAGE = "gt.high5.launch.package";
 	public static final String UPDATE_PACKAGE = "gt.high5.update.package";
@@ -46,12 +46,12 @@ public class WidgetProvider extends AppWidgetProvider {
 	private static final int LAUNCH_REQ = 0;
 	private static final String LAUNCH_ACT = "gt.high5.launch";
 	public static final int UPDATE_INTERVAL = 15 * 60 * 1000;
-	// public static final int UPDATE_INTERVAL = 1000;
+	// public static final int UPDATE_INTERVAL = 15 * 1000;
 
 	private static final int RECORD_REQ = 1;
 	private static final String RECORD_ACT = "gt.high5.record";
-	public static final int RECORD_INTERVAL = 60 * 1000;
-	// public static final int RECORD_INTERVAL = 1000;
+	// public static final int RECORD_INTERVAL = 60 * 1000;
+	public static final int RECORD_INTERVAL = UPDATE_INTERVAL / 15;
 
 	private static DatabaseAccessor mAccessor = null;
 
@@ -169,12 +169,15 @@ public class WidgetProvider extends AppWidgetProvider {
 		String packageName = getCurrentPackageName(context);
 
 		if (null != packageName) {
+			if (true || (isDebugging || MainActivity.isDebugging())) {
+				Log.d(MainActivity.LOG_TAG, "current package " + packageName);
+			}
 			// read total with current package name
 			Total total = new Total();
 			total.setName(packageName);
 			List<Table> list = mAccessor.R(total);
 			if (null == list) {// create a new one for new package
-				total.setCount(1);
+				total.setCount(0);
 				mAccessor.C(total);
 				list = mAccessor.R(total);
 			}
@@ -199,7 +202,8 @@ public class WidgetProvider extends AppWidgetProvider {
 						table.currentQueryStatus(context);
 						list = mAccessor.R(table);
 
-						if (null == list) {
+						if (null == list) {// non-existing condition for this
+											// app, create one record
 							if (isDebugging || MainActivity.isDebugging()) {
 								Log.d(MainActivity.LOG_TAG, "create new "
 										+ table.getClass().getSimpleName());
@@ -207,9 +211,7 @@ public class WidgetProvider extends AppWidgetProvider {
 							table.initDefault(context);
 							table.setPid(total.getId());
 							mAccessor.C(table);
-							list = mAccessor.R(table);
-						}
-						if (null != list) {
+						} else {// existing condition just update
 							if (isDebugging || MainActivity.isDebugging()) {
 								Log.d(MainActivity.LOG_TAG, "increase old "
 										+ table.getClass().getSimpleName());
