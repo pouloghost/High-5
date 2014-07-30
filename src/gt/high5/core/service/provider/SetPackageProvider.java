@@ -22,17 +22,18 @@ public class SetPackageProvider extends PackageProvider {
 		super();
 	}
 
-	private HashSet<String> mRecentPackage = new HashSet<String>(MEMORY_SIZE);
+	private ArrayList<String> mRecentPackage = new ArrayList<String>(
+			MEMORY_SIZE);
 	private ActivityManager mActivityManager = null;
 
 	@Override
 	public Collection<LaunchInfo> getChangedPackages(Context context) {
 		// get recent package
-		HashSet<String> packages = new HashSet<String>();
+		ArrayList<String> packages = new ArrayList<String>();
 		String newest = getRecentPackages(context, packages);
 		// backup for save to mRecentMemory
 		@SuppressWarnings("unchecked")
-		HashSet<String> currentBackup = (HashSet<String>) packages.clone();
+		ArrayList<String> currentBackup = (ArrayList<String>) packages.clone();
 		// the relative complement of mRecentMemory in memory
 		packages.removeAll(mRecentPackage);
 		// no change in set
@@ -44,7 +45,8 @@ public class SetPackageProvider extends PackageProvider {
 
 		mRecentPackage = currentBackup;
 
-		ArrayList<LaunchInfo> result = new ArrayList<LaunchInfo>(packages.size());
+		ArrayList<LaunchInfo> result = new ArrayList<LaunchInfo>(
+				packages.size());
 		for (String name : packages) {
 			result.add(new LaunchInfo(name, 1));
 		}
@@ -60,10 +62,10 @@ public class SetPackageProvider extends PackageProvider {
 	 *            the set to hold recent packages
 	 * @return the most recent package
 	 */
-	private String getRecentPackages(Context context, HashSet<String> packages) {
+	private String getRecentPackages(Context context, ArrayList<String> packages) {
 
 		packages.clear();
-		
+
 		if (null == mActivityManager) {
 			mActivityManager = (ActivityManager) context
 					.getSystemService(Service.ACTIVITY_SERVICE);
