@@ -1,7 +1,9 @@
 package gt.high5.core.service;
 
 import gt.high5.R;
-import gt.high5.activity.MainActivity;
+import gt.high5.activity.IgnoreListManageActivity;
+import gt.high5.core.service.provider.LaunchInfo;
+import gt.high5.core.service.provider.PackageProvider;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.RecordTable;
@@ -9,13 +11,11 @@ import gt.high5.database.model.Table;
 import gt.high5.database.tables.Total;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.app.ActivityManager;
-import android.app.Service;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 
@@ -30,8 +30,9 @@ public class RecordService {
 
 	private boolean isDebugging = false;
 
-	private ActivityManager mActivityManager = null;
 	private DatabaseAccessor mAccessor = null;
+	private PackageProvider mPackageProvider = null;
+
 	// singleton
 	private static RecordService instance = null;
 
@@ -51,6 +52,7 @@ public class RecordService {
 		TableParser parser = new TableParser(context.getResources().getXml(
 				R.xml.tables));
 		mAccessor = DatabaseAccessor.getAccessor(context, parser, R.xml.tables);
+		mPackageProvider = PackageProvider.getPackageProvider(context);
 	}
 
 	/**
@@ -60,18 +62,40 @@ public class RecordService {
 	 *            application context for accessing system state
 	 */
 	public void record(Context context) {
-		String packageName = getCurrentPackageName(context);
+		if (null == mAccessor || null == mPackageProvider) {
+			return;
+		}
+		if (isDebugging || IgnoreListManageActivity.isDebugging()) {
+			Log.d(IgnoreListManageActivity.LOG_TAG, "action record");
+		}
+		Collection<LaunchInfo> packages = mPackageProvider
+				.getChangedPackages(context);
+		for (LaunchInfo info : packages) {
+			recordPackage(context, info.getPackage(), info.getLaunchCount());
+		}
+	}
 
+	/**
+	 * save the record to db
+	 * 
+	 * @param context
+	 *            application context for system status
+	 * @param packageName
+	 *            package
+	 * @param count
+	 *            launch count
+	 */
+	private void recordPackage(Context context, String packageName, int count) {
 		if (null != packageName) {
-			if (true || (isDebugging || MainActivity.isDebugging())) {
-				Log.d(MainActivity.LOG_TAG, "current package " + packageName);
+			if ((isDebugging || IgnoreListManageActivity.isDebugging())) {
+				Log.d(IgnoreListManageActivity.LOG_TAG, "current package " + packageName);
 			}
 			// read total with current package name
 			Total total = new Total();
 			total.setName(packageName);
 			List<Table> list = mAccessor.R(total);
 			if (null == list) {// create a new one for new package
-				total.setCount(0);
+				total.initDefault(context);
 				mAccessor.C(total);
 				list = mAccessor.R(total);
 			}
@@ -79,13 +103,13 @@ public class RecordService {
 			List<Class<? extends RecordTable>> clazzes = mAccessor.getTables();
 			if (null != list) {
 				total = (Total) list.get(0);
-				if ((isDebugging || MainActivity.isDebugging())) {
-					Log.d(MainActivity.LOG_TAG, "total " + total.getName());
+				if ((isDebugging || IgnoreListManageActivity.isDebugging())) {
+					Log.d(IgnoreListManageActivity.LOG_TAG, "total " + total.getName());
 				}
 				// each type of record
 				for (Class<? extends RecordTable> clazz : clazzes) {
-					if (isDebugging || MainActivity.isDebugging()) {
-						Log.d(MainActivity.LOG_TAG,
+					if (isDebugging || IgnoreListManageActivity.isDebugging()) {
+						Log.d(IgnoreListManageActivity.LOG_TAG,
 								"updating class " + clazz.getSimpleName());
 					}
 					try {
@@ -98,21 +122,21 @@ public class RecordService {
 
 						if (null == list) {// non-existing condition for this
 											// app, create one record
-							if (isDebugging || MainActivity.isDebugging()) {
-								Log.d(MainActivity.LOG_TAG, "create new "
+							if (isDebugging || IgnoreListManageActivity.isDebugging()) {
+								Log.d(IgnoreListManageActivity.LOG_TAG, "create new "
 										+ table.getClass().getSimpleName());
 							}
 							table.initDefault(context);
 							table.setPid(total.getId());
 							mAccessor.C(table);
 						} else {// existing condition just update
-							if (isDebugging || MainActivity.isDebugging()) {
-								Log.d(MainActivity.LOG_TAG, "increase old "
+							if (isDebugging || IgnoreListManageActivity.isDebugging()) {
+								Log.d(IgnoreListManageActivity.LOG_TAG, "increase old "
 										+ table.getClass().getSimpleName());
 							}
 							table = (RecordTable) list.get(0);
 							RecordTable select = table.clone();
-							table.record(context);
+							table.increaseCount(count);
 							mAccessor.U(select, table);
 						}
 					} catch (InstantiationException e) {
@@ -122,31 +146,6 @@ public class RecordService {
 					}
 				}
 			}
-		}
-	}
-
-	private String getCurrentPackageName(Context context) {
-		if (null == mAccessor) {
-			return null;
-		}
-		if (isDebugging || MainActivity.isDebugging()) {
-			Log.d(MainActivity.LOG_TAG, "action record");
-		}
-		if (null == mActivityManager) {
-			mActivityManager = (ActivityManager) context
-					.getSystemService(Service.ACTIVITY_SERVICE);
-		}
-		ActivityManager.RecentTaskInfo recent = mActivityManager
-				.getRecentTasks(1, ActivityManager.RECENT_IGNORE_UNAVAILABLE)
-				.get(0);
-		String packageName = recent.baseIntent.getComponent().getPackageName();
-		// read ignore list
-		HashSet<String> ignoredSet = IgnoreSetService.getIgnoreSetService(
-				context).getIgnoreSet();
-		if (ignoredSet.contains(packageName)) {
-			return null;
-		} else {
-			return packageName;
 		}
 	}
 }

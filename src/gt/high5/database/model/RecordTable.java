@@ -24,7 +24,7 @@ public abstract class RecordTable extends Table {
 	public abstract void initDefault(Context context);// all field should be
 														// inited except pid
 
-	public abstract void record(Context context);
+	public abstract void increaseCount(int add);
 
 	/**
 	 * recording table must have a pid for package id

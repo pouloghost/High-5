@@ -1,7 +1,7 @@
 package gt.high5.core.service;
 
 import gt.high5.R;
-import gt.high5.activity.MainActivity;
+import gt.high5.activity.IgnoreListManageActivity;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.Table;
 import gt.high5.database.tables.Ignore;
@@ -35,7 +35,7 @@ public class IgnoreSetService {
 
 	private IgnoreSetService(Context context) {
 		if (null == mAccessor) {
-			if (isDebugging || MainActivity.isDebugging()) {
+			if (isDebugging || IgnoreListManageActivity.isDebugging()) {
 				// Log.d(MainActivity.LOG_TAG,
 				// "get a new accessor in ignore set service");
 			}

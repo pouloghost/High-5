@@ -79,7 +79,7 @@ public class Total extends RecordTable {
 
 	@Override
 	public void initDefault(Context context) {
-
+		count = 0;
 	}
 
 	@Override
@@ -183,8 +183,8 @@ public class Total extends RecordTable {
 	}
 
 	@Override
-	public void record(Context context) {
-		++count;
+	public void increaseCount(int add) {
+		count += add;
 	}
 
 	@Override

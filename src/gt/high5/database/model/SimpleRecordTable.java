@@ -104,8 +104,8 @@ public abstract class SimpleRecordTable extends RecordTable {
 	}
 
 	@Override
-	public void record(Context context) {
-		++count;
+	public void increaseCount(int add) {
+		count += add;
 	}
 
 	@Override
