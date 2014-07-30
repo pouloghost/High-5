@@ -145,10 +145,17 @@ public class WidgetProvider extends AppWidgetProvider {
 			startInterval(context, PreferenceReadService
 					.getPreferenceReadService(context).getRecordInterval(),
 					getRecordIntent(context));
-		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | NotFoundException
-				| XmlPullParserException | IOException e) {
-			// TODO Auto-generated catch block
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (NotFoundException e) {
+			e.printStackTrace();
+		} catch (XmlPullParserException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
 			e.printStackTrace();
 		}
 	}
