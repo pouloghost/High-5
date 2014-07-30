@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+        android:defaultValue="@string/update_default"
+        android:entries="@array/settings_interval_names"
+        android:entryValues="@array/settings_intervals"
+        android:key="update_interval"
+        android:title="@string/settings_update_interval_title" />
+    <ListPreference
+        android:defaultValue="@string/record_default"
+        android:entries="@array/settings_interval_names"
+        android:entryValues="@array/settings_intervals"
+        android:key="record_interval"
+        android:title="@string/settings_record_interval_title" />
+    <ListPreference
+        android:defaultValue="@string/region_default"
+        android:entries="@array/settings_region_names"
+        android:entryValues="@array/settings_region_lengths"
+        android:key="region_length"
+        android:title="@string/settings_region_length_title" />
+
+</PreferenceScreen>

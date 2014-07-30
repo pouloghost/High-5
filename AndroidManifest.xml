@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+   <!-- need to move to system/app to gain this permission  <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" /> -->
 
     <application
         android:name=".High5Application"
@@ -24,6 +26,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".activity.IgnoreListManageActivity" >
         </activity>
 
         <receiver android:name="gt.high5.core.widget.WidgetProvider" >

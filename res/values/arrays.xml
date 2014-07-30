@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="settings_intervals">
+        <item>1000</item>
+        <item>60000</item>
+        <item>600000</item>
+        <item>900000</item>
+    </string-array>
+
+    <string-array name="settings_interval_names">
+        <item>TEST ONLY</item>
+        <item>Short</item>
+        <item>Normal</item>
+        <item>Long</item>
+    </string-array>
+
+    <string-array name="settings_region_lengths">
+        <item>1</item>
+        <item>15</item>
+        <item>30</item>
+    </string-array>
+
+    <string-array name="settings_region_names">
+        <item>Fine</item>
+        <item>Normal</item>
+        <item>Corse</item>
+    </string-array>
+
+</resources>

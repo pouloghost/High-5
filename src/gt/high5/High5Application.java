@@ -5,18 +5,19 @@ import gt.high5.activity.MainActivity;
 import java.io.File;
 import java.io.IOException;
 
-import com.github.curioustechizen.xlog.Log;
-
 import android.app.Application;
 import android.os.Environment;
+
+import com.github.curioustechizen.xlog.Log;
 
 public class High5Application extends Application {
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		//init log file
-		android.util.Log.d(MainActivity.LOG_TAG, "create application");
+		// init log file
+		android.util.Log.d(MainActivity.LOG_TAG,
+				"create application");
 		if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
 				.getExternalStorageState())) {
 			File root = Environment.getExternalStorageDirectory();
@@ -32,14 +33,14 @@ public class High5Application extends Application {
 			}
 			try {
 				Log.init(this, true, logFile);
-				android.util.Log.d(MainActivity.LOG_TAG,
-						"inited " + logFile.getAbsolutePath());
+				android.util.Log.d(MainActivity.LOG_TAG, "inited "
+						+ logFile.getAbsolutePath());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else {
-			android.util.Log.d(MainActivity.LOG_TAG,
-					"state " + Environment.getExternalStorageState());
+			android.util.Log.d(MainActivity.LOG_TAG, "state "
+					+ Environment.getExternalStorageState());
 		}
 
 	}

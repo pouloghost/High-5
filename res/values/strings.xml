@@ -1,9 +1,23 @@
 <resources>
 
+    <!-- application -->
     <string name="app_name">High5</string>
-    <string name="ignore_list_manage">Manage Ignore</string>
+    <string name="title_section1">Settings</string>
+    <string name="title_section2">Manage Ignore</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <!-- manage ignore -->
     <string name="ignore_toggle_on">Ignored</string>
     <string name="ignore_toggle_off">Record</string>
     <string name="ignore_unknown">Unknown</string>
+    <!-- settings -->
+    <string name="settings_update_interval_title">Refresh Interval</string>
+    <string name="settings_record_interval_title">Record Interval</string>
+    <string name="settings_region_length_title">Region Length</string>
+    <string name="update_default">600000</string>
+    <string name="record_default">600000</string>
+    <string name="region_default">15</string>
 
 </resources>

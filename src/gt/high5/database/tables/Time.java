@@ -15,7 +15,12 @@ import android.content.Context;
 public class Time extends SimpleRecordTable {
 
 	// time region length in minutes
-	private static int REGION_LENGTH = 15;
+	private static int regionLength = 15;
+
+	public static void setRegionLength(int length) {
+		Time.regionLength = length;
+	}
+
 	@TableAnnotation(defaultValue = "-1")
 	private int region = -1;
 
@@ -32,6 +37,6 @@ public class Time extends SimpleRecordTable {
 		Calendar calendar = Calendar.getInstance();
 		int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60
 				+ calendar.get(Calendar.MINUTE);
-		region = minutes / REGION_LENGTH;
+		region = minutes / regionLength;
 	}
 }

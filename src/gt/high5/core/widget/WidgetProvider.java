@@ -2,7 +2,9 @@ package gt.high5.core.widget;
 
 import gt.high5.R;
 import gt.high5.activity.MainActivity;
+import gt.high5.core.service.PreferenceReadService;
 import gt.high5.core.service.RecordService;
+import gt.high5.database.tables.Time;
 
 import java.io.IOException;
 
@@ -35,18 +37,21 @@ public class WidgetProvider extends AppWidgetProvider {
 
 	private static final int LAUNCH_REQ = 0;
 	private static final String LAUNCH_ACT = "gt.high5.launch";
-	public static final int UPDATE_INTERVAL = 15 * 60 * 1000;
+	// public static final int UPDATE_INTERVAL = 15 * 60 * 1000;
 	// public static final int UPDATE_INTERVAL = 15 * 1000;
 
 	private static final int RECORD_REQ = 1;
 	private static final String RECORD_ACT = "gt.high5.record";
+
 	// public static final int RECORD_INTERVAL = 60 * 1000;
-	public static final int RECORD_INTERVAL = UPDATE_INTERVAL / 15;
+	// public static final int RECORD_INTERVAL = UPDATE_INTERVAL / 15;
 
 	@Override
 	public void onEnabled(Context context) {
 
 		super.onEnabled(context);
+		Time.setRegionLength(PreferenceReadService.getPreferenceReadService(
+				context).getRegionLength());
 		// start up all recording service
 		recordCurrentStatus(context);
 	}
@@ -102,7 +107,9 @@ public class WidgetProvider extends AppWidgetProvider {
 		appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
 				R.id.launcher);
 		// start update interval
-		startInterval(context, UPDATE_INTERVAL,
+		startInterval(context,
+				PreferenceReadService.getPreferenceReadService(context)
+						.getUpdateInterval(),
 				getUpdateIntent(context, appWidgetIds));
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 	}
@@ -135,7 +142,9 @@ public class WidgetProvider extends AppWidgetProvider {
 		try {
 			RecordService.getRecordService(context).record(context);
 
-			startInterval(context, RECORD_INTERVAL, getRecordIntent(context));
+			startInterval(context, PreferenceReadService
+					.getPreferenceReadService(context).getRecordInterval(),
+					getRecordIntent(context));
 		} catch (ClassNotFoundException | InstantiationException
 				| IllegalAccessException | NotFoundException
 				| XmlPullParserException | IOException e) {
