@@ -5,6 +5,7 @@ import gt.high5.database.tables.Time;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 public class SettingsFragment extends PreferenceFragment {
@@ -25,9 +26,11 @@ public class SettingsFragment extends PreferenceFragment {
 									Time.setRegionLength(Integer.parseInt(prefs
 											.getString(key, "15")));
 								}
-
-								ListPreference pref = (ListPreference) findPreference(key);
-								pref.setSummary(pref.getEntry());
+								Preference pref = null;
+								if ((pref = findPreference(key)) instanceof ListPreference) {
+									pref.setSummary(((ListPreference) pref)
+											.getEntry());
+								}
 							}
 						});
 	}

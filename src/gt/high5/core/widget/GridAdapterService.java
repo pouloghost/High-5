@@ -32,7 +32,8 @@ public class GridAdapterService extends RemoteViewsService {
 
 	@Override
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
-		if (MainActivity.isDebugging()) {
+		if (PreferenceReadService.getPreferenceReadService(
+				getApplicationContext()).shouldLog(GridAdapterService.class)) {
 			Log.d(MainActivity.LOG_TAG, "get factory");
 		}
 		return new GridViewFactory();
@@ -64,8 +65,9 @@ public class GridAdapterService extends RemoteViewsService {
 		@Override
 		public RemoteViews getViewAt(int position) {
 			if (PreferenceReadService.getPreferenceReadService(
-					getApplicationContext()).shouldLog(this.getClass())) {
-				// Log.d(MainActivity.LOG_TAG, "view at " + position);
+					getApplicationContext())
+					.shouldLog(GridAdapterService.class)) {
+				Log.d(MainActivity.LOG_TAG, "view at " + position);
 			}
 			if (apps.size() < position) {
 				return null;
@@ -111,8 +113,10 @@ public class GridAdapterService extends RemoteViewsService {
 
 		@Override
 		public void onCreate() {
-			if (MainActivity.isDebugging()) {
-				// Log.d(MainActivity.LOG_TAG, "create factory");
+			if (PreferenceReadService.getPreferenceReadService(
+					getApplicationContext())
+					.shouldLog(GridAdapterService.class)) {
+				Log.d(MainActivity.LOG_TAG, "create factory");
 			}
 		}
 

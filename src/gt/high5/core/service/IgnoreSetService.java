@@ -9,6 +9,8 @@ import gt.high5.database.tables.Ignore;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import com.github.curioustechizen.xlog.Log;
+
 import android.content.Context;
 
 /**
@@ -18,7 +20,6 @@ import android.content.Context;
  */
 public class IgnoreSetService {
 
-	private boolean isDebugging = true;
 	// cached data
 	private HashSet<String> mIgnoreSet = null;
 
@@ -35,9 +36,10 @@ public class IgnoreSetService {
 
 	private IgnoreSetService(Context context) {
 		if (null == mAccessor) {
-			if (isDebugging || MainActivity.isDebugging()) {
-				// Log.d(MainActivity.LOG_TAG,
-				// "get a new accessor in ignore set service");
+			if (PreferenceReadService.getPreferenceReadService(context)
+					.shouldLog(this.getClass())) {
+				Log.d(MainActivity.LOG_TAG,
+						"get a new accessor in ignore set service");
 			}
 			mAccessor = DatabaseAccessor.getAccessor(context, R.xml.tables);
 		}

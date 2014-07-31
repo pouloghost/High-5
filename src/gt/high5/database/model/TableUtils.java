@@ -66,7 +66,7 @@ public class TableUtils {
 		sql.append(vals);
 
 		String sqlString = sql.toString();
-		if (isDebugging || MainActivity.isDebugging()) {
+		if (isDebugging()) {
 			Log.d(MainActivity.LOG_TAG, "create "
 					+ table.getClass().getSimpleName() + " " + sqlString);
 		}
@@ -83,7 +83,7 @@ public class TableUtils {
 		}
 
 		String sqlString = "DELETE FROM " + clazz.getSimpleName() + where;
-		if (isDebugging || MainActivity.isDebugging()) {
+		if (isDebugging()) {
 			Log.d(MainActivity.LOG_TAG, "delete "
 					+ table.getClass().getSimpleName() + " " + sqlString);
 		}
@@ -128,7 +128,7 @@ public class TableUtils {
 		sql.append(where);
 
 		String sqlString = sql.toString();
-		if (isDebugging || MainActivity.isDebugging()) {
+		if (isDebugging()) {
 			Log.d(MainActivity.LOG_TAG, "update "
 					+ table.getClass().getSimpleName() + " " + sqlString);
 		}
@@ -145,7 +145,7 @@ public class TableUtils {
 		}
 
 		String sqlString = "SELECT * FROM " + clazz.getSimpleName() + where;
-		if (isDebugging || MainActivity.isDebugging()) {
+		if (isDebugging()) {
 			Log.d(MainActivity.LOG_TAG, "read "
 					+ table.getClass().getSimpleName() + " " + sqlString);
 		}
@@ -245,7 +245,7 @@ public class TableUtils {
 		sql.append(")");
 
 		String sqlString = sql.toString();
-		if (isDebugging || MainActivity.isDebugging()) {
+		if (isDebugging()) {
 			Log.d(MainActivity.LOG_TAG, "creator " + clazz.getSimpleName()
 					+ " " + sqlString);
 		}
@@ -435,5 +435,13 @@ public class TableUtils {
 		fields = name2Field.values().toArray(fields);
 
 		return fields;
+	}
+
+	public static boolean isDebugging() {
+		return isDebugging;
+	}
+
+	public static void setDebugging(boolean isDebugging) {
+		TableUtils.isDebugging = isDebugging;
 	}
 }

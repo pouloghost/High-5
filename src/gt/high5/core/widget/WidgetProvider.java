@@ -4,7 +4,6 @@ import gt.high5.R;
 import gt.high5.activity.MainActivity;
 import gt.high5.core.service.PreferenceReadService;
 import gt.high5.core.service.RecordService;
-import gt.high5.database.tables.Time;
 
 import java.io.IOException;
 
@@ -48,8 +47,6 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onEnabled(Context context) {
 
 		super.onEnabled(context);
-		Time.setRegionLength(PreferenceReadService.getPreferenceReadService(
-				context).getRegionLength());
 		// start up all recording service
 		recordCurrentStatus(context);
 	}
