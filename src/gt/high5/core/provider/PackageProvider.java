@@ -1,4 +1,4 @@
-package gt.high5.core.service.provider;
+package gt.high5.core.provider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;

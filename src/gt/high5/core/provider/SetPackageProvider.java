@@ -1,4 +1,4 @@
-package gt.high5.core.service.provider;
+package gt.high5.core.provider;
 
 import gt.high5.core.service.IgnoreSetService;
 

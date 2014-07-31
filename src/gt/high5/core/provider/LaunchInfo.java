@@ -1,4 +1,4 @@
-package gt.high5.core.service.provider;
+package gt.high5.core.provider;
 
 /**
  * @author ayi.zty

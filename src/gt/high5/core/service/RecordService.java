@@ -2,8 +2,8 @@ package gt.high5.core.service;
 
 import gt.high5.R;
 import gt.high5.activity.MainActivity;
-import gt.high5.core.service.provider.LaunchInfo;
-import gt.high5.core.service.provider.PackageProvider;
+import gt.high5.core.provider.LaunchInfo;
+import gt.high5.core.provider.PackageProvider;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.RecordTable;
