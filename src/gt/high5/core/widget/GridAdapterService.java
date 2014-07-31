@@ -2,6 +2,7 @@ package gt.high5.core.widget;
 
 import gt.high5.R;
 import gt.high5.activity.MainActivity;
+import gt.high5.core.service.PreferenceReadService;
 import gt.high5.core.service.ReadService;
 
 import java.util.ArrayList;
@@ -25,8 +26,6 @@ import com.github.curioustechizen.xlog.Log;
 @SuppressLint("NewApi")
 public class GridAdapterService extends RemoteViewsService {
 
-	private boolean isDebugging = true;
-
 	private ArrayList<String> apps = new ArrayList<String>();
 
 	private static PackageManager mPackageManager = null;
@@ -43,7 +42,8 @@ public class GridAdapterService extends RemoteViewsService {
 
 		@Override
 		public int getCount() {
-			if (isDebugging || MainActivity.isDebugging()) {
+			if (PreferenceReadService.getPreferenceReadService(
+					getApplicationContext()).shouldLog(this.getClass())) {
 				// Log.d(MainActivity.LOG_TAG, "data set size " + apps.size());
 			}
 			return apps.size();
@@ -63,7 +63,8 @@ public class GridAdapterService extends RemoteViewsService {
 
 		@Override
 		public RemoteViews getViewAt(int position) {
-			if (isDebugging || MainActivity.isDebugging()) {
+			if (PreferenceReadService.getPreferenceReadService(
+					getApplicationContext()).shouldLog(this.getClass())) {
 				// Log.d(MainActivity.LOG_TAG, "view at " + position);
 			}
 			if (apps.size() < position) {
@@ -120,7 +121,8 @@ public class GridAdapterService extends RemoteViewsService {
 			try {
 				apps = ReadService.getReadService(getApplicationContext())
 						.getHigh5(getApplicationContext(), apps);
-				if (isDebugging || MainActivity.isDebugging()) {
+				if (PreferenceReadService.getPreferenceReadService(
+						getApplicationContext()).shouldLog(this.getClass())) {
 					// Log.d(MainActivity.LOG_TAG, "data set changed");
 				}
 			} catch (InstantiationException e) {

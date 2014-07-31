@@ -30,8 +30,6 @@ import com.github.curioustechizen.xlog.Log;
 @SuppressLint("NewApi")
 public class WidgetProvider extends AppWidgetProvider {
 
-	private boolean isDebugging = false;
-
 	public static final String LAUNCH_PACKAGE = "gt.high5.launch.package";
 	public static final String UPDATE_PACKAGE = "gt.high5.update.package";
 
@@ -60,7 +58,8 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onDisabled(Context context) {
 
 		super.onDisabled(context);
-		if (isDebugging || MainActivity.isDebugging()) {
+		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
+				this.getClass())) {
 			Log.d(MainActivity.LOG_TAG, "disable");
 		}
 		// shut down all recording service
@@ -87,7 +86,8 @@ public class WidgetProvider extends AppWidgetProvider {
 			int[] appWidgetIds) {
 
 		// init view
-		if (isDebugging || MainActivity.isDebugging()) {
+		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
+				this.getClass())) {
 			Log.d(MainActivity.LOG_TAG, "action update");
 		}
 		RemoteViews views = new RemoteViews(context.getPackageName(),

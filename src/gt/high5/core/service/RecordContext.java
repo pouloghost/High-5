@@ -3,6 +3,11 @@ package gt.high5.core.service;
 import gt.high5.database.tables.Total;
 import android.content.Context;
 
+/**
+ * @author ayi.zty
+ * 
+ *         wrapper for context needed when record
+ */
 public class RecordContext {
 	private Context context = null;
 	private RecordService service = null;

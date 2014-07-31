@@ -27,8 +27,6 @@ import com.github.curioustechizen.xlog.Log;
  *         service for read records without specified type
  */
 public class ReadService {
-
-	private boolean isDebugging = true;
 	// singleton
 	private static ReadService instance = null;
 
@@ -43,8 +41,9 @@ public class ReadService {
 
 	private ReadService(Context context) {
 		if (null == mAccessor) {
-			if (isDebugging || MainActivity.isDebugging()) {
-				// Log.d(MainActivity.LOG_TAG, "get a new accessor");
+			if (PreferenceReadService.getPreferenceReadService(context)
+					.shouldLog(this.getClass())) {
+				Log.d(MainActivity.LOG_TAG, "get a new accessor");
 			}
 			mAccessor = DatabaseAccessor.getAccessor(context, R.xml.tables);
 		}
@@ -111,7 +110,8 @@ public class ReadService {
 
 				Collections.sort(allTotals, Total.getComparator());
 
-				if (isDebugging || MainActivity.isDebugging()) {
+				if (PreferenceReadService.getPreferenceReadService(context)
+						.shouldLog(this.getClass())) {
 					StringBuilder sb = new StringBuilder();
 					for (Table total : allTotals) {
 						sb.append(((Total) total).getName());
@@ -137,7 +137,8 @@ public class ReadService {
 				}
 			}
 		} else {
-			if (isDebugging || MainActivity.isDebugging()) {
+			if (PreferenceReadService.getPreferenceReadService(context)
+					.shouldLog(this.getClass())) {
 				Log.d(MainActivity.LOG_TAG, "data accessor is null");
 			}
 		}

@@ -13,11 +13,15 @@
     <string name="ignore_toggle_off">Record</string>
     <string name="ignore_unknown">Unknown</string>
     <!-- settings -->
+    <string name="settings_category_interval">Intervals</string>
+    <string name="settings_category_debug">Logs</string>
     <string name="settings_update_interval_title">Refresh Interval</string>
     <string name="settings_record_interval_title">Record Interval</string>
     <string name="settings_region_length_title">Region Length</string>
-    <string name="update_default">600000</string>
-    <string name="record_default">600000</string>
-    <string name="region_default">15</string>
+    <string name="settings_update_default">600000</string>
+    <string name="settings_record_default">600000</string>
+    <string name="settings_region_default">15</string>
+    <string name="settings_log_on">Log to file</string>
+    <string name="settings_log_off">Log off</string>
 
 </resources>

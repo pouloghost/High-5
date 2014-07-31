@@ -32,8 +32,12 @@ public class PreferenceReadService {
 	}
 
 	public int getRegionLength() {
-		return Integer.parseInt(preferences.getString("region_length",
-				"15"));
+		return Integer.parseInt(preferences.getString("region_length", "15"));
+	}
+
+	public boolean shouldLog(Class<?> clazz) {
+		String key = clazz.getSimpleName();
+		return preferences.getBoolean(key, false);
 	}
 
 }

@@ -28,8 +28,6 @@ import com.github.curioustechizen.xlog.Log;
  */
 public class RecordService {
 
-	private boolean isDebugging = false;
-
 	private DatabaseAccessor mAccessor = null;
 	private PackageProvider mPackageProvider = null;
 
@@ -65,7 +63,8 @@ public class RecordService {
 		if (null == mAccessor || null == mPackageProvider) {
 			return;
 		}
-		if (isDebugging || MainActivity.isDebugging()) {
+		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
+				this.getClass())) {
 			Log.d(MainActivity.LOG_TAG, "action record");
 		}
 		Collection<LaunchInfo> packages = mPackageProvider
@@ -87,7 +86,8 @@ public class RecordService {
 	 */
 	private void recordPackage(Context context, String packageName, int count) {
 		if (null != packageName) {
-			if ((isDebugging || MainActivity.isDebugging())) {
+			if (PreferenceReadService.getPreferenceReadService(context)
+					.shouldLog(this.getClass())) {
 				Log.d(MainActivity.LOG_TAG, "current package " + packageName);
 			}
 
@@ -105,7 +105,8 @@ public class RecordService {
 			// record
 			if (null != list) {
 				total = (Total) list.get(0);
-				if ((isDebugging || MainActivity.isDebugging())) {
+				if (PreferenceReadService.getPreferenceReadService(context)
+						.shouldLog(this.getClass())) {
 					Log.d(MainActivity.LOG_TAG, "total " + total.getName());
 				}
 
@@ -114,7 +115,8 @@ public class RecordService {
 				List<Class<? extends RecordTable>> clazzes = mAccessor
 						.getTables();
 				for (Class<? extends RecordTable> clazz : clazzes) {
-					if (isDebugging || MainActivity.isDebugging()) {
+					if (PreferenceReadService.getPreferenceReadService(context)
+							.shouldLog(this.getClass())) {
 						Log.d(MainActivity.LOG_TAG,
 								"updating class " + clazz.getSimpleName());
 					}
@@ -129,7 +131,9 @@ public class RecordService {
 							if (null == list) {// non-existing condition for
 												// this
 												// app, create one record
-								if (isDebugging || MainActivity.isDebugging()) {
+								if (PreferenceReadService
+										.getPreferenceReadService(context)
+										.shouldLog(this.getClass())) {
 									Log.d(MainActivity.LOG_TAG, "create new "
 											+ table.getClass().getSimpleName());
 								}
@@ -138,7 +142,9 @@ public class RecordService {
 									mAccessor.C(table);
 								}
 							} else {// existing condition just update
-								if (isDebugging || MainActivity.isDebugging()) {
+								if (PreferenceReadService
+										.getPreferenceReadService(context)
+										.shouldLog(this.getClass())) {
 									Log.d(MainActivity.LOG_TAG, "increase old "
 											+ table.getClass().getSimpleName());
 								}

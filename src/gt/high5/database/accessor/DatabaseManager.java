@@ -46,10 +46,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		if (MainActivity.isDebugging()) {
-			Log.d(MainActivity.LOG_TAG, "Upgrading database from version "
-					+ oldVersion + " to " + newVersion);
-		}
+		Log.d(MainActivity.LOG_TAG, "Upgrading database from version "
+				+ oldVersion + " to " + newVersion);
 		onCreate(db);
 	}
 }
