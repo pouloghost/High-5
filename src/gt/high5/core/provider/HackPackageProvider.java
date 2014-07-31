@@ -7,7 +7,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -27,7 +26,9 @@ public class HackPackageProvider extends PackageProvider {
 	private Method mGetPkgUsageStatsMethod = null;
 	private Field mLaunchCountField = null;
 
-	private HashMap<String, LaunchInfo> mRecentInfos = new HashMap<String, LaunchInfo>(
+	private ArrayList<LaunchInfo> mRecentInfos = new ArrayList<LaunchInfo>(
+			MEMORY_SIZE);
+	private ArrayList<String> mOrderedPackages = new ArrayList<String>(
 			MEMORY_SIZE);
 	private ActivityManager mActivityManager = null;
 
@@ -58,28 +59,28 @@ public class HackPackageProvider extends PackageProvider {
 	@Override
 	public Collection<LaunchInfo> getChangedPackages(Context context) {
 		// recent packages
-		HashMap<String, LaunchInfo> infos = new HashMap<String, LaunchInfo>();
+		ArrayList<LaunchInfo> infos = new ArrayList<LaunchInfo>();
 		LaunchInfo newest = getRecentLaunchInfo(context, infos);
 		// backup
 		@SuppressWarnings("unchecked")
-		HashMap<String, LaunchInfo> currentBackup = (HashMap<String, LaunchInfo>) infos
+		ArrayList<LaunchInfo> currentBackup = (ArrayList<LaunchInfo>) infos
 				.clone();
 		// filter information
 		ArrayList<LaunchInfo> result = new ArrayList<LaunchInfo>(infos.size());
-		for (String name : infos.keySet()) {
+		for (LaunchInfo now : infos) {
 			LaunchInfo info = null;
-			if (mRecentInfos.containsKey(name)) {
+			int index = mRecentInfos.indexOf(now);
+			if (-1 != index) {
 				// app is in recent list last call
-				LaunchInfo now = infos.get(name);
-				LaunchInfo last = mRecentInfos.get(name);
+				LaunchInfo last = mRecentInfos.get(index);
 				// launch count increased
 				if (now.getLaunchCount() > last.getLaunchCount()) {
-					info = new LaunchInfo(name, now.getLaunchCount()
-							- last.getLaunchCount());
+					info = new LaunchInfo(now.getPackage(),
+							now.getLaunchCount() - last.getLaunchCount());
 				}
 			} else {
 				// newly added package, regarded as launched once
-				info = new LaunchInfo(name, 1);
+				info = new LaunchInfo(now.getPackage(), 1);
 			}
 			if (null != info) {
 				result.add(info);
@@ -97,9 +98,10 @@ public class HackPackageProvider extends PackageProvider {
 	}
 
 	private LaunchInfo getRecentLaunchInfo(Context context,
-			HashMap<String, LaunchInfo> infos) {
+			ArrayList<LaunchInfo> infos) {
 
 		infos.clear();
+		mOrderedPackages.clear();
 
 		if (null == mActivityManager) {
 			mActivityManager = (ActivityManager) context
@@ -118,7 +120,8 @@ public class HackPackageProvider extends PackageProvider {
 			if (!ignoredSet.contains(name)) {
 				try {
 					LaunchInfo info = extractLaunchInfoFromTaskInfo(recent);
-					infos.put(name, info);
+					infos.add(info);
+					mOrderedPackages.add(info.getPackage());
 					if (null == result) {
 						result = info;
 					}
@@ -144,5 +147,10 @@ public class HackPackageProvider extends PackageProvider {
 				componentName);
 		int count = mLaunchCountField.getInt(pkgStats);
 		return new LaunchInfo(componentName.getPackageName(), count);
+	}
+
+	@Override
+	public List<String> getLastPackageOrder(Context context) {
+		return mOrderedPackages;
 	}
 }

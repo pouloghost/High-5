@@ -86,4 +86,9 @@ public class SetPackageProvider extends PackageProvider {
 
 		return recents.get(0).baseIntent.getComponent().getPackageName();
 	}
+
+	@Override
+	public List<String> getLastPackageOrder(Context context) {
+		return mRecentPackage;
+	}
 }

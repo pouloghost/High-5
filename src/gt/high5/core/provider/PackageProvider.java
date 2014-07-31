@@ -2,6 +2,7 @@ package gt.high5.core.provider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.List;
 
 import android.content.Context;
 
@@ -22,7 +23,7 @@ public abstract class PackageProvider {
 	private static Class<? extends PackageProvider>[] priority = null;
 	static {
 		priority = new Class[1];
-		//priority[0] = HackPackageProvider.class;
+		// priority[0] = HackPackageProvider.class;
 		priority[0] = SetPackageProvider.class;
 	}
 
@@ -70,6 +71,8 @@ public abstract class PackageProvider {
 	 * @return packages
 	 */
 	public abstract Collection<LaunchInfo> getChangedPackages(Context context);
+
+	public abstract List<String> getLastPackageOrder(Context context);
 
 	public class CannotCreateException extends Exception {
 

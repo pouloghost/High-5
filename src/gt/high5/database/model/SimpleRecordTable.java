@@ -1,6 +1,6 @@
 package gt.high5.database.model;
 
-import android.content.Context;
+import gt.high5.core.service.RecordContext;
 
 /*
  * representing a simple table with field pid id and count
@@ -98,9 +98,9 @@ public abstract class SimpleRecordTable extends RecordTable {
 	}
 
 	@Override
-	public void initDefault(Context context) {
-		currentQueryStatus(context);
+	public boolean initDefault(RecordContext context) {
 		count = 1;
+		return currentQueryStatus(context);
 	}
 
 	@Override

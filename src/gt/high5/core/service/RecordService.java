@@ -90,23 +90,29 @@ public class RecordService {
 			if ((isDebugging || MainActivity.isDebugging())) {
 				Log.d(MainActivity.LOG_TAG, "current package " + packageName);
 			}
+
+			RecordContext recordContext = new RecordContext(context, this, null);
 			// read total with current package name
 			Total total = new Total();
 			total.setName(packageName);
 			List<Table> list = mAccessor.R(total);
 			if (null == list) {// create a new one for new package
-				total.initDefault(context);
-				mAccessor.C(total);
-				list = mAccessor.R(total);
+				if (total.initDefault(recordContext)) {
+					mAccessor.C(total);
+					list = mAccessor.R(total);
+				}
 			}
 			// record
-			List<Class<? extends RecordTable>> clazzes = mAccessor.getTables();
 			if (null != list) {
 				total = (Total) list.get(0);
 				if ((isDebugging || MainActivity.isDebugging())) {
 					Log.d(MainActivity.LOG_TAG, "total " + total.getName());
 				}
+
+				recordContext.setTotal(total);
 				// each type of record
+				List<Class<? extends RecordTable>> clazzes = mAccessor
+						.getTables();
 				for (Class<? extends RecordTable> clazz : clazzes) {
 					if (isDebugging || MainActivity.isDebugging()) {
 						Log.d(MainActivity.LOG_TAG,
@@ -117,27 +123,30 @@ public class RecordService {
 						// status
 						RecordTable table = clazz.newInstance();
 						table.setPid(total.getId());
-						table.currentQueryStatus(context);
-						list = mAccessor.R(table);
+						if (table.currentQueryStatus(recordContext)) {
+							list = mAccessor.R(table);
 
-						if (null == list) {// non-existing condition for this
-											// app, create one record
-							if (isDebugging || MainActivity.isDebugging()) {
-								Log.d(MainActivity.LOG_TAG, "create new "
-										+ table.getClass().getSimpleName());
+							if (null == list) {// non-existing condition for
+												// this
+												// app, create one record
+								if (isDebugging || MainActivity.isDebugging()) {
+									Log.d(MainActivity.LOG_TAG, "create new "
+											+ table.getClass().getSimpleName());
+								}
+								if (table.initDefault(recordContext)) {
+									table.setPid(total.getId());
+									mAccessor.C(table);
+								}
+							} else {// existing condition just update
+								if (isDebugging || MainActivity.isDebugging()) {
+									Log.d(MainActivity.LOG_TAG, "increase old "
+											+ table.getClass().getSimpleName());
+								}
+								table = (RecordTable) list.get(0);
+								RecordTable select = table.clone();
+								table.increaseCount(count);
+								mAccessor.U(select, table);
 							}
-							table.initDefault(context);
-							table.setPid(total.getId());
-							mAccessor.C(table);
-						} else {// existing condition just update
-							if (isDebugging || MainActivity.isDebugging()) {
-								Log.d(MainActivity.LOG_TAG, "increase old "
-										+ table.getClass().getSimpleName());
-							}
-							table = (RecordTable) list.get(0);
-							RecordTable select = table.clone();
-							table.increaseCount(count);
-							mAccessor.U(select, table);
 						}
 					} catch (InstantiationException e) {
 						e.printStackTrace();
@@ -147,5 +156,9 @@ public class RecordService {
 				}
 			}
 		}
+	}
+
+	public PackageProvider getPackageProvider() {
+		return mPackageProvider;
 	}
 }

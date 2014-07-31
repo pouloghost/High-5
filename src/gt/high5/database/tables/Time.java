@@ -1,11 +1,10 @@
 package gt.high5.database.tables;
 
+import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
 
 import java.util.Calendar;
-
-import android.content.Context;
 
 /**
  * @author GT
@@ -33,10 +32,12 @@ public class Time extends SimpleRecordTable {
 	}
 
 	@Override
-	public void currentQueryStatus(Context context) {
+	public boolean currentQueryStatus(RecordContext context) {
 		Calendar calendar = Calendar.getInstance();
 		int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60
 				+ calendar.get(Calendar.MINUTE);
 		region = minutes / regionLength;
+
+		return true;
 	}
 }

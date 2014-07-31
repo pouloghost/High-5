@@ -1,10 +1,11 @@
 package gt.high5.database.tables;
 
+import gt.high5.core.service.RecordContext;
+import gt.high5.database.model.SimpleRecordTable;
+import gt.high5.database.model.TableAnnotation;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import gt.high5.database.model.SimpleRecordTable;
-import gt.high5.database.model.TableAnnotation;
 
 public class Network extends SimpleRecordTable {
 
@@ -12,14 +13,19 @@ public class Network extends SimpleRecordTable {
 	private String connection = "";
 
 	@Override
-	public void currentQueryStatus(Context context) {
+	public boolean currentQueryStatus(RecordContext context) {
 		ConnectivityManager manager = (ConnectivityManager) context
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo info = manager.getActiveNetworkInfo();
-		if (null == info || (!info.isConnectedOrConnecting())) {
-			connection = "NONE";
+				.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (null != manager) {
+			NetworkInfo info = manager.getActiveNetworkInfo();
+			if (null == info || (!info.isConnectedOrConnecting())) {
+				connection = "NONE";
+			} else {
+				connection = info.getTypeName() + "_" + info.getSubtypeName();
+			}
+			return true;
 		} else {
-			connection = info.getTypeName() + "_" + info.getSubtypeName();
+			return false;
 		}
 	}
 }

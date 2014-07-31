@@ -1,6 +1,6 @@
 package gt.high5.database.model;
 
-import android.content.Context;
+import gt.high5.core.service.RecordContext;
 
 /**
  * @author GT
@@ -19,10 +19,13 @@ public abstract class RecordTable extends Table {
 	/**
 	 * initializing default data for a newly created table
 	 * 
+	 * all field should be inited except pid
+	 * 
 	 * @param context
+	 * 
+	 * @return whether init is successful
 	 */
-	public abstract void initDefault(Context context);// all field should be
-														// inited except pid
+	public abstract boolean initDefault(RecordContext context);
 
 	public abstract void increaseCount(int add);
 
@@ -42,7 +45,9 @@ public abstract class RecordTable extends Table {
 	 * for query table using current status
 	 * 
 	 * @param context
+	 * 
+	 * @return whether init is successful
 	 */
-	public abstract void currentQueryStatus(Context context);
+	public abstract boolean currentQueryStatus(RecordContext context);
 
 }

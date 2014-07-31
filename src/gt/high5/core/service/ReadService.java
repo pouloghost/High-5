@@ -7,12 +7,16 @@ import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.tables.Total;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.content.Context;
+import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 
 import com.github.curioustechizen.xlog.Log;
@@ -72,13 +76,27 @@ public class ReadService {
 			cursor.moveToFirst();
 			int all = cursor.getInt(cursor.getColumnIndex(column));
 
+			RecordService service = null;
+			try {
+				service = RecordService.getRecordService(context);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (NotFoundException e) {
+				e.printStackTrace();
+			} catch (XmlPullParserException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 			List<Class<? extends RecordTable>> tables = mAccessor.getTables();
 			if (null != allTotals) {
 				for (Table total : allTotals) {
 					((Total) total).setPossibility(all, true);
 					for (Class<? extends RecordTable> clazz : tables) {
 						RecordTable queryTable = clazz.newInstance();
-						queryTable.currentQueryStatus(context);
+						queryTable.currentQueryStatus(new RecordContext(
+								context, service, (Total) total));
 						ArrayList<Table> allTables = mAccessor.R(queryTable);
 						if (null != allTables) {
 							((Total) total).setPossibility(

@@ -1,13 +1,12 @@
 package gt.high5.database.tables;
 
+import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.model.TableUtils;
 
 import java.util.Comparator;
-
-import android.content.Context;
 
 /**
  * @author GT
@@ -73,13 +72,14 @@ public class Total extends RecordTable {
 	}
 
 	@Override
-	public void currentQueryStatus(Context context) {
-
+	public boolean currentQueryStatus(RecordContext context) {
+		return true;
 	}
 
 	@Override
-	public void initDefault(Context context) {
+	public boolean initDefault(RecordContext context) {
 		count = 0;
+		return true;
 	}
 
 	@Override
