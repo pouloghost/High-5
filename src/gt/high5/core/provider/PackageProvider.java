@@ -1,9 +1,14 @@
 package gt.high5.core.provider;
 
+import gt.high5.core.service.IgnoreSetService;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
+import android.app.ActivityManager;
+import android.app.Service;
 import android.content.Context;
 
 /**
@@ -19,15 +24,13 @@ import android.content.Context;
 public abstract class PackageProvider {
 
 	protected static int MEMORY_SIZE = 10;
+	protected ActivityManager mActivityManager = null;
 
 	private static Class<? extends PackageProvider>[] priority = null;
 	static {
 		priority = new Class[1];
 		// priority[0] = HackPackageProvider.class;
 		priority[0] = SetPackageProvider.class;
-	}
-
-	public PackageProvider() throws CannotCreateException {
 	}
 
 	/**
@@ -61,6 +64,33 @@ public abstract class PackageProvider {
 			}
 		}
 		return provider;
+	}
+
+	public PackageProvider() throws CannotCreateException {
+	}
+
+	public List<ActivityManager.RecentTaskInfo> getLaunchableRecent(
+			Context context) {
+		if (null == mActivityManager) {
+			mActivityManager = (ActivityManager) context
+					.getSystemService(Service.ACTIVITY_SERVICE);
+		}
+		List<ActivityManager.RecentTaskInfo> recents = mActivityManager
+				.getRecentTasks(MEMORY_SIZE,
+						ActivityManager.RECENT_IGNORE_UNAVAILABLE);
+
+		// read ignore list
+		HashSet<String> ignoredSet = IgnoreSetService.getIgnoreSetService(
+				context).getIgnoreSet();
+
+		for (int i = recents.size(); i >= 0; --i) {
+			if (ignoredSet.contains(recents.get(i).baseIntent.getComponent()
+					.getPackageName())) {
+				recents.remove(i);
+			}
+		}
+
+		return recents;
 	}
 
 	/**

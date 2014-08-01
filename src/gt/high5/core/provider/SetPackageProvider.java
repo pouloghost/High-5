@@ -1,14 +1,10 @@
 package gt.high5.core.provider;
 
-import gt.high5.core.service.IgnoreSetService;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import android.app.ActivityManager;
-import android.app.Service;
 import android.content.Context;
 
 /**
@@ -22,15 +18,12 @@ public class SetPackageProvider extends PackageProvider {
 		super();
 	}
 
-	private ArrayList<String> mRecentPackage = new ArrayList<String>(
-			MEMORY_SIZE);
-	private ActivityManager mActivityManager = null;
+	private ArrayList<String> mRecentPackage = null;
 
 	@Override
 	public Collection<LaunchInfo> getChangedPackages(Context context) {
 		// get recent package
-		ArrayList<String> packages = new ArrayList<String>();
-		String newest = getRecentPackages(context, packages);
+		ArrayList<String> packages = getRecentPackages(context);
 
 		// backup for save to mRecentMemory
 		@SuppressWarnings("unchecked")
@@ -42,16 +35,13 @@ public class SetPackageProvider extends PackageProvider {
 
 		} else {// first time
 			// only record first one
-			packages.clear();
+			if (0 < packages.size()) {
+				String newset = packages.get(0);
+				packages.clear();
+				packages.add(newset);
+			}
 		}
 
-		// no change in set
-		// consider the user to be using the same app, this is not accurate
-		// yet
-		// no other better method
-		if (0 == packages.size()) {
-			packages.add(newest);
-		}
 		mRecentPackage = currentBackup;
 
 		ArrayList<LaunchInfo> result = new ArrayList<LaunchInfo>(
@@ -71,29 +61,16 @@ public class SetPackageProvider extends PackageProvider {
 	 *            the set to hold recent packages
 	 * @return the most recent package
 	 */
-	private String getRecentPackages(Context context, ArrayList<String> packages) {
+	private ArrayList<String> getRecentPackages(Context context) {
 
-		packages.clear();
+		ArrayList<String> packages = new ArrayList<String>(MEMORY_SIZE);
 
-		if (null == mActivityManager) {
-			mActivityManager = (ActivityManager) context
-					.getSystemService(Service.ACTIVITY_SERVICE);
-		}
-		List<ActivityManager.RecentTaskInfo> recents = mActivityManager
-				.getRecentTasks(MEMORY_SIZE,
-						ActivityManager.RECENT_IGNORE_UNAVAILABLE);
+		List<ActivityManager.RecentTaskInfo> recents = getLaunchableRecent(context);
 
-		// read ignore list
-		HashSet<String> ignoredSet = IgnoreSetService.getIgnoreSetService(
-				context).getIgnoreSet();
 		for (ActivityManager.RecentTaskInfo recent : recents) {
-			String name = recent.baseIntent.getComponent().getPackageName();
-			if (!ignoredSet.contains(name)) {
-				packages.add(name);
-			}
+			packages.add(recent.baseIntent.getComponent().getPackageName());
 		}
-
-		return recents.get(0).baseIntent.getComponent().getPackageName();
+		return packages;
 	}
 
 	@Override

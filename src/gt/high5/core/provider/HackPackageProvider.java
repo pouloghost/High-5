@@ -1,17 +1,13 @@
 package gt.high5.core.provider;
 
-import gt.high5.core.service.IgnoreSetService;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import android.app.ActivityManager;
-import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 
@@ -26,11 +22,8 @@ public class HackPackageProvider extends PackageProvider {
 	private Method mGetPkgUsageStatsMethod = null;
 	private Field mLaunchCountField = null;
 
-	private ArrayList<LaunchInfo> mRecentInfos = new ArrayList<LaunchInfo>(
-			MEMORY_SIZE);
-	private ArrayList<String> mOrderedPackages = new ArrayList<String>(
-			MEMORY_SIZE);
-	private ActivityManager mActivityManager = null;
+	private ArrayList<LaunchInfo> mRecentInfos = null;
+	private ArrayList<String> mOrderedPackages = null;
 
 	public HackPackageProvider() throws CannotCreateException {
 		super();
@@ -59,8 +52,7 @@ public class HackPackageProvider extends PackageProvider {
 	@Override
 	public Collection<LaunchInfo> getChangedPackages(Context context) {
 		// recent packages
-		ArrayList<LaunchInfo> infos = new ArrayList<LaunchInfo>();
-		LaunchInfo newest = getRecentLaunchInfo(context, infos);
+		ArrayList<LaunchInfo> infos = getRecentLaunchInfo(context);
 		// backup
 		@SuppressWarnings("unchecked")
 		ArrayList<LaunchInfo> currentBackup = (ArrayList<LaunchInfo>) infos
@@ -88,58 +80,38 @@ public class HackPackageProvider extends PackageProvider {
 				}
 			}
 		} else {
-			result.clear();
-		}
-
-		if (0 == result.size()) {
-			// no change in set
-			// this app is being used all the time
-			result.add(newest);
+			if (0 < infos.size()) {
+				LaunchInfo info = result.get(0);
+				result.clear();
+				result.add(info);
+			}
 		}
 
 		mRecentInfos = currentBackup;
 		return result;
 	}
 
-	private LaunchInfo getRecentLaunchInfo(Context context,
-			ArrayList<LaunchInfo> infos) {
+	private ArrayList<LaunchInfo> getRecentLaunchInfo(Context context) {
 
-		infos.clear();
+		ArrayList<LaunchInfo> infos = new ArrayList<LaunchInfo>(MEMORY_SIZE);
 		mOrderedPackages.clear();
 
-		if (null == mActivityManager) {
-			mActivityManager = (ActivityManager) context
-					.getSystemService(Service.ACTIVITY_SERVICE);
-		}
-		List<ActivityManager.RecentTaskInfo> recents = mActivityManager
-				.getRecentTasks(MEMORY_SIZE,
-						ActivityManager.RECENT_IGNORE_UNAVAILABLE);
-		// ignore set
-		HashSet<String> ignoredSet = IgnoreSetService.getIgnoreSetService(
-				context).getIgnoreSet();
+		List<ActivityManager.RecentTaskInfo> recents = getLaunchableRecent(context);
 
-		LaunchInfo result = null;
 		for (ActivityManager.RecentTaskInfo recent : recents) {
-			String name = recent.baseIntent.getComponent().getPackageName();
-			if (!ignoredSet.contains(name)) {
-				try {
-					LaunchInfo info = extractLaunchInfoFromTaskInfo(recent);
-					infos.add(info);
-					mOrderedPackages.add(info.getPackage());
-					if (null == result) {
-						result = info;
-					}
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
+			try {
+				LaunchInfo info = extractLaunchInfoFromTaskInfo(recent);
+				infos.add(info);
+				mOrderedPackages.add(info.getPackage());
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
 			}
 		}
-
-		return result;
+		return infos;
 	}
 
 	private LaunchInfo extractLaunchInfoFromTaskInfo(
