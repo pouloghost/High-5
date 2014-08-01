@@ -67,24 +67,28 @@ public class HackPackageProvider extends PackageProvider {
 				.clone();
 		// filter information
 		ArrayList<LaunchInfo> result = new ArrayList<LaunchInfo>(infos.size());
-		for (LaunchInfo now : infos) {
-			LaunchInfo info = null;
-			int index = mRecentInfos.indexOf(now);
-			if (-1 != index) {
-				// app is in recent list last call
-				LaunchInfo last = mRecentInfos.get(index);
-				// launch count increased
-				if (now.getLaunchCount() > last.getLaunchCount()) {
-					info = new LaunchInfo(now.getPackage(),
-							now.getLaunchCount() - last.getLaunchCount());
+		if (null != mRecentInfos) {
+			for (LaunchInfo now : infos) {
+				LaunchInfo info = null;
+				int index = mRecentInfos.indexOf(now);
+				if (-1 != index) {
+					// app is in recent list last call
+					LaunchInfo last = mRecentInfos.get(index);
+					// launch count increased
+					if (now.getLaunchCount() > last.getLaunchCount()) {
+						info = new LaunchInfo(now.getPackage(),
+								now.getLaunchCount() - last.getLaunchCount());
+					}
+				} else {
+					// newly added package, regarded as launched once
+					info = new LaunchInfo(now.getPackage(), 1);
 				}
-			} else {
-				// newly added package, regarded as launched once
-				info = new LaunchInfo(now.getPackage(), 1);
+				if (null != info) {
+					result.add(info);
+				}
 			}
-			if (null != info) {
-				result.add(info);
-			}
+		} else {
+			result.clear();
 		}
 
 		if (0 == result.size()) {
