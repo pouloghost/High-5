@@ -2,11 +2,13 @@
 <filters pack="gt.high5.database.filter" >
 
     <filter
-        clazz="ContainsFilter"
-        method="addKeyword"
-        params="1" >
+        clazz="ContainsFilter">
         <!-- can't use ctrl shift f -->
-        <param>launcher</param>
+        <method name="addKeyword" count="1">
+            <param>launcher</param>
+        </method>
     </filter>
+    
+    <filter clazz="LaunchableFilter"></filter> 
 
 </filters>

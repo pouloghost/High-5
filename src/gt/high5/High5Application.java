@@ -5,6 +5,7 @@ import gt.high5.core.service.IgnoreSetService;
 import gt.high5.core.service.PreferenceReadService;
 import gt.high5.database.accessor.FilterParser;
 import gt.high5.database.filter.Filter;
+import gt.high5.database.filter.FilterContext;
 import gt.high5.database.model.TableUtils;
 import gt.high5.database.tables.Time;
 
@@ -91,10 +92,14 @@ public class High5Application extends Application {
 				IgnoreSetService service = IgnoreSetService
 						.getIgnoreSetService(getApplicationContext());
 
+				FilterContext context = new FilterContext();
+				context.setContext(getApplicationContext());
+
 				for (ApplicationInfo info : infos) {
 					boolean shouldIgnore = false;
 					for (Filter filter : filters) {
-						shouldIgnore = filter.shouldIgnore(info.packageName);
+						context.setInfo(info);
+						shouldIgnore = filter.shouldIgnore(context);
 						if (shouldIgnore) {
 							service.update(info.packageName, false);
 							break;

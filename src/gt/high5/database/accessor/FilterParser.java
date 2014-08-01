@@ -21,14 +21,14 @@ public class FilterParser {
 	 * @author GT Tags allowed in xml
 	 */
 	private static enum TAGS {
-		filters, filter, param
+		filters, filter, param, method
 	}
 
 	/**
 	 * @author GT Attributes allowed in xml
 	 */
 	private static enum ATTR {
-		method, params, clazz, pack
+		name, count, clazz, pack
 	}
 
 	private String mPackage = null;
@@ -42,6 +42,7 @@ public class FilterParser {
 		setFilters(loadFilters(parser));
 	}
 
+	@SuppressWarnings("unchecked")
 	public ArrayList<Filter> loadFilters(XmlPullParser parser)
 			throws XmlPullParserException, ClassNotFoundException,
 			InstantiationException, IllegalAccessException,
@@ -51,7 +52,8 @@ public class FilterParser {
 		int eventType = parser.getEventType();
 		Method method = null;
 		Filter filter = null;
-		TAGS currentTag = null;
+		ArrayList<String> params = null;
+		Class<? extends Filter> clazz = null;
 
 		while (XmlPullParser.END_DOCUMENT != eventType) {
 			switch (eventType) {
@@ -81,17 +83,18 @@ public class FilterParser {
 					// class
 					String simpleName = parser.getAttributeValue(null,
 							ATTR.clazz.toString());
-					@SuppressWarnings("unchecked")
-					Class<? extends Filter> clazz = (Class<? extends Filter>) Class
-							.forName(mPackage + "." + simpleName);
+					clazz = (Class<? extends Filter>) Class.forName(mPackage
+							+ "." + simpleName);
 					// instance
 					filter = (Filter) clazz.newInstance();
+					break;
+				case method:
 					// method
 					String methodName = parser.getAttributeValue(null,
-							ATTR.method.toString());
+							ATTR.name.toString());
 					// parameter count
 					int count = Integer.parseInt(parser.getAttributeValue(null,
-							ATTR.params.toString()));
+							ATTR.count.toString()));
 					Class<?>[] parameterTypes = new Class[count];
 					for (int i = 0; i < count; ++i) {
 						parameterTypes[i] = String.class;
@@ -100,7 +103,7 @@ public class FilterParser {
 							methodName, parameterTypes);
 					break;
 				case param:
-					currentTag = TAGS.param;
+					params = new ArrayList<String>();
 					break;
 				default:
 					break;
@@ -108,13 +111,7 @@ public class FilterParser {
 				break;
 			case XmlPullParser.TEXT:
 				// for texts in param tag
-				if (TAGS.param == currentTag) {
-					String paramsString = parser.getText();
-					String[] params = paramsString.split(",");
-					if (null != method) {
-						method.invoke(filter, params);
-					}
-				}
+				params.add(parser.getText());
 				break;
 			case XmlPullParser.END_TAG:
 				String endName = parser.getName();
@@ -124,10 +121,16 @@ public class FilterParser {
 					break;
 				case filter:
 					result.add(filter);
-					method = null;
+					filter = null;
 					break;
 				case param:
-					currentTag = null;
+					break;
+				case method:
+					if (null != method) {
+						method.invoke(filter, params.toArray());
+					}
+					method = null;
+					params = null;
 					break;
 				default:
 					break;
