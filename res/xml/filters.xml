@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<filters pack="gt.high5.database.filter" >
+
+    <filter
+        clazz="ContainsFilter"
+        method="addKeyword"
+        params="1" >
+        <!-- can't use ctrl shift f -->
+        <param>launcher</param>
+    </filter>
+
+</filters>

@@ -11,7 +11,7 @@ import org.xmlpull.v1.XmlPullParserException;
 /**
  * @author GT
  * 
- *         loader to parsing xml
+ *         loader to parsing table xml
  */
 public class TableParser {
 	/**
@@ -34,7 +34,7 @@ public class TableParser {
 	/**
 	 * table types in xml
 	 */
-	private ArrayList<Class<? extends RecordTable>> tables = null;
+	private ArrayList<Class<? extends RecordTable>> mTables = null;
 
 	public TableParser(XmlPullParser parser) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException,
@@ -141,10 +141,10 @@ public class TableParser {
 	}
 
 	public ArrayList<Class<? extends RecordTable>> getTables() {
-		return tables;
+		return mTables;
 	}
 
 	public void setTables(ArrayList<Class<? extends RecordTable>> tables) {
-		this.tables = tables;
+		this.mTables = tables;
 	}
 }
