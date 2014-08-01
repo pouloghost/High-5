@@ -1,6 +1,7 @@
 package gt.high5.database.tables;
 
 import gt.high5.core.service.RecordContext;
+import gt.high5.database.model.ClassUtils;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableAnnotation;
@@ -161,7 +162,7 @@ public class Total extends RecordTable {
 	public RecordTable clone() {
 		RecordTable result = null;
 		try {
-			result = (RecordTable) TableUtils.clone(this, Table.class);
+			result = (RecordTable) ClassUtils.clone(this, Table.class);
 		} catch (InstantiationException e) {
 
 			e.printStackTrace();

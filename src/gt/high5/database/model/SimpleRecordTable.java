@@ -88,7 +88,7 @@ public abstract class SimpleRecordTable extends RecordTable {
 	public RecordTable clone() {
 		RecordTable result = null;
 		try {
-			result = (RecordTable) TableUtils.clone(this, Table.class);
+			result = (RecordTable) ClassUtils.clone(this, Table.class);
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {

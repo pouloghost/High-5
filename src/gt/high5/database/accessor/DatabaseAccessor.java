@@ -1,5 +1,6 @@
 package gt.high5.database.accessor;
 
+import gt.high5.database.model.ClassUtils;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableUtils;
@@ -142,7 +143,7 @@ public class DatabaseAccessor {
 				Class<? extends Table> clazz = table.getClass();
 				do {
 					Table data = clazz.newInstance();
-					Field[] fields = TableUtils
+					Field[] fields = ClassUtils
 							.getAllFields(clazz, Table.class);
 					for (Field field : fields) {
 						if (TableUtils.shouldIgnoreField(field, false)) {

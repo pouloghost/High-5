@@ -6,8 +6,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 
-import android.support.v4.util.ArrayMap;
-
 import com.github.curioustechizen.xlog.Log;
 
 public class TableUtils {
@@ -34,7 +32,7 @@ public class TableUtils {
 		@SuppressWarnings("unchecked")
 		Class<? extends T> clazz = (Class<? extends T>) table.getClass();
 		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = getAllFields(clazz, base);
+		Field[] fields = ClassUtils.getAllFields(clazz, base);
 		boolean hasValue = false;
 		StringBuilder sql = new StringBuilder("INSERT INTO "
 				+ clazz.getSimpleName());
@@ -100,7 +98,7 @@ public class TableUtils {
 		}
 
 		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = getAllFields(clazz, base);
+		Field[] fields = ClassUtils.getAllFields(clazz, base);
 		boolean hasValue = false;
 		StringBuilder sql = new StringBuilder("UPDATE " + clazz.getSimpleName()
 				+ " SET ");
@@ -110,8 +108,11 @@ public class TableUtils {
 				continue;
 			}
 
-			Object def = getDefaultValue(field);
-			Object val = getValue(table, field);
+			Object def = ClassUtils.getDefaultValue(field);
+			if (null == def) {
+				continue;
+			}
+			Object val = ClassUtils.getValue(table, field);
 			if (!def.equals(val)) {
 				if (hasValue) {
 					sql.append(", ");
@@ -156,7 +157,7 @@ public class TableUtils {
 			throws IllegalAccessException, IllegalArgumentException {
 		Class<? extends RecordTable> clazz = table.getClass();
 		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = getAllFields(clazz, RecordTable.class);
+		Field[] fields = ClassUtils.getAllFields(clazz, RecordTable.class);
 		boolean sqlAdded = false;
 		boolean whereAdded = false;
 		StringBuilder sql = new StringBuilder("UPDATE " + clazz.getSimpleName()
@@ -168,8 +169,11 @@ public class TableUtils {
 				continue;
 			}
 
-			Object def = getDefaultValue(field);
-			Object val = getValue(table, field);
+			Object def = ClassUtils.getDefaultValue(field);
+			if (null == def) {
+				continue;
+			}
+			Object val = ClassUtils.getValue(table, field);
 
 			if (!def.equals(val)) {
 				String step = getStep(table, field);
@@ -202,39 +206,13 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	/**
-	 * implementation using reflection supporting all abstract method with the
-	 * same name
-	 * 
-	 * @param table
-	 * @param base
-	 *            first parent class that should not be cloned in extend
-	 *            hierarchy
-	 * @return a clone of table
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 */
-	public static <T> T clone(T table, Class<T> base)
-			throws InstantiationException, IllegalAccessException {
-		@SuppressWarnings("unchecked")
-		Class<? extends T> clazz = (Class<? extends T>) table.getClass();
-		T result = (T) clazz.newInstance();
-		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = getAllFields(clazz, base);
-		for (Field field : fields) {
-			field.setAccessible(true);
-			field.set(result, field.get(table));
-		}
-		return result;
-	}
-
 	public static <T> String buildCreator(Class<? extends T> clazz,
 			Class<T> base) {
 		StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS "
 				+ clazz.getSimpleName()
 				+ " (id INTEGER PRIMARY KEY AUTOINCREMENT");
 		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = getAllFields(clazz, base);
+		Field[] fields = ClassUtils.getAllFields(clazz, base);
 		for (Field field : fields) {
 			if (shouldIgnoreField(field, true)) {
 				continue;
@@ -257,7 +235,7 @@ public class TableUtils {
 		@SuppressWarnings("unchecked")
 		Class<? extends T> clazz = (Class<? extends T>) table.getClass();
 		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = getAllFields(clazz, base);
+		Field[] fields = ClassUtils.getAllFields(clazz, base);
 		boolean hasValue = false;
 		StringBuilder sql = new StringBuilder(" WHERE ");
 
@@ -266,8 +244,11 @@ public class TableUtils {
 				continue;
 			}
 
-			Object def = getDefaultValue(field);
-			Object val = getValue(table, field);
+			Object def = ClassUtils.getDefaultValue(field);
+			if (null == def) {
+				continue;
+			}
+			Object val = ClassUtils.getValue(table, field);
 			if (!def.equals(val)) {
 				if (hasValue) {
 					sql.append(" AND ");
@@ -288,56 +269,6 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	public static Object getDefaultValue(Field field) {
-		TableAnnotation annotation = field.getAnnotation(TableAnnotation.class);
-		Class<?> clazz = field.getType();
-		Object result = new Object();
-		if (int.class == clazz || Integer.class == clazz) {
-			result = Integer.valueOf(annotation.defaultValue());
-		} else if (String.class == clazz) {
-			result = annotation.defaultValue();
-		} else if (double.class == clazz || Double.class == clazz) {
-			result = Double.valueOf(annotation.defaultValue());
-		}
-		return result;
-	}
-
-	public static <T> Object getValue(T table, Field field)
-			throws IllegalAccessException, IllegalArgumentException {
-		Class<?> clazz = field.getType();
-		field.setAccessible(true);
-		Object result = new Object();
-		if (int.class == clazz) {
-			result = Integer.valueOf(field.getInt(table));
-		} else if (Integer.class == clazz) {
-			result = field.get(table);
-		} else if (String.class == clazz) {
-			result = field.get(table);
-		} else if (double.class == clazz) {
-			result = Double.valueOf(field.getDouble(table));
-		} else if (Double.class == clazz) {
-			result = field.get(table);
-		}
-		return result;
-	}
-
-	public static <T> void setValue(T table, Field field, Object value)
-			throws IllegalAccessException, IllegalArgumentException {
-		Class<?> clazz = field.getType();
-		field.setAccessible(true);
-		if (int.class == clazz) {
-			field.set(table, ((Integer) value).intValue());
-		} else if (Integer.class == clazz) {
-			field.set(table, ((Integer) value));
-		} else if (String.class == clazz) {
-			field.set(table, ((String) value));
-		} else if (double.class == clazz) {
-			field.set(table, ((Double) value).doubleValue());
-		} else if (Double.class == clazz) {
-			field.set(table, ((Double) value));
-		}
-	}
-
 	private static String getStep(RecordTable table, Field field)
 			throws IllegalAccessException, IllegalArgumentException {
 		Class<?> clazz = field.getType();
@@ -347,7 +278,7 @@ public class TableUtils {
 		}
 		TableAnnotation annotation = field.getAnnotation(TableAnnotation.class);
 		if (annotation.increaseWhenUpdate()) {
-			Object step = getValue(table, field);
+			Object step = ClassUtils.getValue(table, field);
 			String stepString = null;
 			if (int.class == step.getClass()
 					|| Integer.class == step.getClass()) {
@@ -403,38 +334,6 @@ public class TableUtils {
 			valueString = "" + val;
 		}
 		return valueString;
-	}
-
-	/**
-	 * get fields from clazz and all its super classes
-	 * 
-	 * @param clazz
-	 * @param base
-	 *            first parent class that should not be reflected in extend
-	 *            hierarchy
-	 * @return all fields
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> Field[] getAllFields(Class<? extends T> clazz,
-			Class<T> base) {
-		ArrayMap<String, Field> name2Field = new ArrayMap<String, Field>();
-		while (clazz != base) {
-			Field[] fields = clazz.getDeclaredFields();
-			String name = null;
-			for (Field field : fields) {
-				name = field.getName();
-				if (!name2Field.containsKey(name)) {
-					name2Field.put(name, field);
-				}
-			}
-
-			clazz = (Class<? extends T>) clazz.getSuperclass();
-		}
-
-		Field[] fields = new Field[name2Field.size()];
-		fields = name2Field.values().toArray(fields);
-
-		return fields;
 	}
 
 	public static boolean isDebugging() {
