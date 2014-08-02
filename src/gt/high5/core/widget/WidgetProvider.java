@@ -43,8 +43,6 @@ public class WidgetProvider extends AppWidgetProvider {
 	// public static final int RECORD_INTERVAL = 60 * 1000;
 	// public static final int RECORD_INTERVAL = UPDATE_INTERVAL / 15;
 
-	private static int[] appWidgetIds = null;
-
 	@Override
 	public void onEnabled(Context context) {
 
@@ -80,12 +78,6 @@ public class WidgetProvider extends AppWidgetProvider {
 			context.startActivity(i);
 		} else if (RECORD_ACT.equalsIgnoreCase(intent.getAction())) {
 			recordCurrentStatus(context);
-		} else if (Intent.ACTION_PACKAGE_DATA_CLEARED.equalsIgnoreCase(intent
-				.getAction())) {// task manager
-			AppWidgetManager
-					.getInstance(context)
-					.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.launcher);
-			recordCurrentStatus(context);
 		}
 		super.onReceive(context, intent);
 	}
@@ -93,7 +85,6 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
-		WidgetProvider.appWidgetIds = appWidgetIds;
 		// init view
 		RemoteViews views = new RemoteViews(context.getPackageName(),
 				R.layout.widget);
