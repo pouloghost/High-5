@@ -80,11 +80,7 @@ public class HackPackageProvider extends PackageProvider {
 				}
 			}
 		} else {
-			if (0 < infos.size()) {
-				LaunchInfo info = result.get(0);
-				result.clear();
-				result.add(info);
-			}
+			result.clear();
 		}
 
 		mRecentInfos = currentBackup;

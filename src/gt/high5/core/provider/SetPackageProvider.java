@@ -34,12 +34,9 @@ public class SetPackageProvider extends PackageProvider {
 			packages.removeAll(mRecentPackage);
 
 		} else {// first time
-			// only record first one
-			if (0 < packages.size()) {
-				String newset = packages.get(0);
-				packages.clear();
-				packages.add(newset);
-			}
+			// record nothing
+			packages.clear();
+
 		}
 
 		mRecentPackage = currentBackup;
