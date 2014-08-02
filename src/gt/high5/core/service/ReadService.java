@@ -91,36 +91,22 @@ public class ReadService {
 			List<Class<? extends RecordTable>> tables = mAccessor.getTables();
 			if (null != allTotals) {
 				for (Table total : allTotals) {
-					((Total) total).setPossibility(all, true);
-					for (Class<? extends RecordTable> clazz : tables) {
-						RecordTable queryTable = clazz.newInstance();
-						queryTable.currentQueryStatus(new RecordContext(
-								context, service, (Total) total));
-						ArrayList<Table> allTables = mAccessor.R(queryTable);
-						if (null != allTables) {
-							((Total) total).setPossibility(
-									((RecordTable) total).getCount(), false);
-						} else {
-							// no existing record meaning user won't use this
-							// app in current condition
-							((Total) total).setPossibility(0, false);
-						}
-					}
+					updatePossibility(context, all, service, tables, total);
 				}
 
 				Collections.sort(allTotals, Total.getComparator());
 
 				if (PreferenceReadService.getPreferenceReadService(context)
 						.shouldLog(this.getClass())) {
-					StringBuilder sb = new StringBuilder();
+					StringBuilder sortLog = new StringBuilder("after sort ");
 					for (Table total : allTotals) {
-						sb.append(((Total) total).getName());
-						sb.append(":");
-						sb.append(((Total) total).getPossibility());
-						sb.append("\t");
+						sortLog.append(((Total) total).getName());
+						sortLog.append(":");
+						sortLog.append(((Total) total).getPossibility());
+						sortLog.append("\t");
 					}
 
-					Log.d(MainActivity.LOG_TAG, "after sort " + sb.toString());
+					Log.d(MainActivity.LOG_TAG, sortLog.toString());
 				}
 
 				HashSet<String> ignoredSet = IgnoreSetService
@@ -129,6 +115,9 @@ public class ReadService {
 				int listSize = allTotals.size();
 				int size = Math.min(5, listSize);
 				for (int i = 0, j = 0; j < size && i < listSize; ++i) {
+					if (0 == ((Total) allTotals.get(i)).getCount()) {
+						break;
+					}
 					String name = ((Total) allTotals.get(i)).getName();
 					if (!ignoredSet.contains(name)) {
 						last.add(name);
@@ -143,5 +132,46 @@ public class ReadService {
 			}
 		}
 		return last;
+	}
+
+	private void updatePossibility(Context context, int all,
+			RecordService service, List<Class<? extends RecordTable>> tables,
+			Table total) throws InstantiationException, IllegalAccessException {
+		StringBuilder possibilityLog = new StringBuilder(
+				"Possible ");
+		possibilityLog.append(((Total) total).getName());
+		possibilityLog.append(" ");
+		possibilityLog.append(((Total) total).getCount());
+		possibilityLog.append(" all:");
+		possibilityLog.append(all);
+		possibilityLog.append(".");
+		((Total) total).setPossibility(all, true);
+		for (Class<? extends RecordTable> clazz : tables) {
+			RecordTable queryTable = clazz.newInstance();
+			queryTable.currentQueryStatus(new RecordContext(
+					context, service, (Total) total));
+			ArrayList<Table> allTables = mAccessor.R(queryTable);
+			if (null != allTables) {
+				((Total) total)
+						.setPossibility(((RecordTable) allTables
+								.get(0)).getCount(), false);
+				possibilityLog.append(((RecordTable) allTables
+						.get(0)).getClass().getSimpleName());
+				possibilityLog.append(" ");
+				possibilityLog.append(((RecordTable) allTables
+						.get(0)).getCount());
+				possibilityLog.append(",");
+			} else {
+				// no existing record meaning user won't use this
+				// app in current condition
+				((Total) total).setPossibility(0, false);
+				break;
+			}
+		}
+
+		if (PreferenceReadService.getPreferenceReadService(context)
+				.shouldLog(this.getClass())) {
+			Log.d(MainActivity.LOG_TAG, possibilityLog.toString());
+		}
 	}
 }
