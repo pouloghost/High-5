@@ -136,6 +136,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	private PendingIntent getUpdateIntent(Context context, int[] appWidgetIds) {
 		Intent updateIntent = new Intent(
 				AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+		updateIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
 		updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
 				appWidgetIds);
 		updateIntent.setData(Uri.parse("high5://widget/update/"));
@@ -145,6 +146,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
 	private PendingIntent getRecordIntent(Context context) {
 		Intent recordIntent = new Intent(RECORD_ACT);
+		recordIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
 		recordIntent.setData(Uri.parse("high5://widget/record"));
 		return PendingIntent.getBroadcast(context, RECORD_REQ, recordIntent,
 				PendingIntent.FLAG_CANCEL_CURRENT);
