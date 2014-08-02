@@ -1,15 +1,12 @@
 package gt.high5.core.service;
 
 import gt.high5.R;
-import gt.high5.activity.MainActivity;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.Table;
 import gt.high5.database.tables.Ignore;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-
-import com.github.curioustechizen.xlog.Log;
 
 import android.content.Context;
 
@@ -36,11 +33,6 @@ public class IgnoreSetService {
 
 	private IgnoreSetService(Context context) {
 		if (null == mAccessor) {
-			if (PreferenceReadService.getPreferenceReadService(context)
-					.shouldLog(this.getClass())) {
-				Log.d(MainActivity.LOG_TAG,
-						"get a new accessor in ignore set service");
-			}
 			mAccessor = DatabaseAccessor.getAccessor(context, R.xml.tables);
 		}
 	}

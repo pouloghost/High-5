@@ -67,6 +67,10 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
+		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
+				this.getClass())) {
+			Log.d(MainActivity.LOG_TAG, "recieved " + intent.getAction());
+		}
 		if (LAUNCH_ACT.equalsIgnoreCase(intent.getAction())) {
 			String packageName = intent.getStringExtra(LAUNCH_PACKAGE);
 			Intent i = context.getPackageManager().getLaunchIntentForPackage(
@@ -81,12 +85,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
-
 		// init view
-		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
-				this.getClass())) {
-			Log.d(MainActivity.LOG_TAG, "action update");
-		}
 		RemoteViews views = new RemoteViews(context.getPackageName(),
 				R.layout.widget);
 		// init intent template
@@ -108,6 +107,13 @@ public class WidgetProvider extends AppWidgetProvider {
 				PreferenceReadService.getPreferenceReadService(context)
 						.getUpdateInterval(),
 				getUpdateIntent(context, appWidgetIds));
+
+		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
+				this.getClass())) {
+			Log.d(MainActivity.LOG_TAG, "update "
+					+ PreferenceReadService.getPreferenceReadService(context)
+							.getUpdateInterval());
+		}
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 	}
 
@@ -142,6 +148,14 @@ public class WidgetProvider extends AppWidgetProvider {
 			startInterval(context, PreferenceReadService
 					.getPreferenceReadService(context).getRecordInterval(),
 					getRecordIntent(context));
+			if (PreferenceReadService.getPreferenceReadService(context)
+					.shouldLog(this.getClass())) {
+				Log.d(MainActivity.LOG_TAG,
+						"record "
+								+ PreferenceReadService
+										.getPreferenceReadService(context)
+										.getRecordInterval());
+			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (NotFoundException e) {

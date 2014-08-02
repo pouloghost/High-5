@@ -41,10 +41,6 @@ public class ReadService {
 
 	private ReadService(Context context) {
 		if (null == mAccessor) {
-			if (PreferenceReadService.getPreferenceReadService(context)
-					.shouldLog(this.getClass())) {
-				Log.d(MainActivity.LOG_TAG, "get a new accessor");
-			}
 			mAccessor = DatabaseAccessor.getAccessor(context, R.xml.tables);
 		}
 	}
@@ -124,6 +120,19 @@ public class ReadService {
 						++j;
 					}
 				}
+
+				if (PreferenceReadService.getPreferenceReadService(context)
+						.shouldLog(this.getClass())) {
+					StringBuilder sortLog = new StringBuilder("after sort ");
+					for (Table total : allTotals) {
+						sortLog.append(((Total) total).getName());
+						sortLog.append(":");
+						sortLog.append(((Total) total).getPossibility());
+						sortLog.append("\t");
+					}
+
+					Log.d(MainActivity.LOG_TAG, sortLog.toString());
+				}
 			}
 		} else {
 			if (PreferenceReadService.getPreferenceReadService(context)
@@ -137,8 +146,7 @@ public class ReadService {
 	private void updatePossibility(Context context, int all,
 			RecordService service, List<Class<? extends RecordTable>> tables,
 			Table total) throws InstantiationException, IllegalAccessException {
-		StringBuilder possibilityLog = new StringBuilder(
-				"Possible ");
+		StringBuilder possibilityLog = new StringBuilder("Possible ");
 		possibilityLog.append(((Total) total).getName());
 		possibilityLog.append(" ");
 		possibilityLog.append(((Total) total).getCount());
@@ -148,18 +156,17 @@ public class ReadService {
 		((Total) total).setPossibility(all, true);
 		for (Class<? extends RecordTable> clazz : tables) {
 			RecordTable queryTable = clazz.newInstance();
-			queryTable.currentQueryStatus(new RecordContext(
-					context, service, (Total) total));
+			queryTable.currentQueryStatus(new RecordContext(context, service,
+					(Total) total));
 			ArrayList<Table> allTables = mAccessor.R(queryTable);
 			if (null != allTables) {
-				((Total) total)
-						.setPossibility(((RecordTable) allTables
-								.get(0)).getCount(), false);
-				possibilityLog.append(((RecordTable) allTables
-						.get(0)).getClass().getSimpleName());
+				((Total) total).setPossibility(
+						((RecordTable) allTables.get(0)).getCount(), false);
+				possibilityLog.append(((RecordTable) allTables.get(0))
+						.getClass().getSimpleName());
 				possibilityLog.append(" ");
-				possibilityLog.append(((RecordTable) allTables
-						.get(0)).getCount());
+				possibilityLog.append(((RecordTable) allTables.get(0))
+						.getCount());
 				possibilityLog.append(",");
 			} else {
 				// no existing record meaning user won't use this
@@ -169,8 +176,8 @@ public class ReadService {
 			}
 		}
 
-		if (PreferenceReadService.getPreferenceReadService(context)
-				.shouldLog(this.getClass())) {
+		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
+				this.getClass())) {
 			Log.d(MainActivity.LOG_TAG, possibilityLog.toString());
 		}
 	}
