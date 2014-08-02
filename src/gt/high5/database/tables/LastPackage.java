@@ -24,11 +24,12 @@ public final class LastPackage extends SimpleRecordTable {
 	public boolean currentQueryStatus(RecordContext context) {
 		PackageProvider provider = null;
 		RecordService service = null;
+		List<String> order = null;
 		if (null != (service = context.getRecordService())
-				&& null != (provider = service.getPackageProvider())) {
+				&& null != (provider = service.getPackageProvider())
+				&& null != (order = provider.getLastPackageOrder(context
+						.getContext()))) {
 			Total total = context.getTotal();
-			List<String> order = provider.getLastPackageOrder(context
-					.getContext());
 			int index = order.indexOf(total.getName());
 			// exists and not last one
 			if (-1 != index && order.size() - 1 != index) {

@@ -83,10 +83,10 @@ public abstract class PackageProvider {
 		HashSet<String> ignoredSet = IgnoreSetService.getIgnoreSetService(
 				context).getIgnoreSet();
 
-		for (int i = recents.size(); i >= 0; --i) {
-			if (ignoredSet.contains(recents.get(i).baseIntent.getComponent()
-					.getPackageName())) {
-				recents.remove(i);
+		for (int i = recents.size(); i > 0; --i) {
+			if (ignoredSet.contains(recents.get(i - 1).baseIntent
+					.getComponent().getPackageName())) {
+				recents.remove(i - 1);
 			}
 		}
 

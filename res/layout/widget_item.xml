@@ -3,17 +3,19 @@
     android:id="@+id/app_wrapper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:orientation="vertical" >
 
     <ImageView
         android:id="@+id/app_icon"
         android:layout_width="48dp"
-        android:layout_height="48dp" />
+        android:layout_height="48dp"
+        android:gravity="center_horizontal" />
 
     <TextView
         android:id="@+id/app_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical" />
+        android:gravity="center_horizontal" />
 
 </LinearLayout>
