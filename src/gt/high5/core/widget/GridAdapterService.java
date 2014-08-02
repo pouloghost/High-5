@@ -48,6 +48,7 @@ public class GridAdapterService extends RemoteViewsService {
 				// Log.d(MainActivity.LOG_TAG, "data set size " + apps.size());
 			}
 			return apps.size();
+			// return 5;
 		}
 
 		@Override
@@ -69,7 +70,7 @@ public class GridAdapterService extends RemoteViewsService {
 					.shouldLog(GridAdapterService.class)) {
 				Log.d(MainActivity.LOG_TAG, "view at " + position);
 			}
-			if (apps.size() < position) {
+			if (apps.size() <= position) {
 				return null;
 			}
 			Context context = GridAdapterService.this;
@@ -91,8 +92,7 @@ public class GridAdapterService extends RemoteViewsService {
 						mPackageManager.getApplicationLabel(info));
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
-				remoteViews.setImageViewResource(R.id.app_icon,
-						R.drawable.ic_launcher);
+				return null;
 			}
 			// launch broadcast
 			Intent fillInIntent = new Intent();
