@@ -91,8 +91,7 @@ public class GridAdapterService extends RemoteViewsService {
 						mPackageManager.getApplicationLabel(info));
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
-				remoteViews.setImageViewResource(R.id.app_icon,
-						R.drawable.ic_launcher);
+				return null;
 			}
 			// launch broadcast
 			Intent fillInIntent = new Intent();
