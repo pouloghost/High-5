@@ -45,7 +45,7 @@ public class GridAdapterService extends RemoteViewsService {
 		public int getCount() {
 			if (PreferenceReadService.getPreferenceReadService(
 					getApplicationContext()).shouldLog(this.getClass())) {
-				// Log.d(MainActivity.LOG_TAG, "data set size " + apps.size());
+				Log.d(MainActivity.LOG_TAG, "data set size " + apps.size());
 			}
 			return apps.size();
 		}
@@ -126,7 +126,7 @@ public class GridAdapterService extends RemoteViewsService {
 						.getHigh5(getApplicationContext(), apps);
 				if (PreferenceReadService.getPreferenceReadService(
 						getApplicationContext()).shouldLog(this.getClass())) {
-					// Log.d(MainActivity.LOG_TAG, "data set changed");
+					Log.d(MainActivity.LOG_TAG, "data set changed");
 				}
 			} catch (InstantiationException e) {
 				e.printStackTrace();

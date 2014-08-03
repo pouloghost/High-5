@@ -63,10 +63,6 @@ public class RecordService {
 		if (null == mAccessor || null == mPackageProvider) {
 			return;
 		}
-		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
-				this.getClass())) {
-			Log.d(MainActivity.LOG_TAG, "action record");
-		}
 		Collection<LaunchInfo> packages = mPackageProvider
 				.getChangedPackages(context);
 		for (LaunchInfo info : packages) {

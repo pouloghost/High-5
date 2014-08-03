@@ -120,19 +120,6 @@ public class ReadService {
 						++j;
 					}
 				}
-
-				if (PreferenceReadService.getPreferenceReadService(context)
-						.shouldLog(this.getClass())) {
-					StringBuilder sortLog = new StringBuilder("after sort ");
-					for (Table total : allTotals) {
-						sortLog.append(((Total) total).getName());
-						sortLog.append(":");
-						sortLog.append(((Total) total).getPossibility());
-						sortLog.append("\t");
-					}
-
-					Log.d(MainActivity.LOG_TAG, sortLog.toString());
-				}
 			}
 		} else {
 			if (PreferenceReadService.getPreferenceReadService(context)
@@ -148,8 +135,6 @@ public class ReadService {
 			Table total) throws InstantiationException, IllegalAccessException {
 		StringBuilder possibilityLog = new StringBuilder("Possible ");
 		possibilityLog.append(((Total) total).getName());
-		possibilityLog.append(" ");
-		possibilityLog.append(((Total) total).getCount());
 		possibilityLog.append(" all:");
 		possibilityLog.append(all);
 		possibilityLog.append(".");
@@ -164,7 +149,7 @@ public class ReadService {
 						((RecordTable) allTables.get(0)).getCount(), false);
 				possibilityLog.append(((RecordTable) allTables.get(0))
 						.getClass().getSimpleName());
-				possibilityLog.append(" ");
+				possibilityLog.append(":");
 				possibilityLog.append(((RecordTable) allTables.get(0))
 						.getCount());
 				possibilityLog.append(",");
@@ -178,6 +163,8 @@ public class ReadService {
 
 		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
 				this.getClass())) {
+			possibilityLog.append("possibility:");
+			possibilityLog.append(((Total) total).getPossibility());
 			Log.d(MainActivity.LOG_TAG, possibilityLog.toString());
 		}
 	}
