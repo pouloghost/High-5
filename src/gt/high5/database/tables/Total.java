@@ -9,6 +9,8 @@ import gt.high5.database.model.TableUtils;
 
 import java.util.Comparator;
 
+import android.content.Context;
+
 /**
  * @author GT
  * 
@@ -214,6 +216,15 @@ public class Total extends RecordTable {
 		} else {
 			this.possibility *= (float) count / this.count;
 		}
+	}
+
+	public void setPossibility(float possibility) {
+		this.possibility *= possibility;
+	}
+
+	@Override
+	public float getDefaultPossibility(Context context) {
+		return 0.01f;
 	}
 
 }

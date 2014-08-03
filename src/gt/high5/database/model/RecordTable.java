@@ -1,6 +1,7 @@
 package gt.high5.database.model;
 
 import gt.high5.core.service.RecordContext;
+import android.content.Context;
 
 /**
  * @author GT
@@ -49,5 +50,13 @@ public abstract class RecordTable extends Table {
 	 * @return whether init is successful
 	 */
 	public abstract boolean currentQueryStatus(RecordContext context);
+
+	/**
+	 * return a default possibility when there is no existing result
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public abstract float getDefaultPossibility(Context context);
 
 }

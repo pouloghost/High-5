@@ -156,8 +156,8 @@ public class ReadService {
 			} else {
 				// no existing record meaning user won't use this
 				// app in current condition
-				((Total) total).setPossibility(0, false);
-				break;
+				((Total) total).setPossibility(queryTable
+						.getDefaultPossibility(context));
 			}
 		}
 

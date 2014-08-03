@@ -34,4 +34,9 @@ public class Network extends SimpleRecordTable {
 		count = 1;
 		return currentQueryStatus(context);
 	}
+
+	@Override
+	public float getDefaultPossibility(Context context) {
+		return 0.2f;
+	}
 }

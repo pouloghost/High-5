@@ -8,6 +8,8 @@ import gt.high5.database.model.TableAnnotation;
 
 import java.util.List;
 
+import android.content.Context;
+
 /**
  * @author ayi.zty
  * 
@@ -63,5 +65,10 @@ public final class LastPackage extends SimpleRecordTable {
 
 	public void setLastPackage(String lastPackage) {
 		this.lastPackage = lastPackage;
+	}
+
+	@Override
+	public float getDefaultPossibility(Context context) {
+		return 0.1f;
 	}
 }
