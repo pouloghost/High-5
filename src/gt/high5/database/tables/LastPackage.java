@@ -29,6 +29,23 @@ public final class LastPackage extends SimpleRecordTable {
 				&& null != (provider = service.getPackageProvider())
 				&& null != (order = provider.getLastPackageOrder(context
 						.getContext()))) {
+			if (order.size() > 0) {
+				lastPackage = order.get(0);
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean initDefault(RecordContext context) {
+		PackageProvider provider = null;
+		RecordService service = null;
+		List<String> order = null;
+		if (null != (service = context.getRecordService())
+				&& null != (provider = service.getPackageProvider())
+				&& null != (order = provider.getLastPackageOrder(context
+						.getContext()))) {
+			count = 1;
 			Total total = context.getTotal();
 			int index = order.indexOf(total.getName());
 			// exists and not last one
@@ -47,5 +64,4 @@ public final class LastPackage extends SimpleRecordTable {
 	public void setLastPackage(String lastPackage) {
 		this.lastPackage = lastPackage;
 	}
-
 }

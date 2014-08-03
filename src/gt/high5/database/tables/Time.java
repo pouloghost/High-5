@@ -40,4 +40,10 @@ public class Time extends SimpleRecordTable {
 
 		return true;
 	}
+
+	@Override
+	public boolean initDefault(RecordContext context) {
+		count = 1;
+		return currentQueryStatus(context);
+	}
 }

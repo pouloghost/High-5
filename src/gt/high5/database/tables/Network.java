@@ -28,4 +28,10 @@ public class Network extends SimpleRecordTable {
 			return false;
 		}
 	}
+
+	@Override
+	public boolean initDefault(RecordContext context) {
+		count = 1;
+		return currentQueryStatus(context);
+	}
 }

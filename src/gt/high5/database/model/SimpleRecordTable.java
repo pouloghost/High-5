@@ -12,7 +12,7 @@ public abstract class SimpleRecordTable extends RecordTable {
 	@TableAnnotation(defaultValue = "-1")
 	private int pid = -1;
 	@TableAnnotation(defaultValue = "-1", increaseWhenUpdate = true)
-	private int count = -1;
+	protected int count = -1;
 
 	@Override
 	public String getCreator() {
@@ -98,10 +98,7 @@ public abstract class SimpleRecordTable extends RecordTable {
 	}
 
 	@Override
-	public boolean initDefault(RecordContext context) {
-		count = 1;
-		return currentQueryStatus(context);
-	}
+	public abstract boolean initDefault(RecordContext context);
 
 	@Override
 	public void increaseCount(int add) {
