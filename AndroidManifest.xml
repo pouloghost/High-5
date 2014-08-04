@@ -57,9 +57,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.PACKAGE_RESTARTED" />
-
-                <data android:path="gt.high5" />
-                <data android:scheme="package" />
+                
+                <data android:scheme="package" android:path="gt.high5"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
