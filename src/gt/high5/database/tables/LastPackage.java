@@ -22,6 +22,13 @@ public final class LastPackage extends SimpleRecordTable {
 	@TableAnnotation(defaultValue = "")
 	private String lastPackage = "";
 
+	/*
+	 * @see
+	 * gt.high5.database.model.RecordTable#currentQueryStatus(gt.high5.core.
+	 * service.RecordContext)
+	 * 
+	 * set the first package in recent list
+	 */
 	@Override
 	public boolean currentQueryStatus(RecordContext context) {
 		PackageProvider provider = null;
@@ -33,11 +40,19 @@ public final class LastPackage extends SimpleRecordTable {
 						.getContext()))) {
 			if (order.size() > 0) {
 				lastPackage = order.get(0);
+				return true;
 			}
 		}
 		return false;
 	}
 
+	/*
+	 * @see
+	 * gt.high5.database.model.SimpleRecordTable#initDefault(gt.high5.core.service
+	 * .RecordContext)
+	 * 
+	 * set package as the package next to total.package
+	 */
 	@Override
 	public boolean initDefault(RecordContext context) {
 		PackageProvider provider = null;

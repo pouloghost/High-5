@@ -111,52 +111,57 @@ public class RecordService {
 				List<Class<? extends RecordTable>> clazzes = mAccessor
 						.getTables();
 				for (Class<? extends RecordTable> clazz : clazzes) {
-					if (PreferenceReadService.getPreferenceReadService(context)
-							.shouldLog(this.getClass())) {
-						Log.d(MainActivity.LOG_TAG,
-								"updating class " + clazz.getSimpleName());
-					}
-					try {
-						// read an existing record with the current pid and
-						// status
-						RecordTable table = clazz.newInstance();
-						table.setPid(total.getId());
-						if (table.currentQueryStatus(recordContext)) {
-							list = mAccessor.R(table);
-
-							if (null == list) {// non-existing condition for
-												// this
-												// app, create one record
-								if (PreferenceReadService
-										.getPreferenceReadService(context)
-										.shouldLog(this.getClass())) {
-									Log.d(MainActivity.LOG_TAG, "create new "
-											+ table.getClass().getSimpleName());
-								}
-								if (table.initDefault(recordContext)) {
-									table.setPid(total.getId());
-									mAccessor.C(table);
-								}
-							} else {// existing condition just update
-								if (PreferenceReadService
-										.getPreferenceReadService(context)
-										.shouldLog(this.getClass())) {
-									Log.d(MainActivity.LOG_TAG, "increase old "
-											+ table.getClass().getSimpleName());
-								}
-								table = (RecordTable) list.get(0);
-								RecordTable select = table.clone();
-								table.increaseCount(count);
-								mAccessor.U(select, table);
-							}
-						}
-					} catch (InstantiationException e) {
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					}
+					recordTable(context, count, recordContext, total, clazz);
 				}
 			}
+		}
+	}
+
+	private void recordTable(Context context, int count,
+			RecordContext recordContext, Total total,
+			Class<? extends RecordTable> clazz) {
+		List<Table> list;
+		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
+				this.getClass())) {
+			Log.d(MainActivity.LOG_TAG,
+					"updating class " + clazz.getSimpleName());
+		}
+		try {
+			// read an existing record with the current pid and
+			// status
+			RecordTable table = clazz.newInstance();
+			table.setPid(total.getId());
+			if (table.currentQueryStatus(recordContext)) {
+				list = mAccessor.R(table);
+
+				if (null == list) {// non-existing condition for
+									// this
+									// app, create one record
+					if (PreferenceReadService.getPreferenceReadService(context)
+							.shouldLog(this.getClass())) {
+						Log.d(MainActivity.LOG_TAG, "create new "
+								+ table.getClass().getSimpleName());
+					}
+					if (table.initDefault(recordContext)) {
+						table.setPid(total.getId());
+						mAccessor.C(table);
+					}
+				} else {// existing condition just update
+					if (PreferenceReadService.getPreferenceReadService(context)
+							.shouldLog(this.getClass())) {
+						Log.d(MainActivity.LOG_TAG, "increase old "
+								+ table.getClass().getSimpleName());
+					}
+					table = (RecordTable) list.get(0);
+					RecordTable select = table.clone();
+					table.increaseCount(count);
+					mAccessor.U(select, table);
+				}
+			}
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
 	}
 
