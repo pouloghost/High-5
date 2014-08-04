@@ -48,11 +48,6 @@
             android:summaryOn="@string/settings_log_on"
             android:title="IgnoreSetService" />
         <CheckBoxPreference
-            android:key="GridAdapterService"
-            android:summaryOff="@string/settings_log_off"
-            android:summaryOn="@string/settings_log_on"
-            android:title="GridAdapterService" />
-        <CheckBoxPreference
             android:key="TableUtils"
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"

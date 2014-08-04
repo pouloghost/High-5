@@ -27,6 +27,8 @@ import com.github.curioustechizen.xlog.Log;
  *         service for read records without specified type
  */
 public class ReadService {
+
+	private static float MIN_POSSIBILITY = 1E-3f;
 	// singleton
 	private static ReadService instance = null;
 
@@ -111,7 +113,8 @@ public class ReadService {
 				int listSize = allTotals.size();
 				int size = Math.min(5, listSize);
 				for (int i = 0, j = 0; j < size && i < listSize; ++i) {
-					if (0 == ((Total) allTotals.get(i)).getCount()) {
+					if (MIN_POSSIBILITY > ((Total) allTotals.get(i))
+							.getPossibility()) {// nearly impossible
 						break;
 					}
 					String name = ((Total) allTotals.get(i)).getName();
