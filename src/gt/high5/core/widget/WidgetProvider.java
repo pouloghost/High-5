@@ -1,7 +1,7 @@
 package gt.high5.core.widget;
 
 import gt.high5.R;
-import gt.high5.activity.MainActivity;
+import gt.high5.core.service.LogService;
 import gt.high5.core.service.PreferenceReadService;
 import gt.high5.core.service.RecordService;
 
@@ -21,11 +21,10 @@ import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
-import com.github.curioustechizen.xlog.Log;
-
 /**
  * @author GT
  * 
+ *         widget provider and receiving other broadcast sent by system
  */
 @SuppressLint("NewApi")
 public class WidgetProvider extends AppWidgetProvider {
@@ -56,10 +55,9 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onDisabled(Context context) {
 
 		super.onDisabled(context);
-		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
-				this.getClass())) {
-			Log.d(MainActivity.LOG_TAG, "disable");
-		}
+
+		LogService.d(WidgetProvider.class, "disable", context);
+
 		// shut down all recording service
 		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
 				.cancel(getUpdateIntent(context, null));
@@ -68,10 +66,9 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
-		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
-				this.getClass())) {
-			Log.d(MainActivity.LOG_TAG, "recieved " + intent.getAction());
-		}
+		LogService.d(WidgetProvider.class, "recieved " + intent.getAction(),
+				context);
+
 		if (LAUNCH_ACT.equalsIgnoreCase(intent.getAction())) {
 			String packageName = intent.getStringExtra(LAUNCH_PACKAGE);
 			Intent i = context.getPackageManager().getLaunchIntentForPackage(
@@ -79,20 +76,6 @@ public class WidgetProvider extends AppWidgetProvider {
 			context.startActivity(i);
 		} else if (RECORD_ACT.equalsIgnoreCase(intent.getAction())) {
 			recordCurrentStatus(context);
-		} else if (Intent.ACTION_PACKAGE_REPLACED.equalsIgnoreCase(intent
-				.getAction())
-				|| Intent.ACTION_PACKAGE_RESTARTED.equalsIgnoreCase(intent
-						.getAction())) {// task manager killed broadcast.
-			ComponentName provider = new ComponentName(context,
-					WidgetProvider.class);
-			int[] appWidgetIds = AppWidgetManager.getInstance(context)
-					.getAppWidgetIds(provider);
-			startInterval(context, PreferenceReadService
-					.getPreferenceReadService(context).getUpdateInterval(),
-					getUpdateIntent(context, appWidgetIds));
-			startInterval(context, PreferenceReadService
-					.getPreferenceReadService(context).getRecordInterval(),
-					getRecordIntent(context));
 		}
 		super.onReceive(context, intent);
 	}
@@ -123,23 +106,55 @@ public class WidgetProvider extends AppWidgetProvider {
 						.getUpdateInterval(),
 				getUpdateIntent(context, appWidgetIds));
 
-		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
-				this.getClass())) {
-			Log.d(MainActivity.LOG_TAG, "update "
-					+ PreferenceReadService.getPreferenceReadService(context)
-							.getUpdateInterval());
-		}
+		LogService.d(WidgetProvider.class, "update "
+				+ PreferenceReadService.getPreferenceReadService(context)
+						.getUpdateInterval(), context);
+
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 	}
 
-	private void startInterval(Context context, int interval,
+	/**
+	 * restart update and record when process is killed
+	 * 
+	 * @param context
+	 */
+	public static void restartUpdateAndRecord(Context context) {
+		startInterval(context,
+				PreferenceReadService.getPreferenceReadService(context)
+						.getUpdateInterval(), getUpdateIntent(context, null));
+		startInterval(context,
+				PreferenceReadService.getPreferenceReadService(context)
+						.getRecordInterval(), getRecordIntent(context));
+	}
+
+	/**
+	 * refresh widget right now regardless of alarm manager
+	 * 
+	 * @param context
+	 */
+	public static void forceRefresh(Context context) {
+		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
+				.cancel(getUpdateIntent(context, null));
+		startInterval(context,
+				PreferenceReadService.getPreferenceReadService(context)
+						.getUpdateInterval(), getUpdateIntent(context, null));
+	}
+
+	private static void startInterval(Context context, int interval,
 			PendingIntent intent) {
 		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
 				.set(AlarmManager.RTC, System.currentTimeMillis() + interval,
 						intent);
 	}
 
-	private PendingIntent getUpdateIntent(Context context, int[] appWidgetIds) {
+	private static PendingIntent getUpdateIntent(Context context,
+			int[] appWidgetIds) {
+		if (null == appWidgetIds) {
+			ComponentName provider = new ComponentName(context,
+					WidgetProvider.class);
+			appWidgetIds = AppWidgetManager.getInstance(context)
+					.getAppWidgetIds(provider);
+		}
 		Intent updateIntent = new Intent(
 				AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 		updateIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
@@ -150,7 +165,7 @@ public class WidgetProvider extends AppWidgetProvider {
 				PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 
-	private PendingIntent getRecordIntent(Context context) {
+	private static PendingIntent getRecordIntent(Context context) {
 		Intent recordIntent = new Intent(RECORD_ACT);
 		recordIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
 		recordIntent.setData(Uri.parse("high5://widget/record"));
@@ -165,14 +180,11 @@ public class WidgetProvider extends AppWidgetProvider {
 			startInterval(context, PreferenceReadService
 					.getPreferenceReadService(context).getRecordInterval(),
 					getRecordIntent(context));
-			if (PreferenceReadService.getPreferenceReadService(context)
-					.shouldLog(this.getClass())) {
-				Log.d(MainActivity.LOG_TAG,
-						"record "
-								+ PreferenceReadService
-										.getPreferenceReadService(context)
-										.getRecordInterval());
-			}
+
+			LogService.d(WidgetProvider.class, "record "
+					+ PreferenceReadService.getPreferenceReadService(context)
+							.getRecordInterval(), context);
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (NotFoundException e) {

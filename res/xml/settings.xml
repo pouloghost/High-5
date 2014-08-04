@@ -52,6 +52,11 @@
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"
             android:title="TableUtils" />
+        <CheckBoxPreference
+            android:key="SystemBroadcastReceiver"
+            android:summaryOff="@string/settings_log_off"
+            android:summaryOn="@string/settings_log_on"
+            android:title="SystemBroadcastReceiver" />
     </PreferenceCategory>
 
 </PreferenceScreen>
