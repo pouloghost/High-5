@@ -13,8 +13,6 @@ import android.view.MenuItem;
 public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-	public static final String LOG_TAG = "GT";
-
 	private static boolean debugging = false;
 
 	public static boolean isDebugging() {

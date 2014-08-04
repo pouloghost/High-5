@@ -1,8 +1,7 @@
 package gt.high5.core.widget;
 
 import gt.high5.R;
-import gt.high5.activity.MainActivity;
-import gt.high5.core.service.PreferenceReadService;
+import gt.high5.core.service.LogService;
 import gt.high5.core.service.ReadService;
 
 import java.util.ArrayList;
@@ -17,8 +16,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.github.curioustechizen.xlog.Log;
-
 /**
  * @author GT
  * 
@@ -32,10 +29,10 @@ public class GridAdapterService extends RemoteViewsService {
 
 	@Override
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
-		if (PreferenceReadService.getPreferenceReadService(
-				getApplicationContext()).shouldLog(GridAdapterService.class)) {
-			Log.d(MainActivity.LOG_TAG, "get factory");
-		}
+
+		LogService.d(GridAdapterService.class, "get factory",
+				getApplicationContext());
+
 		return new GridViewFactory();
 	}
 
@@ -43,10 +40,10 @@ public class GridAdapterService extends RemoteViewsService {
 
 		@Override
 		public int getCount() {
-			if (PreferenceReadService.getPreferenceReadService(
-					getApplicationContext()).shouldLog(this.getClass())) {
-				Log.d(MainActivity.LOG_TAG, "data set size " + apps.size());
-			}
+
+			LogService.d(GridAdapterService.class,
+					"data set size " + apps.size(), getApplicationContext());
+
 			return apps.size();
 		}
 
@@ -64,11 +61,10 @@ public class GridAdapterService extends RemoteViewsService {
 
 		@Override
 		public RemoteViews getViewAt(int position) {
-			if (PreferenceReadService.getPreferenceReadService(
-					getApplicationContext())
-					.shouldLog(GridAdapterService.class)) {
-				Log.d(MainActivity.LOG_TAG, "view at " + position);
-			}
+
+			LogService.d(GridAdapterService.class, "view at " + position,
+					getApplicationContext());
+
 			if (apps.size() < position) {
 				return null;
 			}
@@ -112,11 +108,9 @@ public class GridAdapterService extends RemoteViewsService {
 
 		@Override
 		public void onCreate() {
-			if (PreferenceReadService.getPreferenceReadService(
-					getApplicationContext())
-					.shouldLog(GridAdapterService.class)) {
-				Log.d(MainActivity.LOG_TAG, "create factory");
-			}
+
+			LogService.d(GridAdapterService.class, "create factory",
+					getApplicationContext());
 		}
 
 		@Override
@@ -124,10 +118,9 @@ public class GridAdapterService extends RemoteViewsService {
 			try {
 				apps = ReadService.getReadService(getApplicationContext())
 						.getHigh5(getApplicationContext(), apps);
-				if (PreferenceReadService.getPreferenceReadService(
-						getApplicationContext()).shouldLog(this.getClass())) {
-					Log.d(MainActivity.LOG_TAG, "data set changed");
-				}
+
+				LogService.d(GridAdapterService.class, "data set changed",
+						getApplicationContext());
 			} catch (InstantiationException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {

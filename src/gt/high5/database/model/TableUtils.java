@@ -1,6 +1,6 @@
 package gt.high5.database.model;
 
-import gt.high5.activity.MainActivity;
+import gt.high5.core.service.LogService;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -65,7 +65,7 @@ public class TableUtils {
 
 		String sqlString = sql.toString();
 		if (isDebugging()) {
-			Log.d(MainActivity.LOG_TAG, "create "
+			Log.d(LogService.LOG_TAG, "create "
 					+ table.getClass().getSimpleName() + " " + sqlString);
 		}
 		return sqlString;
@@ -82,7 +82,7 @@ public class TableUtils {
 
 		String sqlString = "DELETE FROM " + clazz.getSimpleName() + where;
 		if (isDebugging()) {
-			Log.d(MainActivity.LOG_TAG, "delete "
+			Log.d(LogService.LOG_TAG, "delete "
 					+ table.getClass().getSimpleName() + " " + sqlString);
 		}
 		return sqlString;
@@ -130,7 +130,7 @@ public class TableUtils {
 
 		String sqlString = sql.toString();
 		if (isDebugging()) {
-			Log.d(MainActivity.LOG_TAG, "update "
+			Log.d(LogService.LOG_TAG, "update "
 					+ table.getClass().getSimpleName() + " " + sqlString);
 		}
 		return sqlString;
@@ -147,8 +147,8 @@ public class TableUtils {
 
 		String sqlString = "SELECT * FROM " + clazz.getSimpleName() + where;
 		if (isDebugging()) {
-			Log.d(MainActivity.LOG_TAG, "read "
-					+ table.getClass().getSimpleName() + " " + sqlString);
+			Log.d(LogService.LOG_TAG, "read " + table.getClass().getSimpleName()
+					+ " " + sqlString);
 		}
 		return sqlString;
 	}
@@ -200,7 +200,7 @@ public class TableUtils {
 		sql.append(where);
 		String sqlString = sql.toString();
 		{
-			Log.d(MainActivity.LOG_TAG, "increase "
+			Log.d(LogService.LOG_TAG, "increase "
 					+ table.getClass().getSimpleName() + " " + sqlString);
 		}
 		return sqlString;
@@ -224,8 +224,8 @@ public class TableUtils {
 
 		String sqlString = sql.toString();
 		if (isDebugging()) {
-			Log.d(MainActivity.LOG_TAG, "creator " + clazz.getSimpleName()
-					+ " " + sqlString);
+			Log.d(LogService.LOG_TAG, "creator " + clazz.getSimpleName() + " "
+					+ sqlString);
 		}
 		return sqlString;
 	}

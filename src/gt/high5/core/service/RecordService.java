@@ -1,7 +1,6 @@
 package gt.high5.core.service;
 
 import gt.high5.R;
-import gt.high5.activity.MainActivity;
 import gt.high5.core.provider.LaunchInfo;
 import gt.high5.core.provider.PackageProvider;
 import gt.high5.database.accessor.DatabaseAccessor;
@@ -18,8 +17,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
-
-import com.github.curioustechizen.xlog.Log;
 
 /**
  * @author ayi.zty
@@ -71,6 +68,39 @@ public class RecordService {
 	}
 
 	/**
+	 * remove all data related with package
+	 * 
+	 * @param name
+	 *            package name
+	 */
+	public void removeRecords(String name, Context context) {
+		Total total = new Total();
+		total.setName(name);
+		List<Table> list = mAccessor.R(total);
+		if (null != list) {
+			total = (Total) list.get(0);
+			mAccessor.D(total);
+			List<Class<? extends RecordTable>> clazzes = mAccessor.getTables();
+			for (Class<? extends RecordTable> clazz : clazzes) {
+				RecordTable table;
+				try {
+					table = clazz.newInstance();
+					table.setPid(total.getId());
+					mAccessor.D(table);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public PackageProvider getPackageProvider() {
+		return mPackageProvider;
+	}
+
+	/**
 	 * save the record to db
 	 * 
 	 * @param context
@@ -82,10 +112,8 @@ public class RecordService {
 	 */
 	private void recordPackage(Context context, String packageName, int count) {
 		if (null != packageName) {
-			if (PreferenceReadService.getPreferenceReadService(context)
-					.shouldLog(this.getClass())) {
-				Log.d(MainActivity.LOG_TAG, "current package " + packageName);
-			}
+			LogService.d(RecordService.class, "current package " + packageName,
+					context);
 
 			RecordContext recordContext = new RecordContext(context, this, null);
 			// read total with current package name
@@ -101,10 +129,9 @@ public class RecordService {
 			// record
 			if (null != list) {
 				total = (Total) list.get(0);
-				if (PreferenceReadService.getPreferenceReadService(context)
-						.shouldLog(this.getClass())) {
-					Log.d(MainActivity.LOG_TAG, "total " + total.getName());
-				}
+
+				LogService.d(RecordService.class, "total " + total.getName(),
+						context);
 
 				recordContext.setTotal(total);
 				// each type of record
@@ -121,11 +148,7 @@ public class RecordService {
 			RecordContext recordContext, Total total,
 			Class<? extends RecordTable> clazz) {
 		List<Table> list;
-		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
-				this.getClass())) {
-			Log.d(MainActivity.LOG_TAG,
-					"updating class " + clazz.getSimpleName());
-		}
+
 		try {
 			// read an existing record with the current pid and
 			// status
@@ -137,21 +160,18 @@ public class RecordService {
 				if (null == list) {// non-existing condition for
 									// this
 									// app, create one record
-					if (PreferenceReadService.getPreferenceReadService(context)
-							.shouldLog(this.getClass())) {
-						Log.d(MainActivity.LOG_TAG, "create new "
-								+ table.getClass().getSimpleName());
-					}
+					LogService.d(RecordService.class, "create new "
+							+ table.getClass().getSimpleName(), context);
+
 					if (table.initDefault(recordContext)) {
 						table.setPid(total.getId());
 						mAccessor.C(table);
 					}
 				} else {// existing condition just update
-					if (PreferenceReadService.getPreferenceReadService(context)
-							.shouldLog(this.getClass())) {
-						Log.d(MainActivity.LOG_TAG, "increase old "
-								+ table.getClass().getSimpleName());
-					}
+
+					LogService.d(RecordService.class, "increase old "
+							+ table.getClass().getSimpleName(), context);
+
 					table = (RecordTable) list.get(0);
 					RecordTable select = table.clone();
 					table.increaseCount(count);
@@ -163,9 +183,5 @@ public class RecordService {
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public PackageProvider getPackageProvider() {
-		return mPackageProvider;
 	}
 }

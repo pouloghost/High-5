@@ -1,6 +1,5 @@
 package gt.high5.database.accessor;
 
-import gt.high5.activity.MainActivity;
 import gt.high5.database.model.Table;
 import gt.high5.database.tables.Ignore;
 
@@ -10,8 +9,6 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.github.curioustechizen.xlog.Log;
 
 public class DatabaseManager extends SQLiteOpenHelper {
 
@@ -46,8 +43,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.d(MainActivity.LOG_TAG, "Upgrading database from version "
-				+ oldVersion + " to " + newVersion);
 		onCreate(db);
 	}
 }

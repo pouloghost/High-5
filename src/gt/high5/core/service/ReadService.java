@@ -1,7 +1,6 @@
 package gt.high5.core.service;
 
 import gt.high5.R;
-import gt.high5.activity.MainActivity;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
@@ -18,8 +17,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
-
-import com.github.curioustechizen.xlog.Log;
 
 /**
  * @author ayi.zty
@@ -94,18 +91,14 @@ public class ReadService {
 
 				Collections.sort(allTotals, Total.getComparator());
 
-				if (PreferenceReadService.getPreferenceReadService(context)
-						.shouldLog(this.getClass())) {
-					StringBuilder sortLog = new StringBuilder("after sort ");
-					for (Table total : allTotals) {
-						sortLog.append(((Total) total).getName());
-						sortLog.append(":");
-						sortLog.append(((Total) total).getPossibility());
-						sortLog.append("\t");
-					}
-
-					Log.d(MainActivity.LOG_TAG, sortLog.toString());
+				StringBuilder sortLog = new StringBuilder("after sort ");
+				for (Table total : allTotals) {
+					sortLog.append(((Total) total).getName());
+					sortLog.append(":");
+					sortLog.append(((Total) total).getPossibility());
+					sortLog.append("\t");
 				}
+				LogService.d(ReadService.class, sortLog.toString(), context);
 
 				HashSet<String> ignoredSet = IgnoreSetService
 						.getIgnoreSetService(context).getIgnoreSet(mAccessor);
@@ -125,10 +118,7 @@ public class ReadService {
 				}
 			}
 		} else {
-			if (PreferenceReadService.getPreferenceReadService(context)
-					.shouldLog(this.getClass())) {
-				Log.d(MainActivity.LOG_TAG, "data accessor is null");
-			}
+			LogService.d(ReadService.class, "data accessor is null", context);
 		}
 		return last;
 	}
@@ -169,12 +159,8 @@ public class ReadService {
 				possibilityLog.append(",");
 			}
 		}
-
-		if (PreferenceReadService.getPreferenceReadService(context).shouldLog(
-				this.getClass())) {
-			possibilityLog.append("possibility:");
-			possibilityLog.append(((Total) total).getPossibility());
-			Log.d(MainActivity.LOG_TAG, possibilityLog.toString());
-		}
+		possibilityLog.append("possibility:");
+		possibilityLog.append(((Total) total).getPossibility());
+		LogService.d(ReadService.class, possibilityLog.toString(), context);
 	}
 }

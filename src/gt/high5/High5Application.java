@@ -1,6 +1,5 @@
 package gt.high5;
 
-import gt.high5.activity.MainActivity;
 import gt.high5.core.service.IgnoreSetService;
 import gt.high5.core.service.PreferenceReadService;
 import gt.high5.database.accessor.FilterParser;
@@ -40,12 +39,9 @@ public class High5Application extends Application {
 
 	private void initLogFile() {
 		// init log file
-		android.util.Log.d(MainActivity.LOG_TAG, "create application");
 		if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
 				.getExternalStorageState())) {
 			File root = Environment.getExternalStorageDirectory();
-			android.util.Log.d(MainActivity.LOG_TAG,
-					"root " + root.getAbsolutePath());
 			File logFile = new File(root.getAbsolutePath(), "high5log.txt");
 			if (!logFile.exists()) {
 				try {
@@ -56,14 +52,9 @@ public class High5Application extends Application {
 			}
 			try {
 				Log.init(this, true, logFile);
-				android.util.Log.d(MainActivity.LOG_TAG,
-						"inited " + logFile.getAbsolutePath());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		} else {
-			android.util.Log.d(MainActivity.LOG_TAG,
-					"state " + Environment.getExternalStorageState());
 		}
 	}
 
