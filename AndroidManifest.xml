@@ -11,8 +11,10 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-   <!-- need to move to system/app to gain this permission  <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
-    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" /> -->
+    <!--
+    need to move to system/app to gain this permission  <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
+    -->
 
     <application
         android:name=".High5Application"
@@ -44,6 +46,14 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="gt.high5.launch" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.PACKAGE_RESTARTED" />
+
+                <data
+                    android:path="gt.high5"
+                    android:scheme="package" />
             </intent-filter>
 
             <meta-data

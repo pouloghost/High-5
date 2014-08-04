@@ -14,6 +14,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
@@ -78,6 +79,20 @@ public class WidgetProvider extends AppWidgetProvider {
 			context.startActivity(i);
 		} else if (RECORD_ACT.equalsIgnoreCase(intent.getAction())) {
 			recordCurrentStatus(context);
+		} else if (Intent.ACTION_PACKAGE_REPLACED.equalsIgnoreCase(intent
+				.getAction())
+				|| Intent.ACTION_PACKAGE_RESTARTED.equalsIgnoreCase(intent
+						.getAction())) {// task manager killed broadcast.
+			ComponentName provider = new ComponentName(context,
+					WidgetProvider.class);
+			int[] appWidgetIds = AppWidgetManager.getInstance(context)
+					.getAppWidgetIds(provider);
+			startInterval(context, PreferenceReadService
+					.getPreferenceReadService(context).getUpdateInterval(),
+					getUpdateIntent(context, appWidgetIds));
+			startInterval(context, PreferenceReadService
+					.getPreferenceReadService(context).getRecordInterval(),
+					getRecordIntent(context));
 		}
 		super.onReceive(context, intent);
 	}
