@@ -120,13 +120,17 @@ public class IgnoreListManageFragment extends Fragment {
 					String textRepresentation) {
 				if (R.id.ignore_list_icon_image == view.getId()
 						&& view instanceof ImageView) {
+
 					AsyncImageTask task = (AsyncImageTask) view.getTag();
 					if (null != task) {
 						task.cancel(true);
 					}
 					task = new AsyncImageTask();
 					task.execute(new Object[] { data, view });
+					// task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					// new Object[] { data, view });
 					view.setTag(task);
+
 					return true;
 				} else if (R.id.ignore_list_ignore_toggle == view.getId()
 						&& view instanceof ToggleButton) {
