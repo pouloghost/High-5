@@ -158,6 +158,12 @@ public class ReadService {
 				// app in current condition
 				((Total) total).setPossibility(queryTable
 						.getDefaultPossibility(context));
+				possibilityLog.append(((RecordTable) queryTable).getClass()
+						.getSimpleName());
+				possibilityLog.append(":");
+				possibilityLog.append(((RecordTable) queryTable)
+						.getDefaultPossibility(context));
+				possibilityLog.append(",");
 			}
 		}
 
