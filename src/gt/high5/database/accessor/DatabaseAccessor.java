@@ -29,6 +29,7 @@ import android.util.SparseArray;
  *         this is only a wrapper for real DB operation
  */
 public class DatabaseAccessor {
+
 	private SQLiteDatabase mDatabase = null;
 	private TableParser mTableParser = null;
 
@@ -57,11 +58,8 @@ public class DatabaseAccessor {
 				accessor = new DatabaseAccessor(context, parser);
 				reference = new SoftReference<DatabaseAccessor>(accessor);
 			} else {
-				reference = new SoftReference<DatabaseAccessor>(null);// null if
-																		// not
-																		// enough
-																		// params
-																		// in
+				// null if not enough params in
+				reference = new SoftReference<DatabaseAccessor>(null);
 			}
 		}
 		accessor = reference.get();
@@ -212,8 +210,13 @@ public class DatabaseAccessor {
 	}
 
 	// ----------------------sql command interface-------------------
-	public void excute(String sql) {
-		mDatabase.execSQL(sql);
+	public boolean excute(String sql) {
+		try {
+			mDatabase.execSQL(sql);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	/**
@@ -223,7 +226,11 @@ public class DatabaseAccessor {
 	 * @return
 	 */
 	public Cursor query(String sql) {
-		return mDatabase.rawQuery(sql, null);
+		try {
+			return mDatabase.rawQuery(sql, null);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -249,5 +256,14 @@ public class DatabaseAccessor {
 	public boolean exists(Table table) {
 		ArrayList<Table> query = R(table);
 		return null == query || 0 == query.size();
+	}
+
+	public void backup(Context context) {
+		mDatabase.close();
+		String srcPath = mDatabase.getPath();
+	}
+
+	public void restore(Context context) {
+
 	}
 }

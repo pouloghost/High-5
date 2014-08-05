@@ -55,10 +55,10 @@ public class IgnoreListManageFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View view = inflater.inflate(R.layout.ignore_list_layout, container);
+		View view = inflater.inflate(R.layout.ignore_list_layout, null);
 		mIgnoreList = (ListView) view.findViewById(R.id.ignore_list);
 
-		return super.onCreateView(inflater, container, savedInstanceState);
+		return view;
 	}
 
 	@Override

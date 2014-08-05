@@ -4,10 +4,13 @@
     <string name="app_name">High5</string>
     <string name="title_section1">Settings</string>
     <string name="title_section2">Manage Ignore</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_section3">Database Backup</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
+    <!-- backup db -->
+    <string name="backup_backup">Backup</string>
+    <string name="backup_restore">Restore</string>
     <!-- manage ignore -->
     <string name="ignore_toggle_on">Ignored</string>
     <string name="ignore_toggle_off">Record</string>
