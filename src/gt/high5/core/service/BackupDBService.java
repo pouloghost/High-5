@@ -7,8 +7,16 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+/**
+ * @author GT
+ * 
+ *         utils backing up db
+ */
 public class BackupDBService {
 
+	/**
+	 * db definition xml files, the R.xml.xx
+	 */
 	private static final int[] dbs = new int[] { R.xml.tables };
 
 	public static void backup(final Context context) {
@@ -20,7 +28,7 @@ public class BackupDBService {
 						for (int id : dbs) {
 							try {
 								DatabaseAccessor.getAccessor(context, id)
-										.backup(context);
+										.backup();
 							} catch (Exception e) {
 								e.printStackTrace();
 								Toast.makeText(context,
@@ -41,7 +49,7 @@ public class BackupDBService {
 						for (int id : dbs) {
 							try {
 								DatabaseAccessor.getAccessor(context, id)
-										.restore(context);
+										.restore();
 							} catch (Exception e) {
 								e.printStackTrace();
 								Toast.makeText(context,

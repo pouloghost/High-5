@@ -266,8 +266,14 @@ public class DatabaseAccessor {
 		return null == query || 0 == query.size();
 	}
 
+	/**
+	 * backup database associated with this accessor
+	 * 
+	 * @throws Exception
+	 *             when backup goes wrong
+	 */
 	@SuppressWarnings("resource")
-	public void backup(Context context) throws Exception {
+	public void backup() throws Exception {
 		try {
 			if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
 					.getExternalStorageState())) {
@@ -302,8 +308,14 @@ public class DatabaseAccessor {
 		}
 	}
 
+	/**
+	 * restore database associated with this accessor
+	 * 
+	 * @throws Exception
+	 *             when restore goes wrong
+	 */
 	@SuppressWarnings("resource")
-	public void restore(Context context) throws Exception {
+	public void restore() throws Exception {
 		try {
 			if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
 					.getExternalStorageState())) {
