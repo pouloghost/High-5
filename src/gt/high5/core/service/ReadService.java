@@ -131,7 +131,7 @@ public class ReadService {
 			RecordService service, List<Class<? extends RecordTable>> tables,
 			Total total) throws InstantiationException, IllegalAccessException {
 		StringBuilder possibilityLog = new StringBuilder("Possible ");
-		possibilityLog.append(((Total) total).getName());
+		possibilityLog.append(total.getName());
 		possibilityLog.append(" all:");
 		possibilityLog.append(all);
 		possibilityLog.append(".");
@@ -164,7 +164,7 @@ public class ReadService {
 			}
 		}
 		possibilityLog.append("possibility:");
-		possibilityLog.append(((Total) total).getPossibility());
+		possibilityLog.append(total.getPossibility());
 		LogService.d(ReadService.class, possibilityLog.toString(), context);
 	}
 }
