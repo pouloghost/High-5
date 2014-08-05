@@ -16,10 +16,6 @@ import android.content.Context;
  * 
  *         running statics for a certain package
  */
-/**
- * @author GT
- * 
- */
 public class Total extends RecordTable {
 
 	@TableAnnotation(defaultValue = "-1")
@@ -76,6 +72,7 @@ public class Total extends RecordTable {
 
 	@Override
 	public boolean currentQueryStatus(RecordContext context) {
+		this.name = context.getTotal().getName();
 		return true;
 	}
 

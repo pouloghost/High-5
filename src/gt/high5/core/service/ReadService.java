@@ -73,6 +73,44 @@ public class ReadService {
 			RecordService service = null;
 			try {
 				service = RecordService.getRecordService(context);
+				List<Class<? extends RecordTable>> tables = mAccessor
+						.getTables();
+				if (null != allTotals) {
+					for (Table total : allTotals) {
+						updatePossibility(context, all, service, tables,
+								(Total) total);
+					}
+
+					Collections.sort(allTotals, Total.getComparator());
+
+					StringBuilder sortLog = new StringBuilder("after sort ");
+					for (Table total : allTotals) {
+						sortLog.append(((Total) total).getName());
+						sortLog.append(":");
+						sortLog.append(((Total) total).getPossibility());
+						sortLog.append("\t");
+					}
+					LogService
+							.d(ReadService.class, sortLog.toString(), context);
+
+					HashSet<String> ignoredSet = IgnoreSetService
+							.getIgnoreSetService(context).getIgnoreSet(
+									mAccessor);
+
+					int listSize = allTotals.size();
+					int size = Math.min(5, listSize);
+					for (int i = 0, j = 0; j < size && i < listSize; ++i) {
+						if (MIN_POSSIBILITY > ((Total) allTotals.get(i))
+								.getPossibility()) {// nearly impossible
+							break;
+						}
+						String name = ((Total) allTotals.get(i)).getName();
+						if (!ignoredSet.contains(name)) {
+							last.add(name);
+							++j;
+						}
+					}
+				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (NotFoundException e) {
@@ -83,40 +121,6 @@ public class ReadService {
 				e.printStackTrace();
 			}
 
-			List<Class<? extends RecordTable>> tables = mAccessor.getTables();
-			if (null != allTotals) {
-				for (Table total : allTotals) {
-					updatePossibility(context, all, service, tables, total);
-				}
-
-				Collections.sort(allTotals, Total.getComparator());
-
-				StringBuilder sortLog = new StringBuilder("after sort ");
-				for (Table total : allTotals) {
-					sortLog.append(((Total) total).getName());
-					sortLog.append(":");
-					sortLog.append(((Total) total).getPossibility());
-					sortLog.append("\t");
-				}
-				LogService.d(ReadService.class, sortLog.toString(), context);
-
-				HashSet<String> ignoredSet = IgnoreSetService
-						.getIgnoreSetService(context).getIgnoreSet(mAccessor);
-
-				int listSize = allTotals.size();
-				int size = Math.min(5, listSize);
-				for (int i = 0, j = 0; j < size && i < listSize; ++i) {
-					if (MIN_POSSIBILITY > ((Total) allTotals.get(i))
-							.getPossibility()) {// nearly impossible
-						break;
-					}
-					String name = ((Total) allTotals.get(i)).getName();
-					if (!ignoredSet.contains(name)) {
-						last.add(name);
-						++j;
-					}
-				}
-			}
 		} else {
 			LogService.d(ReadService.class, "data accessor is null", context);
 		}
@@ -125,20 +129,21 @@ public class ReadService {
 
 	private void updatePossibility(Context context, int all,
 			RecordService service, List<Class<? extends RecordTable>> tables,
-			Table total) throws InstantiationException, IllegalAccessException {
+			Total total) throws InstantiationException, IllegalAccessException {
 		StringBuilder possibilityLog = new StringBuilder("Possible ");
 		possibilityLog.append(((Total) total).getName());
 		possibilityLog.append(" all:");
 		possibilityLog.append(all);
 		possibilityLog.append(".");
-		((Total) total).setPossibility(all, true);
+
+		total.setPossibility(all, true);
 		for (Class<? extends RecordTable> clazz : tables) {
 			RecordTable queryTable = clazz.newInstance();
 			queryTable.currentQueryStatus(new RecordContext(context, service,
-					(Total) total));
+					total));
 			ArrayList<Table> allTables = mAccessor.R(queryTable);
 			if (null != allTables) {
-				((Total) total).setPossibility(
+				total.setPossibility(
 						((RecordTable) allTables.get(0)).getCount(), false);
 				possibilityLog.append(((RecordTable) allTables.get(0))
 						.getClass().getSimpleName());
@@ -149,8 +154,7 @@ public class ReadService {
 			} else {
 				// no existing record meaning user won't use this
 				// app in current condition
-				((Total) total).setPossibility(queryTable
-						.getDefaultPossibility(context));
+				total.setPossibility(queryTable.getDefaultPossibility(context));
 				possibilityLog.append(((RecordTable) queryTable).getClass()
 						.getSimpleName());
 				possibilityLog.append(":");
