@@ -20,8 +20,7 @@ public class BackupFragment extends Fragment {
 
 					@Override
 					public void onClick(View v) {
-						BackupDBService.backup(getActivity()
-								.getApplicationContext());
+						BackupDBService.backup(getActivity());
 					}
 				});
 		((Button) root.findViewById(R.id.backup_restore_button))
@@ -29,8 +28,7 @@ public class BackupFragment extends Fragment {
 
 					@Override
 					public void onClick(View v) {
-						BackupDBService.restore(getActivity()
-								.getApplicationContext());
+						BackupDBService.restore(getActivity());
 					}
 				});
 		return root;

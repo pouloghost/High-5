@@ -5,9 +5,13 @@ import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +21,7 @@ import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.util.SparseArray;
 
 /**
@@ -30,8 +35,11 @@ import android.util.SparseArray;
  */
 public class DatabaseAccessor {
 
+	private static final String BACKUP_PATH = "high5";
+
 	private SQLiteDatabase mDatabase = null;
 	private TableParser mTableParser = null;
+	private DatabaseManager mManager = null;
 
 	/**
 	 * cached accessor for each xml file
@@ -101,8 +109,8 @@ public class DatabaseAccessor {
 	 */
 	private DatabaseAccessor(Context context, TableParser parser) {
 		mTableParser = parser;
-		DatabaseManager manager = new DatabaseManager(context, parser);
-		mDatabase = manager.getWritableDatabase();
+		mManager = new DatabaseManager(context, parser);
+		mDatabase = mManager.getWritableDatabase();
 	}
 
 	/**
@@ -258,12 +266,75 @@ public class DatabaseAccessor {
 		return null == query || 0 == query.size();
 	}
 
-	public void backup(Context context) {
-		mDatabase.close();
-		String srcPath = mDatabase.getPath();
+	@SuppressWarnings("resource")
+	public void backup(Context context) throws Exception {
+		try {
+			if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
+					.getExternalStorageState())) {
+				// lock db
+				mDatabase.close();
+				// source db
+				String srcPath = mDatabase.getPath();
+				File srcFile = new File(srcPath);
+				// destination file
+				File dstFolder = new File(
+						Environment.getExternalStorageDirectory(), BACKUP_PATH);
+				if (!dstFolder.exists()) {
+					dstFolder.mkdir();
+				}
+				File dstFile = new File(dstFolder, mTableParser.getFile());
+				if (!dstFile.exists()) {
+					dstFile.createNewFile();
+				}
+				// copy
+				FileChannel src = new FileInputStream(srcFile).getChannel();
+				FileChannel dst = new FileOutputStream(dstFile).getChannel();
+
+				dst.transferFrom(src, 0, src.size());
+				src.close();
+				dst.close();
+			} else {
+				throw new Exception();
+			}
+		} finally {
+			// reopen database
+			mDatabase = mManager.getWritableDatabase();
+		}
 	}
 
-	public void restore(Context context) {
+	@SuppressWarnings("resource")
+	public void restore(Context context) throws Exception {
+		try {
+			if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
+					.getExternalStorageState())) {
+				// lock db
+				mDatabase.close();
+				// data/data db
+				String dstPath = mDatabase.getPath();
+				File dstFile = new File(dstPath);
+				// backup file
+				File srcFolder = new File(
+						Environment.getExternalStorageDirectory(), BACKUP_PATH);
+				if (!srcFolder.exists()) {
+					throw new Exception();
+				}
+				File srcFile = new File(srcFolder, mTableParser.getFile());
+				if (!srcFile.exists()) {
+					throw new Exception();
+				}
+				// copy
+				FileChannel src = new FileInputStream(srcFile).getChannel();
+				FileChannel dst = new FileOutputStream(dstFile).getChannel();
 
+				dst.transferFrom(src, 0, src.size());
+				src.close();
+				dst.close();
+			} else {
+				throw new Exception();
+			}
+		} finally {
+			// reopen database
+			mDatabase = mManager.getWritableDatabase();
+		}
 	}
 }

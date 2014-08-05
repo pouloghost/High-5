@@ -11,6 +11,8 @@
     <!-- backup db -->
     <string name="backup_backup">Backup</string>
     <string name="backup_restore">Restore</string>
+    <string name="backup_backup_failed">Backup failed</string>
+    <string name="backup_restore_failed">Restore failed</string>
     <!-- manage ignore -->
     <string name="ignore_toggle_on">Ignored</string>
     <string name="ignore_toggle_off">Record</string>
