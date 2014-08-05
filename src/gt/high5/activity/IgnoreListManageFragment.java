@@ -13,8 +13,7 @@ import android.app.ProgressDialog;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -113,6 +112,7 @@ public class IgnoreListManageFragment extends Fragment {
 
 		final HashSet<String> ignoreSet = IgnoreSetService.getIgnoreSetService(
 				getActivity().getApplicationContext()).getIgnoreSet();
+		// view binder to load icon and checkbox using package name
 		mAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
 
 			@Override
@@ -219,7 +219,7 @@ public class IgnoreListManageFragment extends Fragment {
 	 * @param Object
 	 *            [1] ImageView the image view for showing app icon
 	 */
-	class AsyncImageTask extends AsyncTask<Object, Void, Bitmap> {
+	class AsyncImageTask extends AsyncTask<Object, Void, Drawable> {
 
 		private ImageView imageView = null;
 
@@ -229,13 +229,12 @@ public class IgnoreListManageFragment extends Fragment {
 		}
 
 		@Override
-		protected Bitmap doInBackground(Object... arg0) {
+		protected Drawable doInBackground(Object... arg0) {
 			String packageName = (String) arg0[0];
 			imageView = (ImageView) arg0[1];
 
 			try {
-				return ((BitmapDrawable) mPackageManager
-						.getApplicationIcon(packageName)).getBitmap();
+				return mPackageManager.getApplicationIcon(packageName);
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -243,10 +242,10 @@ public class IgnoreListManageFragment extends Fragment {
 		}
 
 		@Override
-		protected void onPostExecute(Bitmap result) {
+		protected void onPostExecute(Drawable result) {
 			super.onPostExecute(result);
 			if (null != imageView && null != result) {
-				imageView.setImageBitmap(result);
+				imageView.setImageDrawable(result);
 			}
 		}
 
