@@ -37,7 +37,7 @@ public class MainActivity extends Activity implements
 
 	@SuppressWarnings("rawtypes")
 	private Class[] fragments = new Class[] { SettingsFragment.class,
-			IgnoreListManageFragment.class, BackupFragment.class };
+			IgnoreListManageFragment.class, DatabaseOperationFragment.class };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
