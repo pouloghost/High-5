@@ -25,7 +25,7 @@ public class TableParser {
 	 * @author GT Attributes allowed in xml
 	 */
 	private static enum ATTR {
-		file, version, pack, clazz
+		file, version, pack, clazz, title
 	}
 
 	private int mVersion = 1;
@@ -91,6 +91,15 @@ public class TableParser {
 									.forName(mPackage + "."
 											+ parser.getAttributeValue(i));
 							result.add(clazz);
+							break;
+						case title:
+							try {
+								RecordTable record = result.get(
+										result.size() - 1).newInstance();
+								record.setTitle(parser.getAttributeValue(i));
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 							break;
 						default:
 							break;

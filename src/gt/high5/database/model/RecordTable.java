@@ -14,6 +14,9 @@ public abstract class RecordTable extends Table {
 	/*
 	 * accessors implemented using static method in TableUtils
 	 */
+	public abstract String getTitle();
+
+	public abstract void setTitle(String title);
 
 	public abstract String increase();
 

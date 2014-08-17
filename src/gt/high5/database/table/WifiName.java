@@ -1,0 +1,74 @@
+package gt.high5.database.table;
+
+import gt.high5.core.service.RecordContext;
+import gt.high5.database.model.SimpleRecordTable;
+import gt.high5.database.model.TableAnnotation;
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+
+/**
+ * @author GT
+ * 
+ *         wifi bssid record
+ * 
+ *         indicating which ap is connected
+ */
+public class WifiName extends SimpleRecordTable {
+
+	private static String title = "";
+
+	@TableAnnotation(defaultValue = "")
+	private String bssid = "";
+
+	public String getBssid() {
+		return bssid;
+	}
+
+	public void setBssid(String bssid) {
+		this.bssid = bssid;
+	}
+
+	@Override
+	public boolean currentQueryStatus(RecordContext context) {
+		WifiManager manager = (WifiManager) context.getContext()
+				.getSystemService(Context.WIFI_SERVICE);
+		if (null != manager) {
+			WifiInfo info = manager.getConnectionInfo();
+			String bssid = info.getBSSID();
+			if (null == bssid) {
+				if (manager.isWifiEnabled()) {
+					bssid = "ON";
+				} else {
+					bssid = "OFF";
+				}
+			}
+			setBssid(bssid);
+
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean initDefault(RecordContext context) {
+		count = 1;
+		return currentQueryStatus(context);
+	}
+
+	@Override
+	public float getDefaultPossibility(Context context) {
+		return 0.2f;
+	}
+
+	@Override
+	public String getTitle() {
+		return title;
+	}
+
+	@Override
+	public void setTitle(String title) {
+		WifiName.title = title;
+	}
+}

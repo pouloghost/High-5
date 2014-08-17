@@ -349,4 +349,15 @@ public class DatabaseAccessor {
 			mDatabase = mManager.getWritableDatabase();
 		}
 	}
+
+	/**
+	 * remove all data in database
+	 */
+	public void clean() {
+		mDatabase.close();
+		String path = mDatabase.getPath();
+		File file = new File(path);
+		file.delete();
+		mDatabase = mManager.getWritableDatabase();
+	}
 }

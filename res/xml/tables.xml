@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tables
     file="statics.db"
-    pack="gt.high5.database.tables"
+    pack="gt.high5.database.table"
     version="1" >
 
-    <table clazz="Total" />
-    <table clazz="Time" />
-    <table clazz="WifiName" />
-    <table clazz="Network" />
-    <table clazz="LastPackage" />
+    <table
+        clazz="Total"
+        title="Total" />
+    <table
+        clazz="Time"
+        title="Time" />
+    <table
+        clazz="WifiName"
+        title="Wifi Name" />
+    <table
+        clazz="Network"
+        title="Network Type" />
+    <table
+        clazz="LastPackage"
+        title="Last App" />
 
 </tables>

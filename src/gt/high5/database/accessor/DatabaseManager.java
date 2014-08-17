@@ -1,7 +1,7 @@
 package gt.high5.database.accessor;
 
 import gt.high5.database.model.Table;
-import gt.high5.database.tables.Ignore;
+import gt.high5.database.table.Ignore;
 
 import java.util.ArrayList;
 
