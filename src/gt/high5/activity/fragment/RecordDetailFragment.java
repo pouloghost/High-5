@@ -14,7 +14,6 @@ public class RecordDetailFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
 		String title = getArguments().getString(BUNDLE_KEYS.LABEL.toString());
 		getActivity().getActionBar().setTitle(title);
 	}
