@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:descendantFocusability="blocksDescendants"
-    android:padding="10dp" >
+    android:layout_height="match_parent" >
 
     <ImageView
-        android:id="@+id/ignore_list_icon_image"
+        android:id="@+id/total_list_icon_image"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
@@ -15,36 +13,36 @@
         android:src="@drawable/ic_launcher" />
 
     <TextView
-        android:id="@+id/ignore_list_app_name"
+        android:id="@+id/total_list_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/ignore_list_ignore_toggle"
-        android:layout_toRightOf="@+id/ignore_list_icon_image"
+        android:layout_toLeftOf="@+id/total_list_more"
+        android:layout_toRightOf="@+id/total_list_icon_image"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/unknown" />
 
     <TextView
-        android:id="@+id/ignore_list_package_name"
+        android:id="@+id/total_list_package_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/ignore_list_app_name"
+        android:layout_alignLeft="@+id/total_list_app_name"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/ignore_list_app_name"
+        android:layout_alignRight="@+id/total_list_app_name"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/unknown" />
 
-    <ToggleButton
-        android:id="@+id/ignore_list_ignore_toggle"
+    <ImageView
+        android:id="@+id/total_list_more"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:textOff="@string/ignore_toggle_off"
-        android:textOn="@string/ignore_toggle_on" />
+        android:contentDescription="@string/unknown"
+        android:src="@drawable/total_list_more_arrow" />
 
 </RelativeLayout>

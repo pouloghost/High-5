@@ -2,21 +2,24 @@
 
     <!-- application -->
     <string name="app_name">High5</string>
-    <string name="title_section1">Settings</string>
-    <string name="title_section2">Manage Ignore</string>
-    <string name="title_section3">Database Backup</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_ignore">Manage Ignore</string>
+    <string name="title_db">Database Backup</string>
+    <string name="title_graph">Data Graph</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
-    <!-- backup db -->
-    <string name="backup_backup">Backup</string>
-    <string name="backup_restore">Restore</string>
-    <string name="backup_backup_failed">Backup failed</string>
-    <string name="backup_restore_failed">Restore failed</string>
+    <string name="unknown">Unknown</string>
+    <!-- db operation -->
+    <string name="db_backup">Backup</string>
+    <string name="db_restore">Restore</string>
+    <string name="db_clean">Clean</string>
+    <string name="db_backup_failed">Backup failed</string>
+    <string name="db_restore_failed">Restore failed</string>
+    <string name="db_clean_failed">Clean failed</string>
     <!-- manage ignore -->
     <string name="ignore_toggle_on">Ignored</string>
     <string name="ignore_toggle_off">Record</string>
-    <string name="ignore_unknown">Unknown</string>
     <!-- settings -->
     <string name="settings_category_interval">Intervals</string>
     <string name="settings_category_debug">Logs</string>
