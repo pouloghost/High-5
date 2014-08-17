@@ -2,13 +2,19 @@ package gt.high5.core.service;
 
 import gt.high5.R;
 import gt.high5.database.accessor.DatabaseAccessor;
+import gt.high5.database.accessor.FilterParser;
+import gt.high5.database.filter.Filter;
+import gt.high5.database.filter.FilterContext;
 import gt.high5.database.model.Table;
-import gt.high5.database.tables.Ignore;
+import gt.high5.database.table.Ignore;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 
 /**
  * @author ayi.zty
@@ -93,5 +99,40 @@ public class IgnoreSetService {
 		}
 
 		return mIgnoreSet;
+	}
+
+	/**
+	 * init default ignore set
+	 * @param context application context
+	 * @return whether default is initialized
+	 */
+	public boolean initDefault(Context context) {
+		try {
+			FilterParser parser = new FilterParser(context.getResources()
+					.getXml(R.xml.filters));
+			ArrayList<Filter> filters = parser.getFilters();
+
+			List<ApplicationInfo> infos = context.getPackageManager()
+					.getInstalledApplications(PackageManager.GET_META_DATA);
+
+			FilterContext filterContext = new FilterContext();
+			filterContext.setContext(context.getApplicationContext());
+
+			for (ApplicationInfo info : infos) {
+				boolean shouldIgnore = false;
+				for (Filter filter : filters) {
+					filterContext.setInfo(info);
+					shouldIgnore = filter.shouldIgnore(filterContext);
+					if (shouldIgnore) {
+						update(info.packageName, false);
+						break;
+					}
+				}
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

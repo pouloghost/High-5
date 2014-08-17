@@ -2,25 +2,14 @@ package gt.high5;
 
 import gt.high5.core.service.IgnoreSetService;
 import gt.high5.core.service.PreferenceReadService;
-import gt.high5.database.accessor.FilterParser;
-import gt.high5.database.filter.Filter;
-import gt.high5.database.filter.FilterContext;
 import gt.high5.database.model.TableUtils;
-import gt.high5.database.tables.Time;
+import gt.high5.database.table.Time;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.res.Resources.NotFoundException;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
@@ -72,50 +61,12 @@ public class High5Application extends Application {
 				.getDefaultSharedPreferences(getApplicationContext());
 		String key = "ignore_initialed";
 		if (!prefs.getBoolean(key, false)) {
-			try {
-				FilterParser parser = new FilterParser(getResources().getXml(
-						R.xml.filters));
-				ArrayList<Filter> filters = parser.getFilters();
-
-				List<ApplicationInfo> infos = getPackageManager()
-						.getInstalledApplications(PackageManager.GET_META_DATA);
-
-				IgnoreSetService service = IgnoreSetService
-						.getIgnoreSetService(getApplicationContext());
-
-				FilterContext context = new FilterContext();
-				context.setContext(getApplicationContext());
-
-				for (ApplicationInfo info : infos) {
-					boolean shouldIgnore = false;
-					for (Filter filter : filters) {
-						context.setInfo(info);
-						shouldIgnore = filter.shouldIgnore(context);
-						if (shouldIgnore) {
-							service.update(info.packageName, false);
-							break;
-						}
-					}
-				}
-
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (NotFoundException e) {
-				e.printStackTrace();
-			} catch (XmlPullParserException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			prefs.edit().putBoolean(key, true).commit();
+			prefs.edit()
+					.putBoolean(
+							key,
+							IgnoreSetService.getIgnoreSetService(
+									getApplicationContext()).initDefault(
+									getApplicationContext())).commit();
 		}
 	}
 }
