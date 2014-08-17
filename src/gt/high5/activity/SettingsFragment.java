@@ -1,9 +1,10 @@
 package gt.high5.activity;
 
+import gt.high5.R;
+import gt.high5.database.table.Time;
+
 import java.util.Set;
 
-import gt.high5.R;
-import gt.high5.database.tables.Time;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
