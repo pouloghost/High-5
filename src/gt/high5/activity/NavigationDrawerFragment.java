@@ -60,6 +60,8 @@ public class NavigationDrawerFragment extends Fragment {
 	private boolean mFromSavedInstanceState;
 	private boolean mUserLearnedDrawer;
 
+	private String[] mTitles = null;
+
 	public NavigationDrawerFragment() {
 	}
 
@@ -109,10 +111,7 @@ public class NavigationDrawerFragment extends Fragment {
 		mDrawerListView.setAdapter(new ArrayAdapter<String>(getActionBar()
 				.getThemedContext(),
 				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, new String[] {
-						getString(R.string.title_section1),
-						getString(R.string.title_section2),
-						getString(R.string.title_section3), }));
+				android.R.id.text1, mTitles));
 		mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 		return mDrawerListView;
 	}
@@ -234,6 +233,9 @@ public class NavigationDrawerFragment extends Fragment {
 			throw new ClassCastException(
 					"Activity must implement NavigationDrawerCallbacks.");
 		}
+		mTitles = new String[] { getString(R.string.title_graph),
+				getString(R.string.title_settings),
+				getString(R.string.title_ignore), getString(R.string.title_db), };
 	}
 
 	@Override
@@ -291,6 +293,14 @@ public class NavigationDrawerFragment extends Fragment {
 
 	private ActionBar getActionBar() {
 		return getActivity().getActionBar();
+	}
+
+	public String[] getTitles() {
+		return mTitles;
+	}
+
+	public void setTitles(String[] mTitles) {
+		this.mTitles = mTitles;
 	}
 
 	/**

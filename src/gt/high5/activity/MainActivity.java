@@ -1,6 +1,10 @@
 package gt.high5.activity;
 
 import gt.high5.R;
+import gt.high5.activity.fragment.DatabaseOperationFragment;
+import gt.high5.activity.fragment.IgnoreListManageFragment;
+import gt.high5.activity.fragment.SettingsFragment;
+import gt.high5.activity.fragment.TotalListFragment;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -36,8 +40,9 @@ public class MainActivity extends Activity implements
 	private CharSequence mTitle;
 
 	@SuppressWarnings("rawtypes")
-	private Class[] fragments = new Class[] { SettingsFragment.class,
-			IgnoreListManageFragment.class, BackupFragment.class };
+	private Class[] fragments = new Class[] { TotalListFragment.class,
+			SettingsFragment.class, IgnoreListManageFragment.class,
+			DatabaseOperationFragment.class };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,8 @@ public class MainActivity extends Activity implements
 					.replace(R.id.container,
 							(Fragment) fragments[position].newInstance())
 					.commit();
+
+			onSectionAttached(position);
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -70,17 +77,10 @@ public class MainActivity extends Activity implements
 		}
 	}
 
-	public void onSectionAttached(int number) {
-		switch (number) {
-		case 1:
-			mTitle = getString(R.string.title_section1);
-			break;
-		case 2:
-			mTitle = getString(R.string.title_section2);
-			break;
-		case 3:
-			mTitle = getString(R.string.title_section3);
-			break;
+	public void onSectionAttached(int position) {
+		if (null != mNavigationDrawerFragment) {
+			mTitle = mNavigationDrawerFragment.getTitles()[position];
+			getActionBar().setTitle(mTitle);
 		}
 	}
 
@@ -114,5 +114,11 @@ public class MainActivity extends Activity implements
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		restoreActionBar();
 	}
 }
