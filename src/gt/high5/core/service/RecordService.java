@@ -7,7 +7,7 @@ import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
-import gt.high5.database.tables.Total;
+import gt.high5.database.table.Total;
 
 import java.io.IOException;
 import java.util.Collection;
