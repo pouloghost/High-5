@@ -78,8 +78,6 @@ public class DBOperationService {
 										Toast.LENGTH_SHORT).show();
 							}
 						}
-						IgnoreSetService.getIgnoreSetService(context)
-								.initDefault(context.getApplicationContext());
 					}
 				} });
 	}

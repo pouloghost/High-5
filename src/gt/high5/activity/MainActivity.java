@@ -40,6 +40,7 @@ public class MainActivity extends Activity implements
 	private CharSequence mTitle;
 
 	@SuppressWarnings("rawtypes")
+
 	private Class[] fragments = new Class[] { TotalListFragment.class,
 			SettingsFragment.class, IgnoreListManageFragment.class,
 			DatabaseOperationFragment.class };
