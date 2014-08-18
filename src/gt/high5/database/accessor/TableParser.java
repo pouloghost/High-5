@@ -1,9 +1,10 @@
 package gt.high5.database.accessor;
 
 import gt.high5.database.model.RecordTable;
+import gt.high5.database.model.TableInfo;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -25,16 +26,20 @@ public class TableParser {
 	 * @author GT Attributes allowed in xml
 	 */
 	private static enum ATTR {
-		file, version, pack, clazz, title
+		file, version, model_pack, parser_pack, clazz, title, data_parser
 	}
 
 	private int mVersion = 1;
 	private String mFile = null;
-	private String mPackage = null;
+	// model for representing data in database
+	private String mModelPackage = null;
+	// parser for filling up data for graphs
+	private String mParserPackage = null;
 	/**
 	 * table types in xml
 	 */
-	private ArrayList<Class<? extends RecordTable>> mTables = null;
+	// private ArrayList<Class<? extends RecordTable>> mTables = null;
+	private HashMap<Class<? extends RecordTable>, TableInfo> mTables = null;
 
 	public TableParser(XmlPullParser parser) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException,
@@ -42,24 +47,34 @@ public class TableParser {
 		setTables(loadTables(parser));
 	}
 
-	public ArrayList<Class<? extends RecordTable>> loadTables(
+	private void setTables(
+			HashMap<Class<? extends RecordTable>, TableInfo> tables) {
+		mTables = tables;
+	}
+
+	@SuppressWarnings("unchecked")
+	public HashMap<Class<? extends RecordTable>, TableInfo> loadTables(
 			XmlPullParser parser) throws XmlPullParserException, IOException,
 			ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
-		ArrayList<Class<? extends RecordTable>> result = null;
+		HashMap<Class<? extends RecordTable>, TableInfo> result = null;
 
 		int eventType = parser.getEventType();
 
+		TableInfo info = null;
+		Class<RecordTable> clazz = null;
+
 		while (XmlPullParser.END_DOCUMENT != eventType) {
+
 			switch (eventType) {
 			case XmlPullParser.START_DOCUMENT:
-				result = new ArrayList<Class<? extends RecordTable>>();
+				result = new HashMap<Class<? extends RecordTable>, TableInfo>();
 				break;
 			case XmlPullParser.START_TAG:
-				String name = parser.getName();
-				TAGS tag = TAGS.valueOf(name);
+				String startName = parser.getName();
+				TAGS startTag = TAGS.valueOf(startName);
 				int size = 0;
-				switch (tag) {
+				switch (startTag) {
 				case tables:
 					size = parser.getAttributeCount();
 					for (int i = 0; i < size; ++i) {
@@ -68,8 +83,11 @@ public class TableParser {
 						case file:
 							mFile = parser.getAttributeValue(i);
 							break;
-						case pack:
-							mPackage = parser.getAttributeValue(i);
+						case model_pack:
+							mModelPackage = parser.getAttributeValue(i);
+							break;
+						case parser_pack:
+							mParserPackage = parser.getAttributeValue(i);
 							break;
 						case version:
 							mVersion = Integer.parseInt(parser
@@ -82,24 +100,21 @@ public class TableParser {
 					break;
 				case table:
 					size = parser.getAttributeCount();
+					info = new TableInfo();
 					for (int i = 0; i < size; ++i) {
 						ATTR attr = ATTR.valueOf(parser.getAttributeName(i));
 						switch (attr) {
 						case clazz:
-							@SuppressWarnings("unchecked")
-							Class<RecordTable> clazz = (Class<RecordTable>) Class
-									.forName(mPackage + "."
+							clazz = (Class<RecordTable>) Class
+									.forName(mModelPackage + "."
 											+ parser.getAttributeValue(i));
-							result.add(clazz);
 							break;
 						case title:
-							try {
-								RecordTable record = result.get(
-										result.size() - 1).newInstance();
-								record.setTitle(parser.getAttributeValue(i));
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+							info.setTitle(parser.getAttributeValue(i));
+							break;
+						case data_parser:
+							info.setParser(Class.forName(mParserPackage + "."
+									+ parser.getAttributeValue(i)));
 							break;
 						default:
 							break;
@@ -111,6 +126,19 @@ public class TableParser {
 				}
 				break;
 			case XmlPullParser.END_TAG:
+				String endName = parser.getName();
+				TAGS endTag = TAGS.valueOf(endName);
+				switch (endTag) {
+				case tables:
+					break;
+				case table:
+					result.put(clazz, info);
+					clazz = null;
+					info = null;
+					break;
+				default:
+					break;
+				}
 				break;
 			case XmlPullParser.END_DOCUMENT:
 				break;
@@ -142,18 +170,23 @@ public class TableParser {
 	}
 
 	public String getPackage() {
-		return mPackage;
+		return mModelPackage;
 	}
 
 	public void setPackage(String mPackage) {
-		this.mPackage = mPackage;
+		this.mModelPackage = mPackage;
 	}
 
-	public ArrayList<Class<? extends RecordTable>> getTables() {
-		return mTables;
+	@SuppressWarnings("unchecked")
+	public Class<? extends RecordTable>[] getTables() {
+		Class<? extends RecordTable>[] typeArray;
+		typeArray = new Class[0];
+		return (Class<? extends RecordTable>[]) mTables.keySet().toArray(
+				typeArray);
 	}
 
-	public void setTables(ArrayList<Class<? extends RecordTable>> tables) {
-		this.mTables = tables;
+	public TableInfo getInfo(Class<? extends RecordTable> clazz) {
+		return mTables.get(clazz);
 	}
+
 }

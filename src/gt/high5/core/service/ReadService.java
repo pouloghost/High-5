@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -73,8 +72,7 @@ public class ReadService {
 			RecordService service = null;
 			try {
 				service = RecordService.getRecordService(context);
-				List<Class<? extends RecordTable>> tables = mAccessor
-						.getTables();
+				Class<? extends RecordTable>[] tables = mAccessor.getTables();
 				if (null != allTotals) {
 					for (Table total : allTotals) {
 						updatePossibility(context, all, service, tables,
@@ -128,7 +126,7 @@ public class ReadService {
 	}
 
 	private void updatePossibility(Context context, int all,
-			RecordService service, List<Class<? extends RecordTable>> tables,
+			RecordService service, Class<? extends RecordTable>[] tables,
 			Total total) throws InstantiationException, IllegalAccessException {
 		StringBuilder possibilityLog = new StringBuilder("Possible ");
 		possibilityLog.append(total.getName());

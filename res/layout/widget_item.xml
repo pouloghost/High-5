@@ -10,6 +10,7 @@
         android:id="@+id/app_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:contentDescription="@string/unknown"
         android:gravity="center_horizontal" />
 
     <TextView

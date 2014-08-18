@@ -16,8 +16,6 @@ import android.net.wifi.WifiManager;
  */
 public class WifiName extends SimpleRecordTable {
 
-	private static String title = "";
-
 	@TableAnnotation(defaultValue = "")
 	private String bssid = "";
 
@@ -60,15 +58,5 @@ public class WifiName extends SimpleRecordTable {
 	@Override
 	public float getDefaultPossibility(Context context) {
 		return 0.2f;
-	}
-
-	@Override
-	public String getTitle() {
-		return title;
-	}
-
-	@Override
-	public void setTitle(String title) {
-		WifiName.title = title;
 	}
 }

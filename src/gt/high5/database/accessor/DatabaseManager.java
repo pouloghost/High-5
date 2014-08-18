@@ -1,5 +1,6 @@
 package gt.high5.database.accessor;
 
+import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.table.Ignore;
 
@@ -24,9 +25,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
 	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		@SuppressWarnings("unchecked")
-		ArrayList<Class<? extends Table>> tablesToInit = (ArrayList<Class<? extends Table>>) parser
-				.getTables().clone();
+		ArrayList<Class<? extends Table>> tablesToInit = new ArrayList<Class<? extends Table>>();
+		Class<? extends RecordTable>[] tables = parser.getTables();
+		for (Class<? extends RecordTable> table : tables) {
+			tablesToInit.add(table);
+		}
 		tablesToInit.add(Ignore.class);
 		for (Class<? extends Table> clazz : tablesToInit) {
 			try {

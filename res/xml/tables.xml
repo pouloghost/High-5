@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tables
     file="statics.db"
-    pack="gt.high5.database.table"
+    model_pack="gt.high5.database.table"
+    parser_pack="gt.high5.graph.parser"
     version="1" >
 
     <table
         clazz="Total"
+        data_parser="TotalDataParser"
         title="Total" />
     <table
         clazz="Time"

@@ -19,8 +19,6 @@ import android.content.Context;
  */
 public final class LastPackage extends SimpleRecordTable {
 
-	private static String title = "";
-	
 	@TableAnnotation(defaultValue = "")
 	private String lastPackage = "";
 
@@ -87,15 +85,5 @@ public final class LastPackage extends SimpleRecordTable {
 	@Override
 	public float getDefaultPossibility(Context context) {
 		return 0.1f;
-	}
-
-	@Override
-	public String getTitle() {
-		return title;
-	}
-
-	@Override
-	public void setTitle(String title) {
-		LastPackage.title = title;
 	}
 }

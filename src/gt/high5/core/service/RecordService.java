@@ -80,7 +80,7 @@ public class RecordService {
 		if (null != list) {
 			total = (Total) list.get(0);
 			mAccessor.D(total);
-			List<Class<? extends RecordTable>> clazzes = mAccessor.getTables();
+			Class<? extends RecordTable>[] clazzes = mAccessor.getTables();
 			for (Class<? extends RecordTable> clazz : clazzes) {
 				RecordTable table;
 				try {
@@ -135,8 +135,7 @@ public class RecordService {
 
 				recordContext.setTotal(total);
 				// each type of record
-				List<Class<? extends RecordTable>> clazzes = mAccessor
-						.getTables();
+				Class<? extends RecordTable>[] clazzes = mAccessor.getTables();
 				for (Class<? extends RecordTable> clazz : clazzes) {
 					recordTable(context, count, recordContext, total, clazz);
 				}

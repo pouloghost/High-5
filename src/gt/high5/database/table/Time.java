@@ -15,8 +15,6 @@ import android.content.Context;
  */
 public class Time extends SimpleRecordTable {
 
-	private static String title = "";
-
 	// time region length in minutes
 	private static int regionLength = 15;
 
@@ -54,15 +52,5 @@ public class Time extends SimpleRecordTable {
 	@Override
 	public float getDefaultPossibility(Context context) {
 		return 0.0125f;
-	}
-
-	@Override
-	public String getTitle() {
-		return title;
-	}
-
-	@Override
-	public void setTitle(String title) {
-		Time.title = title;
 	}
 }

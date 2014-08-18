@@ -20,8 +20,6 @@ import android.os.Parcelable;
  */
 public class Total extends RecordTable implements Parcelable {
 
-	private static String title = "";
-
 	@TableAnnotation(defaultValue = "-1")
 	private int id = -1;
 	@TableAnnotation(defaultValue = "")
@@ -226,16 +224,6 @@ public class Total extends RecordTable implements Parcelable {
 	@Override
 	public float getDefaultPossibility(Context context) {
 		return 0.01f;
-	}
-
-	@Override
-	public String getTitle() {
-		return title;
-	}
-
-	@Override
-	public void setTitle(String title) {
-		Total.title = title;
 	}
 
 	public static Creator<Total> CREATOR = new Creator<Total>() {

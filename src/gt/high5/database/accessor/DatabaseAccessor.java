@@ -13,7 +13,6 @@ import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -116,7 +115,7 @@ public class DatabaseAccessor {
 	/**
 	 * @return record tables defined in xml
 	 */
-	public List<Class<? extends RecordTable>> getTables() {
+	public Class<? extends RecordTable>[] getTables() {
 		return mTableParser.getTables();
 	}
 

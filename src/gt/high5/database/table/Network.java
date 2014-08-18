@@ -9,8 +9,6 @@ import android.net.NetworkInfo;
 
 public class Network extends SimpleRecordTable {
 
-	private static String title = "";
-
 	@TableAnnotation(defaultValue = "")
 	private String connection = "";
 
@@ -40,15 +38,5 @@ public class Network extends SimpleRecordTable {
 	@Override
 	public float getDefaultPossibility(Context context) {
 		return 0.2f;
-	}
-
-	@Override
-	public String getTitle() {
-		return title;
-	}
-
-	@Override
-	public void setTitle(String title) {
-		Network.title = title;
 	}
 }
