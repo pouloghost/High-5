@@ -23,7 +23,7 @@ import android.view.ViewGroup;
  */
 public class RecordDetailFragment extends Fragment {
 	public static enum BUNDLE_KEYS {
-		TOTAL, LABEL
+		TOTAL, LABEL, CLASS
 	}
 
 	private Total mTotal = null;
@@ -69,7 +69,11 @@ public class RecordDetailFragment extends Fragment {
 		@Override
 		public android.support.v4.app.Fragment getItem(int position) {
 			RecordDetailPagerFragment fragment = new RecordDetailPagerFragment();
-			fragment.setData(mTotal, mRecords[position]);
+			Bundle args = new Bundle();
+			args.putParcelable(BUNDLE_KEYS.TOTAL.toString(), mTotal);
+			args.putString(BUNDLE_KEYS.CLASS.toString(),
+					mRecords[position].getName());
+			fragment.setArguments(args);
 			return fragment;
 		}
 

@@ -1,6 +1,7 @@
 package gt.high5.graph;
 
 import gt.high5.R;
+import gt.high5.activity.fragment.RecordDetailFragment.BUNDLE_KEYS;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
@@ -50,9 +51,18 @@ public class RecordDetailPagerFragment extends Fragment {
 	 */
 	private View[] mId2Views = null;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Bundle args = getArguments();
+		mTotal = args.getParcelable(BUNDLE_KEYS.TOTAL.toString());
+		try {
+			mRecordType = (Class<? extends RecordTable>) Class.forName(args
+					.getString(BUNDLE_KEYS.CLASS.toString()));
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -89,6 +99,12 @@ public class RecordDetailPagerFragment extends Fragment {
 		return root;
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		loadGraph();
+	}
+
 	public void setData(Total total, Class<? extends RecordTable> clazz) {
 		mTotal = total;
 		mRecordType = clazz;
@@ -98,9 +114,9 @@ public class RecordDetailPagerFragment extends Fragment {
 	private void loadGraph() {
 		if (null != mTotal && null != mGraphTypeSpinner) {
 			int id = (int) mGraphTypeSpinner.getSelectedItemId();
-			new AsyncGraphDrawer().execute(new FillContext(ID2TYPE[id],
-					mId2Views[id], getActivity().getApplicationContext(),
-					mTotal, mRecordType));
+			FillContext context = new FillContext(ID2TYPE[id], mId2Views[id],
+					getActivity().getApplicationContext(), mTotal, mRecordType);
+			new AsyncGraphDrawer().execute(context);
 		}
 	}
 

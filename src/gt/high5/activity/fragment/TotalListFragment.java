@@ -15,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -161,7 +162,8 @@ public class TotalListFragment extends Fragment {
 							RecordDetailFragment recordDetail = new RecordDetailFragment();
 							recordDetail.setArguments(args);
 
-							getActivity().getSupportFragmentManager()
+							((FragmentActivity) getActivity())
+									.getSupportFragmentManager()
 									.beginTransaction()
 									.replace(R.id.container, recordDetail)
 									.addToBackStack(null).commit();
