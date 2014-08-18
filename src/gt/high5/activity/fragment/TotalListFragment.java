@@ -8,7 +8,7 @@ import gt.high5.database.table.Total;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -161,7 +161,7 @@ public class TotalListFragment extends Fragment {
 							RecordDetailFragment recordDetail = new RecordDetailFragment();
 							recordDetail.setArguments(args);
 
-							getActivity().getFragmentManager()
+							getActivity().getSupportFragmentManager()
 									.beginTransaction()
 									.replace(R.id.container, recordDetail)
 									.addToBackStack(null).commit();

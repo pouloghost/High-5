@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Spinner
+        android:id="@+id/record_detail_view_graph_type_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp"
+        android:entries="@array/record_detail_spinner" />
+
+    <ProgressBar
+        android:id="@+id/record_detail_view_load_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
+
+    <com.androidplot.xy.XYPlot
+        android:id="@+id/record_detail_view_xy_chart"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/record_detail_view_graph_type_spinner"
+        android:layout_margin="10dp"
+        android:visibility="gone" >
+    </com.androidplot.xy.XYPlot>
+
+    <com.androidplot.pie.PieChart
+        android:id="@+id/record_detail_view_pie_chart"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/record_detail_view_graph_type_spinner"
+        android:layout_margin="10dp"
+        android:visibility="gone" >
+    </com.androidplot.pie.PieChart>
+
+    <ImageView
+        android:id="@+id/record_detail_view_error_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/unknown"
+        android:src="@android:drawable/ic_dialog_alert"
+        android:visibility="gone" />
+
+</RelativeLayout>

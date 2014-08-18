@@ -5,13 +5,13 @@
     android:orientation="vertical" >
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager"
+        android:id="@+id/record_detail_view_pager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" >
 
         <android.support.v4.view.PagerTitleStrip
-            android:id="@+id/pager_titles"
+            android:id="@+id/record_detail_pager_titles"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top" />

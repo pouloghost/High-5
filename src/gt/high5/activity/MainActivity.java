@@ -6,15 +6,15 @@ import gt.high5.activity.fragment.IgnoreListManageFragment;
 import gt.high5.activity.fragment.SettingsFragment;
 import gt.high5.activity.fragment.TotalListFragment;
 import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends Activity implements
+public class MainActivity extends FragmentActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
 
 	private static boolean debugging = false;
@@ -40,7 +40,6 @@ public class MainActivity extends Activity implements
 	private CharSequence mTitle;
 
 	@SuppressWarnings("rawtypes")
-
 	private Class[] fragments = new Class[] { TotalListFragment.class,
 			SettingsFragment.class, IgnoreListManageFragment.class,
 			DatabaseOperationFragment.class };
@@ -62,7 +61,7 @@ public class MainActivity extends Activity implements
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
-		FragmentManager fragmentManager = getFragmentManager();
+		FragmentManager fragmentManager = getSupportFragmentManager();
 		try {
 			fragmentManager
 					.beginTransaction()
