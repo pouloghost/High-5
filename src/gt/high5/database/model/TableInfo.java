@@ -7,7 +7,7 @@ package gt.high5.database.model;
  */
 public class TableInfo {
 	private String mTitle = null;
-	private Class<?> mParser = null;
+	private Class<?> mFiller = null;
 
 	public String getTitle() {
 		return mTitle;
@@ -17,12 +17,12 @@ public class TableInfo {
 		this.mTitle = mTitle;
 	}
 
-	public Class<?> getParser() {
-		return mParser;
+	public Class<?> getFiller() {
+		return mFiller;
 	}
 
-	public void setParser(Class<?> mParser) {
-		this.mParser = mParser;
+	public void setFiller(Class<?> filler) {
+		this.mFiller = filler;
 	}
 
 }

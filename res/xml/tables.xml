@@ -2,24 +2,28 @@
 <tables
     file="statics.db"
     model_pack="gt.high5.database.table"
-    parser_pack="gt.high5.graph.parser"
+    filler_pack="gt.high5.graph.provider"
     version="1" >
 
     <table
         clazz="Total"
-        data_parser="TotalDataParser"
+        filler="TotalDataFiller"
         title="Total" />
     <table
         clazz="Time"
+        filler="TimeDataFiller"
         title="Time" />
     <table
         clazz="WifiName"
+        filler="TotalDataFiller"
         title="Wifi Name" />
     <table
         clazz="Network"
+        filler="TotalDataFiller"
         title="Network Type" />
     <table
         clazz="LastPackage"
+        filler="TotalDataFiller"
         title="Last App" />
 
 </tables>

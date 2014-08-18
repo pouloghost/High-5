@@ -4,6 +4,7 @@ import gt.high5.database.model.ClassUtils;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableUtils;
+import gt.high5.graph.provider.DataFiller;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -347,6 +348,32 @@ public class DatabaseAccessor {
 			// reopen database
 			mDatabase = mManager.getWritableDatabase();
 		}
+	}
+
+	/**
+	 * proxy accessor for data filler, a factory
+	 * 
+	 * @param clazz
+	 *            type
+	 * @return data filler
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public DataFiller getDataFiller(Class<? extends RecordTable> clazz)
+			throws InstantiationException, IllegalAccessException {
+		return (DataFiller) mTableParser.getInfo(clazz).getFiller()
+				.newInstance();
+	}
+
+	/**
+	 * proxy accessor for title in pager, a factory
+	 * 
+	 * @param clazz
+	 *            type
+	 * @return title
+	 */
+	public String getTableTitle(Class<? extends RecordTable> clazz) {
+		return mTableParser.getInfo(clazz).getTitle();
 	}
 
 	/**

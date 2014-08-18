@@ -26,7 +26,7 @@ public class TableParser {
 	 * @author GT Attributes allowed in xml
 	 */
 	private static enum ATTR {
-		file, version, model_pack, parser_pack, clazz, title, data_parser
+		file, version, model_pack, filler_pack, clazz, title, filler
 	}
 
 	private int mVersion = 1;
@@ -86,7 +86,7 @@ public class TableParser {
 						case model_pack:
 							mModelPackage = parser.getAttributeValue(i);
 							break;
-						case parser_pack:
+						case filler_pack:
 							mParserPackage = parser.getAttributeValue(i);
 							break;
 						case version:
@@ -112,8 +112,8 @@ public class TableParser {
 						case title:
 							info.setTitle(parser.getAttributeValue(i));
 							break;
-						case data_parser:
-							info.setParser(Class.forName(mParserPackage + "."
+						case filler:
+							info.setFiller(Class.forName(mParserPackage + "."
 									+ parser.getAttributeValue(i)));
 							break;
 						default:
@@ -185,6 +185,13 @@ public class TableParser {
 				typeArray);
 	}
 
+	/**
+	 * get info about a record type
+	 * 
+	 * @param clazz
+	 *            record class
+	 * @return record info
+	 */
 	public TableInfo getInfo(Class<? extends RecordTable> clazz) {
 		return mTables.get(clazz);
 	}
