@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -188,6 +189,15 @@ public class IgnoreListManageFragment extends Fragment {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			mDialog = new ProgressDialog(getActivity());
+
+			mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					LoadDataTask.this.cancel(true);
+				}
+			});
+
 			mDialog.show();
 
 			mPackageManager = getActivity().getPackageManager();

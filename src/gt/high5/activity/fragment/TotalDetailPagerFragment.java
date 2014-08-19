@@ -23,7 +23,8 @@ import android.widget.TextView;
  * 
  *         fragment showing the overall infomation of a package
  */
-public class TotalDetailPagerFragment extends Fragment {
+public class TotalDetailPagerFragment extends Fragment implements
+		CancelableTask {
 
 	private static final int SPLITTER_SIZE = 1;
 
@@ -38,6 +39,8 @@ public class TotalDetailPagerFragment extends Fragment {
 	private ImageView mErrorImage = null;
 
 	private Total mTotal = null;
+
+	private AsyncInfoLoader mLoader = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -138,6 +141,8 @@ public class TotalDetailPagerFragment extends Fragment {
 			for (View v : mSplitters) {
 				v.setVisibility(View.GONE);
 			}
+
+			mLoader = this;
 		}
 
 		@Override
@@ -158,23 +163,41 @@ public class TotalDetailPagerFragment extends Fragment {
 		@Override
 		protected void onPostExecute(AppInfo result) {
 			super.onPostExecute(result);
-			mLoadingBar.setVisibility(View.GONE);
-			// if view not filled properly the reference in fillContext will be
-			// set to be null
-			if (null != result) {
-				mAppIconImage.setImageDrawable(result.getIcon());
-				mAppNameText.setText(result.getName());
-				mCountText.setText(mTotal.getCount() + "");
-				for (View v : mSplitters) {
-					v.setVisibility(View.VISIBLE);
-				}
-				mNameWrapper.setVisibility(View.VISIBLE);
-				mCountWrapper.setVisibility(View.VISIBLE);
-
-			} else {
-				mErrorImage.setVisibility(View.VISIBLE);
-			}
+			onFinishLoading(result);
 		}
 
+	}
+
+	private void onFinishLoading(AppInfo result) {
+		mLoadingBar.setVisibility(View.GONE);
+		mLoader = null;
+		// if view not filled properly the reference in fillContext will be
+		// set to be null
+		if (null != result) {
+			mAppIconImage.setImageDrawable(result.getIcon());
+			mAppNameText.setText(result.getName());
+			mCountText.setText(mTotal.getCount() + "");
+			for (View v : mSplitters) {
+				v.setVisibility(View.VISIBLE);
+			}
+			mNameWrapper.setVisibility(View.VISIBLE);
+			mCountWrapper.setVisibility(View.VISIBLE);
+
+		} else {
+			mErrorImage.setVisibility(View.VISIBLE);
+		}
+	}
+
+	@Override
+	public void cancel() {
+		if (isCancelable()) {
+			mLoader.cancel(true);
+			onFinishLoading(null);
+		}
+	}
+
+	@Override
+	public boolean isCancelable() {
+		return null != mLoader;
 	}
 }

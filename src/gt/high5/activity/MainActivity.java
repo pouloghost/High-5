@@ -1,6 +1,7 @@
 package gt.high5.activity;
 
 import gt.high5.R;
+import gt.high5.activity.fragment.CancelableTask;
 import gt.high5.activity.fragment.DatabaseOperationFragment;
 import gt.high5.activity.fragment.IgnoreListManageFragment;
 import gt.high5.activity.fragment.SettingsFragment;
@@ -16,16 +17,6 @@ import android.view.MenuItem;
 
 public class MainActivity extends FragmentActivity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
-
-	private static boolean debugging = false;
-
-	public static boolean isDebugging() {
-		return debugging;
-	}
-
-	public static void setDebugging(boolean debugging) {
-		MainActivity.debugging = debugging;
-	}
 
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
@@ -43,6 +34,7 @@ public class MainActivity extends FragmentActivity implements
 	private Class[] fragments = new Class[] { TotalListFragment.class,
 			SettingsFragment.class, IgnoreListManageFragment.class,
 			DatabaseOperationFragment.class };
+	private Fragment mCurrentFragment = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +55,9 @@ public class MainActivity extends FragmentActivity implements
 		// update the main content by replacing fragments
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		try {
-			fragmentManager
-					.beginTransaction()
-					.replace(R.id.container,
-							(Fragment) fragments[position].newInstance())
-					.commit();
+			mCurrentFragment = (Fragment) fragments[position].newInstance();
+			fragmentManager.beginTransaction()
+					.replace(R.id.container, mCurrentFragment).commit();
 
 			onSectionAttached(position);
 		} catch (InstantiationException e) {
@@ -118,7 +108,12 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
-		restoreActionBar();
+		if (mCurrentFragment instanceof CancelableTask
+				&& ((CancelableTask) mCurrentFragment).isCancelable()) {
+			((CancelableTask) mCurrentFragment).cancel();
+		} else {
+			super.onBackPressed();
+			restoreActionBar();
+		}
 	}
 }

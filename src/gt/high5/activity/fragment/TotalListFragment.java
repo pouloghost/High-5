@@ -8,13 +8,14 @@ import gt.high5.database.table.Total;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -189,6 +190,13 @@ public class TotalListFragment extends Fragment {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			mDialog = new ProgressDialog(getActivity());
+			mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					LoadDataTask.this.cancel(true);
+				}
+			});
 			mDialog.show();
 
 			mAccessor = DatabaseAccessor.getAccessor(getActivity()

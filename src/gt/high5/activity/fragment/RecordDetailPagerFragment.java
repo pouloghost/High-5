@@ -3,8 +3,8 @@ package gt.high5.activity.fragment;
 import gt.high5.R;
 import gt.high5.activity.fragment.RecordDetailFragment.BUNDLE_KEYS;
 import gt.high5.chart.core.DataFiller;
-import gt.high5.chart.core.FillContext;
 import gt.high5.chart.core.DataFiller.CHART_TYPE;
+import gt.high5.chart.core.FillContext;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
@@ -28,7 +28,8 @@ import com.androidplot.xy.XYPlot;
  *         a fragment containing a chart and a spinner for selecting type of
  *         chart
  */
-public class RecordDetailPagerFragment extends Fragment {
+public class RecordDetailPagerFragment extends Fragment implements
+		CancelableTask {
 
 	/**
 	 * spinner id to chart type mapping
@@ -50,6 +51,8 @@ public class RecordDetailPagerFragment extends Fragment {
 	 * spinner id to view pointer mapping
 	 */
 	private View[] mId2Views = null;
+
+	private AsyncGraphDrawer mDrawer = null;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -134,6 +137,8 @@ public class RecordDetailPagerFragment extends Fragment {
 			mPieChart.setVisibility(View.GONE);
 			mErrorImage.setVisibility(View.GONE);
 			mLoadingBar.setVisibility(View.VISIBLE);
+
+			mDrawer = this;
 		}
 
 		@Override
@@ -154,15 +159,33 @@ public class RecordDetailPagerFragment extends Fragment {
 		@Override
 		protected void onPostExecute(FillContext result) {
 			super.onPostExecute(result);
-			mLoadingBar.setVisibility(View.GONE);
-			// if view not filled properly the reference in fillContext will be
-			// set to be null
-			if (null != result.getView()) {
-				result.getView().setVisibility(View.VISIBLE);
-			} else {
-				mErrorImage.setVisibility(View.VISIBLE);
-			}
+			onFinishLoading(result);
 		}
 
+	}
+
+	private void onFinishLoading(FillContext result) {
+		mLoadingBar.setVisibility(View.GONE);
+		mDrawer = null;
+		// if view not filled properly the reference in fillContext will be
+		// set to be null
+		if (null != result && null != result.getView()) {
+			result.getView().setVisibility(View.VISIBLE);
+		} else {
+			mErrorImage.setVisibility(View.VISIBLE);
+		}
+	}
+
+	@Override
+	public void cancel() {
+		if (isCancelable()) {
+			mDrawer.cancel(true);
+			onFinishLoading(null);
+		}
+	}
+
+	@Override
+	public boolean isCancelable() {
+		return null != mDrawer;
 	}
 }

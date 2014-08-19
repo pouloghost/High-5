@@ -20,7 +20,7 @@ import android.view.ViewGroup;
  * 
  *         with a viewpager to sliding between different type of record
  */
-public class RecordDetailFragment extends Fragment {
+public class RecordDetailFragment extends Fragment implements CancelableTask {
 	public static enum BUNDLE_KEYS {
 		TOTAL, LABEL, CLASS
 	}
@@ -108,5 +108,16 @@ public class RecordDetailFragment extends Fragment {
 			return mAccessor.getTableTitle(mRecords[position]);
 		}
 
+	}
+
+	@Override
+	public void cancel() {
+		((CancelableTask) mPager.getChildAt(mPager.getCurrentItem())).cancel();
+	}
+
+	@Override
+	public boolean isCancelable() {
+		return ((CancelableTask) mPager.getChildAt(mPager.getCurrentItem()))
+				.isCancelable();
 	}
 }

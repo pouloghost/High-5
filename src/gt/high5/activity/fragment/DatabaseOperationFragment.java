@@ -125,21 +125,22 @@ public class DatabaseOperationFragment extends Fragment {
 		}
 
 		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			mDialog.dismiss();
-		}
-
-		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 			mDialog.show();
+			mDialog.setCancelable(false);
 		}
 
 		@Override
 		protected Void doInBackground(Runnable... runnables) {
 			runnables[0].run();
 			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			mDialog.dismiss();
 		}
 
 	}
