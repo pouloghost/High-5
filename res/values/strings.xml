@@ -31,5 +31,7 @@
     <string name="settings_region_default">15</string>
     <string name="settings_log_on">Log to file</string>
     <string name="settings_log_off">Log off</string>
+    <!-- detail chart -->
+    <string name="total_detail_count_hint">Count:</string>
 
 </resources>
