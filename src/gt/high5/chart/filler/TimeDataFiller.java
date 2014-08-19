@@ -1,6 +1,9 @@
-package gt.high5.graph.provider;
+package gt.high5.chart.filler;
 
 import gt.high5.R;
+import gt.high5.chart.core.DataFiller;
+import gt.high5.chart.core.FillContext;
+import gt.high5.chart.core.ZoomAndDragListener;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.Table;
 import gt.high5.database.table.Time;
@@ -18,11 +21,14 @@ import android.graphics.Color;
 
 import com.androidplot.pie.PieChart;
 import com.androidplot.pie.Segment;
-import com.androidplot.pie.SegmentFormatter;
+import com.androidplot.ui.Formatter;
+import com.androidplot.xy.BarFormatter;
+import com.androidplot.xy.BarRenderer;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
+import com.androidplot.xy.XYSeriesFormatter;
 
 public class TimeDataFiller extends DataFiller {
 
@@ -52,18 +58,40 @@ public class TimeDataFiller extends DataFiller {
 	private DatabaseAccessor mAccessor = null;
 	private ArrayList<Table> mData = null;
 
+	private NumberFormat mTitleFormat = new NumberFormat() {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public StringBuffer format(double value, StringBuffer buffer,
+				FieldPosition field) {
+			return new StringBuffer(REGION6TITLE[(int) value]);
+		}
+
+		@Override
+		public StringBuffer format(long value, StringBuffer buffer,
+				FieldPosition field) {
+			throw new UnsupportedOperationException("Not yet implemented.");
+		}
+
+		@Override
+		public Number parse(String string, ParsePosition position) {
+			throw new UnsupportedOperationException("Not yet implemented.");
+		}
+	};
+
 	@Override
 	protected void addFillers() {
+		// pie chart
 		mFillers.put(CHART_TYPE.PIE, new ViewFiller() {
 
 			@Override
 			public boolean fillView() {
 				if (null != mContext) {
 					loadData();
-					SegmentFormatter[] formatters = { new SegmentFormatter(),
-							new SegmentFormatter(), new SegmentFormatter(),
-							new SegmentFormatter(), new SegmentFormatter(), };
-					int colors = initSegmentFormatters(formatters);
+					int colors = initSegmentFormatters(mData.size());
 					// fill data
 					PieChart pieChart = (PieChart) mContext.getView();
 					pieChart.clear();
@@ -73,7 +101,7 @@ public class TimeDataFiller extends DataFiller {
 						pieChart.addSeries(
 								new Segment(REGION6TITLE[time.getRegion()]
 										+ ":" + time.getCount(), time
-										.getCount()), formatters[i % colors]);
+										.getCount()), pieFormatters[i % colors]);
 					}
 					pieChart.getBorderPaint().setColor(Color.TRANSPARENT);
 					pieChart.getBackgroundPaint().setColor(Color.TRANSPARENT);
@@ -82,76 +110,36 @@ public class TimeDataFiller extends DataFiller {
 				return false;
 			}
 		});
+		// bar chart
 		mFillers.put(CHART_TYPE.BAR, new ViewFiller() {
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public boolean fillView() {
+				if (null != mContext) {
+					BarFormatter formatter = new BarFormatter();
+					formatter.configure(mContext.getContext(),
+							R.xml.bar_formatter);
+					fillXYPlot(formatter);
+					BarRenderer<BarFormatter> renderer = ((BarRenderer<BarFormatter>) ((XYPlot) mContext
+							.getView()).getRendererList().get(0));
+					renderer.setBarWidth(10);
+					return true;
+				}
 				return false;
 			}
 		});
+		// line chart
 		mFillers.put(CHART_TYPE.LINE, new ViewFiller() {
 
 			@Override
 			public boolean fillView() {
 				if (null != mContext) {
-					loadData();
-					// fill data
-					XYPlot xyPlot = (XYPlot) mContext.getView();
-					xyPlot.clear();
-					// init data
-					Number[] numbers = new Number[REGION6TITLE.length];
-					// i for all the labels
-					// j for record in db
-					int i, j;
-					Time time = null;
-					for (i = 0, j = 0; i < REGION6TITLE.length; ++i) {
-						if (j < mData.size()) {
-							time = (Time) mData.get(j);
-						}
-						if (i == time.getRegion()) {
-							numbers[i] = time.getCount();
-							++j;
-						} else {
-							numbers[i] = 0;
-						}
-					}
 					// format
 					LineAndPointFormatter formatter = new LineAndPointFormatter();
 					formatter.configure(mContext.getContext(),
 							R.xml.line_point_formatter);
-					xyPlot.setTicksPerRangeLabel(10);
-					xyPlot.setTicksPerDomainLabel(1);
-					xyPlot.setDomainValueFormat(new NumberFormat() {
-						/**
-						 * 
-						 */
-						private static final long serialVersionUID = 1L;
-
-						@Override
-						public StringBuffer format(double value,
-								StringBuffer buffer, FieldPosition field) {
-							return new StringBuffer(REGION6TITLE[(int) value]);
-						}
-
-						@Override
-						public StringBuffer format(long value,
-								StringBuffer buffer, FieldPosition field) {
-							throw new UnsupportedOperationException(
-									"Not yet implemented.");
-						}
-
-						@Override
-						public Number parse(String string,
-								ParsePosition position) {
-							throw new UnsupportedOperationException(
-									"Not yet implemented.");
-						}
-					});
-					XYSeries series = new SimpleXYSeries(
-							Arrays.asList(numbers),
-							SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, mAccessor
-									.getTableTitle(mContext.getRecord()));
-					xyPlot.addSeries(series, formatter);
+					fillXYPlot(formatter);
 					return true;
 				}
 				return false;
@@ -188,19 +176,37 @@ public class TimeDataFiller extends DataFiller {
 		}
 	}
 
-	private int initSegmentFormatters(SegmentFormatter[] formatters) {
-		// init formatters
-		formatters[0].configure(mContext.getContext(), R.xml.pie_segment_0);
-		formatters[1].configure(mContext.getContext(), R.xml.pie_segment_1);
-		formatters[2].configure(mContext.getContext(), R.xml.pie_segment_2);
-		formatters[3].configure(mContext.getContext(), R.xml.pie_segment_3);
-		formatters[3].configure(mContext.getContext(), R.xml.pie_segment_4);
-
-		int colors = 2;
-		while (0 == (mData.size() - 1) % colors) {
-			++colors;
+	@SuppressWarnings("rawtypes")
+	private void fillXYPlot(Formatter<XYPlot> formatter) {
+		loadData();
+		// fill data
+		XYPlot xyPlot = (XYPlot) mContext.getView();
+		xyPlot.clear();
+		// init data
+		Number[] numbers = new Number[REGION6TITLE.length];
+		// i for all the labels
+		// j for record in db
+		int i, j;
+		Time time = null;
+		for (i = 0, j = 0; i < REGION6TITLE.length; ++i) {
+			if (j < mData.size()) {
+				time = (Time) mData.get(j);
+			}
+			if (i == time.getRegion()) {
+				numbers[i] = time.getCount();
+				++j;
+			} else {
+				numbers[i] = 0;
+			}
 		}
 
-		return colors;
+		xyPlot.setTicksPerRangeLabel(10);
+		xyPlot.setTicksPerDomainLabel(1);
+		xyPlot.setDomainValueFormat(mTitleFormat);
+		XYSeries series = new SimpleXYSeries(Arrays.asList(numbers),
+				SimpleXYSeries.ArrayFormat.Y_VALS_ONLY,
+				mAccessor.getTableTitle(mContext.getRecord()));
+		xyPlot.setOnTouchListener(new ZoomAndDragListener(series));
+		xyPlot.addSeries(series, (XYSeriesFormatter) formatter);
 	}
 }

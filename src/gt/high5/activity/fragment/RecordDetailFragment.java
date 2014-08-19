@@ -4,7 +4,6 @@ import gt.high5.R;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
-import gt.high5.graph.RecordDetailPagerFragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

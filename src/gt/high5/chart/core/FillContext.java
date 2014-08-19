@@ -1,10 +1,10 @@
-package gt.high5.graph.provider;
+package gt.high5.chart.core;
 
-import android.content.Context;
-import android.view.View;
+import gt.high5.chart.core.DataFiller.CHART_TYPE;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
-import gt.high5.graph.provider.DataFiller.CHART_TYPE;
+import android.content.Context;
+import android.view.View;
 
 public class FillContext {
 	private CHART_TYPE mType = null;

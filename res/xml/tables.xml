@@ -2,7 +2,7 @@
 <tables
     file="statics.db"
     model_pack="gt.high5.database.table"
-    filler_pack="gt.high5.graph.provider"
+    filler_pack="gt.high5.chart.filler"
     version="1" >
 
     <table

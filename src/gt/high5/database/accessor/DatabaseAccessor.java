@@ -1,10 +1,10 @@
 package gt.high5.database.accessor;
 
+import gt.high5.chart.core.DataFiller;
 import gt.high5.database.model.ClassUtils;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableUtils;
-import gt.high5.graph.provider.DataFiller;
 
 import java.io.File;
 import java.io.FileInputStream;

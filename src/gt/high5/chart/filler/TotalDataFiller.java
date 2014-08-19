@@ -1,4 +1,6 @@
-package gt.high5.graph.provider;
+package gt.high5.chart.filler;
+
+import gt.high5.chart.core.DataFiller;
 
 /**
  * @author GT
