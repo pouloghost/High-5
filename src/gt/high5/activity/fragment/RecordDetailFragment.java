@@ -65,15 +65,18 @@ public class RecordDetailFragment extends Fragment {
 					tables[i] = tables[tables.length - 1];
 				}
 				Class<? extends RecordTable> clazz = tables[i];
-				for (int j = i - 1; j >= 0; --j) {
+				int j = i - 1;
+				for (; j >= 0; --j) {
 					if (clazz.getSimpleName().compareTo(
 							tables[j].getSimpleName()) < 0) {
 						tables[j + 1] = tables[j];
 					} else {
-						tables[j + 1] = clazz;
+						++j;
 						break;
 					}
 				}
+				j = j < 0 ? 0 : j;
+				tables[j] = clazz;
 			}
 			// for (int i = 0; i < mRecords.length; ++i) {
 			// mRecords[i] = tables[i];
