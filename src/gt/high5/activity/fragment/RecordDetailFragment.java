@@ -38,11 +38,6 @@ public class RecordDetailFragment extends Fragment {
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
-
-	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View root = inflater.inflate(R.layout.record_detail_main, container,
@@ -57,17 +52,41 @@ public class RecordDetailFragment extends Fragment {
 		private Class<? extends RecordTable>[] mRecords = null;
 		private DatabaseAccessor mAccessor = null;
 
+		@SuppressWarnings("unchecked")
 		public ChartFragmentAdapter(FragmentManager fm) {
 			super(fm);
 
 			mAccessor = DatabaseAccessor.getAccessor(getActivity()
 					.getApplicationContext(), R.xml.tables);
-			mRecords = mAccessor.getTables();
+			Class<? extends RecordTable>[] tables = mAccessor.getTables();
+			mRecords = new Class[tables.length];
+			for (int i = 0; i < tables.length - 1; ++i) {
+				if (Total.class == tables[i]) {// delete total
+					tables[i] = tables[tables.length - 1];
+				}
+				Class<? extends RecordTable> clazz = tables[i];
+				for (int j = i - 1; j >= 0; --j) {
+					if (clazz.getSimpleName().compareTo(
+							tables[j].getSimpleName()) < 0) {
+						tables[j + 1] = tables[j];
+					} else {
+						tables[j + 1] = clazz;
+						break;
+					}
+				}
+			}
+			// for (int i = 0; i < mRecords.length; ++i) {
+			// mRecords[i] = tables[i];
+			// }
+			System.arraycopy(tables, 0, mRecords, 1, mRecords.length - 1);
+			mRecords[0] = Total.class;
 		}
 
 		@Override
-		public android.support.v4.app.Fragment getItem(int position) {
-			RecordDetailPagerFragment fragment = new RecordDetailPagerFragment();
+		public Fragment getItem(int position) {
+			Fragment fragment = position == 0 ? new TotalDetailPagerFragment()
+					: new RecordDetailPagerFragment();
+
 			Bundle args = new Bundle();
 			args.putParcelable(BUNDLE_KEYS.TOTAL.toString(), mTotal);
 			args.putString(BUNDLE_KEYS.CLASS.toString(),
