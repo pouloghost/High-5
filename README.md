@@ -30,4 +30,9 @@ Packages:
   gt.high5.database.tables: actual tables in database. Can be extended by adding a subclass of Table/ RecordTable/ 
     SimpleRecordTable and add element in R.xml.tables.
     
+    
+  special thanks to the open source libraries:
+    <a href="https://github.com/curioustechizen/android-xlog">android-xlog, log to file</a>
+    <a href="http://androidplot.com/">android plot, chart library</a>
+    <a href="https://github.com/kolavar/android-support-v4-preferencefragment">v4 compatible preference fragment</a>
 </pre>
