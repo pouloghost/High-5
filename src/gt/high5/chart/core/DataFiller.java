@@ -62,7 +62,7 @@ public abstract class DataFiller {
 					R.xml.pie_segment_4);
 		}
 		int colors = 2;
-		while (0 == (size - 1) % colors) {
+		while (0 == (size - 1) % colors && colors < pieFormatters.length) {
 			++colors;
 		}
 
