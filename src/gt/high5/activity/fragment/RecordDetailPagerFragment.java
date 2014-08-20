@@ -83,22 +83,22 @@ public class RecordDetailPagerFragment extends Fragment implements
 				.findViewById(R.id.record_detail_view_pie_chart);
 		mErrorImage = (ImageView) root
 				.findViewById(R.id.record_detail_view_error_image);
-	
+
 		mGraphTypeSpinner
 				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-	
+
 					@Override
 					public void onItemSelected(AdapterView<?> parent,
 							View view, int position, long id) {
 						loadGraph();
 					}
-	
+
 					@Override
 					public void onNothingSelected(AdapterView<?> arg0) {
-	
+
 					}
 				});
-	
+
 		mId2Views = new View[] { mPieChart, mXyChart, mXyChart };
 		return root;
 	}
@@ -106,6 +106,8 @@ public class RecordDetailPagerFragment extends Fragment implements
 	@Override
 	public void onResume() {
 		super.onResume();
+		mXyChart.setVisibility(View.GONE);
+		mPieChart.setVisibility(View.GONE);
 		loadGraph();
 	}
 
@@ -134,7 +136,7 @@ public class RecordDetailPagerFragment extends Fragment implements
 	 *         async task for filling up the chart view
 	 */
 	class AsyncGraphDrawer extends AsyncTask<FillContext, Void, FillContext> {
-	
+
 		@Override
 		protected FillContext doInBackground(FillContext... arg0) {
 			FillContext fillContext = arg0[0];
@@ -149,13 +151,13 @@ public class RecordDetailPagerFragment extends Fragment implements
 			}
 			return fillContext;
 		}
-	
+
 		@Override
 		protected void onPostExecute(FillContext result) {
 			super.onPostExecute(result);
 			onFinishLoading(result);
 		}
-	
+
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -163,10 +165,10 @@ public class RecordDetailPagerFragment extends Fragment implements
 			mPieChart.setVisibility(View.GONE);
 			mErrorImage.setVisibility(View.GONE);
 			mLoadingBar.setVisibility(View.VISIBLE);
-	
+
 			mDrawer = this;
 		}
-	
+
 	}
 
 	private void loadGraph() {

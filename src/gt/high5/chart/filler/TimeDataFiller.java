@@ -2,7 +2,6 @@ package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.DataFiller;
-import gt.high5.chart.core.FillContext;
 import gt.high5.chart.core.ZoomAndDragListener;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.Table;
@@ -121,9 +120,14 @@ public class TimeDataFiller extends DataFiller {
 					formatter.configure(mContext.getContext(),
 							R.xml.bar_formatter);
 					fillXYPlot(formatter);
-					BarRenderer<BarFormatter> renderer = ((BarRenderer<BarFormatter>) ((XYPlot) mContext
-							.getView()).getRendererList().get(0));
-					renderer.setBarWidth(10);
+					for (Object renderer : ((XYPlot) mContext.getView())
+							.getRendererList()) {
+						if (renderer instanceof BarRenderer<?>) {
+							((BarRenderer<BarFormatter>) renderer)
+									.setBarWidth(10);
+						}
+					}
+
 					return true;
 				}
 				return false;
@@ -147,9 +151,9 @@ public class TimeDataFiller extends DataFiller {
 		});
 	}
 
-	public DatabaseAccessor getAccessor(FillContext context) {
-		if (null == mAccessor) {
-			mAccessor = DatabaseAccessor.getAccessor(context.getContext(),
+	public DatabaseAccessor getAccessor() {
+		if (null != mContext && null == mAccessor) {
+			mAccessor = DatabaseAccessor.getAccessor(mContext.getContext(),
 					R.xml.tables);
 		}
 		return mAccessor;
@@ -164,15 +168,17 @@ public class TimeDataFiller extends DataFiller {
 			Total total = mContext.getTotal();
 			Time query = new Time();
 			query.setPid(total.getId());
-			mData = getAccessor(mContext).R(query);
+			getAccessor();
+			if (null != mAccessor) {
+				mData = mAccessor.R(query);
+				Collections.sort(mData, new Comparator<Table>() {
 
-			Collections.sort(mData, new Comparator<Table>() {
-
-				@Override
-				public int compare(Table lhs, Table rhs) {
-					return ((Time) lhs).getRegion() - ((Time) rhs).getRegion();
-				}
-			});
+					@Override
+					public int compare(Table lhs, Table rhs) {
+						return ((Time) lhs).getRegion() - ((Time) rhs).getRegion();
+					}
+				});
+			}
 		}
 	}
 

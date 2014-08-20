@@ -19,11 +19,11 @@
         title="Wifi Name" />
     <table
         clazz="Network"
-        filler="TotalDataFiller"
+        filler="NetworkDataFiller"
         title="Network Type" />
     <table
         clazz="LastPackage"
-        filler="TotalDataFiller"
+        filler="LastPackageDataFiller"
         title="Last App" />
 
 </tables>

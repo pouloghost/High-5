@@ -19,9 +19,9 @@ public class Network extends SimpleRecordTable {
 		if (null != manager) {
 			NetworkInfo info = manager.getActiveNetworkInfo();
 			if (null == info || (!info.isConnectedOrConnecting())) {
-				connection = "NONE";
+				setConnection("NONE");
 			} else {
-				connection = info.getTypeName() + "_" + info.getSubtypeName();
+				setConnection(info.getTypeName() + "_" + info.getSubtypeName());
 			}
 			return true;
 		} else {
@@ -38,5 +38,13 @@ public class Network extends SimpleRecordTable {
 	@Override
 	public float getDefaultPossibility(Context context) {
 		return 0.2f;
+	}
+
+	public String getConnection() {
+		return connection;
+	}
+
+	public void setConnection(String connection) {
+		this.connection = connection;
 	}
 }
