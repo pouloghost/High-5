@@ -19,15 +19,13 @@ accessed via orm objects, class<? extends Table>.
 * android.support.v4.preference: copied preferencefragment from [v4 compatible preference fragment](https://github.com/kolavar/android-support-v4-preferencefragment)
 
 * gt.high5: Application for initialize resources
-
 * gt.high5.activity: UI related classes
   * gt.high5.activity: Activity, broadcast reciever and UI related utils
   * gt.high5.activity.fragment: Fragments
   * gt.high5.activity.widget: AppWidget implementation.
-
 * gt.high5.chart: Record data chart classes
   * gt.high5.chart.core: Record chart core functions, utils and base classes
-  * gt.high5.chart.filler: strategies for filling up chart for different records
+  * gt.high5.chart.filler: Strategies for filling up chart for different records. Each record table will have a data filler to display chart, can be configured in xml.
 * gt.high5.core: Data access interface for UI
   * gt.high5.core.provider: Providers for getting current package information. Can be extended by adding 
     a subclass of PackageProvider and add an object to the PackageProvider.priority array(the first 
