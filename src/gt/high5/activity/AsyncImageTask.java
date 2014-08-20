@@ -1,4 +1,4 @@
-package gt.high5.activity.fragment;
+package gt.high5.activity;
 
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;

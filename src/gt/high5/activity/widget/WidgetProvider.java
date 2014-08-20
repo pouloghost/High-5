@@ -1,4 +1,4 @@
-package gt.high5.core.widget;
+package gt.high5.activity.widget;
 
 import gt.high5.R;
 import gt.high5.core.service.LogService;

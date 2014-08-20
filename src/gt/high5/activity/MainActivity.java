@@ -1,7 +1,6 @@
 package gt.high5.activity;
 
 import gt.high5.R;
-import gt.high5.activity.fragment.CancelableTask;
 import gt.high5.activity.fragment.DatabaseOperationFragment;
 import gt.high5.activity.fragment.IgnoreListManageFragment;
 import gt.high5.activity.fragment.SettingsFragment;

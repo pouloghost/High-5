@@ -1,9 +1,9 @@
 package gt.high5.activity;
 
+import gt.high5.activity.widget.WidgetProvider;
 import gt.high5.core.service.IgnoreSetService;
 import gt.high5.core.service.LogService;
 import gt.high5.core.service.RecordService;
-import gt.high5.core.widget.WidgetProvider;
 
 import java.io.IOException;
 

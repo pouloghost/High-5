@@ -1,6 +1,7 @@
 package gt.high5.activity.fragment;
 
 import gt.high5.R;
+import gt.high5.activity.AsyncImageTask;
 import gt.high5.core.service.IgnoreSetService;
 
 import java.util.ArrayList;

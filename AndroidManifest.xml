@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!--
     need to move to system/app to gain this permission  <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
-    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
     -->
     <application
         android:name=".High5Application"
@@ -31,7 +31,7 @@
         <activity android:name=".activity.IgnoreListManageActivity" >
         </activity>
 
-        <receiver android:name="gt.high5.core.widget.WidgetProvider" >
+        <receiver android:name="gt.high5.activity.widget.WidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.ACTION_APPWIDGET_DISABLED" />
@@ -57,8 +57,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.PACKAGE_RESTARTED" />
-                
-                <data android:scheme="package" android:path="gt.high5"/>
+
+                <data
+                    android:path="gt.high5"
+                    android:scheme="package" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
@@ -68,7 +70,7 @@
         </receiver>
 
         <service
-            android:name="gt.high5.core.widget.GridAdapterService"
+            android:name="gt.high5.activity.widget.GridAdapterServicevice"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 

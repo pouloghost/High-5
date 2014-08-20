@@ -1,6 +1,7 @@
 package gt.high5.activity.fragment;
 
 import gt.high5.R;
+import gt.high5.activity.CancelableTask;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
