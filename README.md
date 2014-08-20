@@ -8,9 +8,18 @@ are configurable via tables.xml. Each feature is stored and represented by a tab
 accessed via orm objects, class<? extends Table>.
 
 Packages:
-  gt.high5:Application for initialize resources
+  android.support.v4.preference: copied preferencefragment from <a href="https://github.com/kolavar/android-support-v4-preferencefragment">v4 compatible preference fragment</a>
+
   
-  gt.high5.activity: UI
+  gt.high5: Application for initialize resources
+  
+  gt.high5.activity: activity, broadcast reciever and UI related utils
+  
+  gt.high5.activity.fragment: fragments
+  
+  gt.high5.chart.core: record chart core functions, utils and base classes
+  
+  gt.high5.chart.filler: strategies for filling up chart for different records
   
   gt.high5.core.provider: Providers for getting current package information. Can be extended by adding 
     a subclass of PackageProvider and add an object to the PackageProvider.priority array(the first 
@@ -27,7 +36,7 @@ Packages:
     
   gt.high5.database.model: baseclass annotation and utils for ORM tables.
   
-  gt.high5.database.tables: actual tables in database. Can be extended by adding a subclass of Table/ RecordTable/ 
+  gt.high5.database.table: actual tables in database. Can be extended by adding a subclass of Table/ RecordTable/ 
     SimpleRecordTable and add element in R.xml.tables.
     
     
