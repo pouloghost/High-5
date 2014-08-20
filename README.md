@@ -8,9 +8,9 @@ are configurable via tables.xml. Each feature is stored and represented by a tab
 accessed via orm objects, class<? extends Table>.
 
 Packages:
+
   android.support.v4.preference: copied preferencefragment from <a href="https://github.com/kolavar/android-support-v4-preferencefragment">v4 compatible preference fragment</a>
 
-  
   gt.high5: Application for initialize resources
   
   gt.high5.activity: activity, broadcast reciever and UI related utils
