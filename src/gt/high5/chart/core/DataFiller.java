@@ -13,9 +13,18 @@ import com.androidplot.pie.SegmentFormatter;
  */
 public abstract class DataFiller {
 
+	/**
+	 * @author GT
+	 * 
+	 *         interface for filling up a chart
+	 */
+	public interface ViewFiller {
+		public boolean fillView();
+	}
+
 	public enum CHART_TYPE {
 		BAR, LINE, PIE
-	};
+	}
 
 	protected static SegmentFormatter[] pieFormatters = null;
 
@@ -26,15 +35,13 @@ public abstract class DataFiller {
 		addFillers();
 	}
 
-	protected abstract void addFillers();
-
 	/**
 	 * strategy pattern
 	 * 
 	 * @param context
 	 */
 	public void fillView(FillContext context) {
-
+	
 		mContext = context;
 		ViewFiller filler = mFillers.get(context.getType());
 		if (null != filler) {
@@ -43,6 +50,8 @@ public abstract class DataFiller {
 			}
 		}
 	}
+
+	protected abstract void addFillers();
 
 	protected int initSegmentFormatters(int size) {
 		if (null == pieFormatters) {
@@ -67,14 +76,5 @@ public abstract class DataFiller {
 		}
 
 		return colors;
-	}
-
-	/**
-	 * @author GT
-	 * 
-	 *         interface for filling up a chart
-	 */
-	public interface ViewFiller {
-		public boolean fillView();
 	}
 }

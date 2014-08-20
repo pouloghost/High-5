@@ -31,6 +31,15 @@ public class RecordService {
 	// singleton
 	private static RecordService instance = null;
 
+	private RecordService(Context context) throws ClassNotFoundException,
+			InstantiationException, IllegalAccessException, NotFoundException,
+			XmlPullParserException, IOException {
+		TableParser parser = new TableParser(context.getResources().getXml(
+				R.xml.tables));
+		mAccessor = DatabaseAccessor.getAccessor(context, parser, R.xml.tables);
+		mPackageProvider = PackageProvider.getPackageProvider(context);
+	}
+
 	public static RecordService getRecordService(Context context)
 			throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, NotFoundException, XmlPullParserException,
@@ -41,13 +50,8 @@ public class RecordService {
 		return instance;
 	}
 
-	private RecordService(Context context) throws ClassNotFoundException,
-			InstantiationException, IllegalAccessException, NotFoundException,
-			XmlPullParserException, IOException {
-		TableParser parser = new TableParser(context.getResources().getXml(
-				R.xml.tables));
-		mAccessor = DatabaseAccessor.getAccessor(context, parser, R.xml.tables);
-		mPackageProvider = PackageProvider.getPackageProvider(context);
+	public PackageProvider getPackageProvider() {
+		return mPackageProvider;
 	}
 
 	/**
@@ -94,10 +98,6 @@ public class RecordService {
 				}
 			}
 		}
-	}
-
-	public PackageProvider getPackageProvider() {
-		return mPackageProvider;
 	}
 
 	/**

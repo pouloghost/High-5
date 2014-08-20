@@ -35,39 +35,85 @@ import android.widget.ToggleButton;
 public class IgnoreListManageFragment extends Fragment {
 
 	private static enum KEYS {
-		ICON, PACKAGE, NAME, IGNORED
+		ICON, IGNORED, NAME, PACKAGE
 	}
 
-	private ListView mIgnoreList = null;
 	private SimpleAdapter mAdapter = null;
 	private ArrayList<HashMap<String, Object>> mDataList = null;
 
 	private ProgressDialog mDialog = null;
 
+	private ListView mIgnoreList = null;
+
 	private PackageManager mPackageManager = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
+	
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
+	
 		View view = inflater.inflate(R.layout.ignore_list_layout, container,
 				false);
 		mIgnoreList = (ListView) view.findViewById(R.id.ignore_list);
-
+	
 		return view;
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-
+	
 		new LoadDataTask().execute();
+	}
+
+	/**
+	 * @author GT
+	 * 
+	 *         asynctask for load data
+	 * 
+	 *         a progress dialog will be showing when loading
+	 * 
+	 *         all implementation will use {@link loadData()} and {@link
+	 *         setData()}
+	 */
+	class LoadDataTask extends
+			AsyncTask<Void, Integer, ArrayList<HashMap<String, Object>>> {
+	
+		@Override
+		protected ArrayList<HashMap<String, Object>> doInBackground(
+				Void... params) {
+			return loadData();
+		}
+	
+		@Override
+		protected void onPostExecute(ArrayList<HashMap<String, Object>> result) {
+			super.onPostExecute(result);
+			mDialog.dismiss();
+			setData(result);
+		}
+	
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			mDialog = new ProgressDialog(getActivity());
+	
+			mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+	
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					LoadDataTask.this.cancel(true);
+				}
+			});
+	
+			mDialog.show();
+	
+			mPackageManager = getActivity().getPackageManager();
+		}
 	}
 
 	/**
@@ -166,13 +212,6 @@ public class IgnoreListManageFragment extends Fragment {
 							new AsyncTask<Void, Void, HashSet<String>>() {
 
 								@Override
-								protected void onPreExecute() {
-									super.onPreExecute();
-									toggle.setVisibility(View.GONE);
-									bar.setVisibility(View.VISIBLE);
-								}
-
-								@Override
 								protected HashSet<String> doInBackground(
 										Void... params) {
 									return IgnoreSetService
@@ -191,54 +230,16 @@ public class IgnoreListManageFragment extends Fragment {
 									bar.setVisibility(View.GONE);
 								}
 
+								@Override
+								protected void onPreExecute() {
+									super.onPreExecute();
+									toggle.setVisibility(View.GONE);
+									bar.setVisibility(View.VISIBLE);
+								}
+
 							}.execute();
 						}
 					}
 				});
-	}
-
-	/**
-	 * @author GT
-	 * 
-	 *         asynctask for load data
-	 * 
-	 *         a progress dialog will be showing when loading
-	 * 
-	 *         all implementation will use {@link loadData()} and {@link
-	 *         setData()}
-	 */
-	class LoadDataTask extends
-			AsyncTask<Void, Integer, ArrayList<HashMap<String, Object>>> {
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			mDialog = new ProgressDialog(getActivity());
-
-			mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					LoadDataTask.this.cancel(true);
-				}
-			});
-
-			mDialog.show();
-
-			mPackageManager = getActivity().getPackageManager();
-		}
-
-		@Override
-		protected ArrayList<HashMap<String, Object>> doInBackground(
-				Void... params) {
-			return loadData();
-		}
-
-		@Override
-		protected void onPostExecute(ArrayList<HashMap<String, Object>> result) {
-			super.onPostExecute(result);
-			mDialog.dismiss();
-			setData(result);
-		}
 	}
 }

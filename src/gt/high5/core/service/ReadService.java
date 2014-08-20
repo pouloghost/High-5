@@ -28,19 +28,19 @@ public class ReadService {
 	// singleton
 	private static ReadService instance = null;
 
-	public static ReadService getReadService(Context context) {
-		if (null == instance) {
-			instance = new ReadService(context);
-		}
-		return instance;
-	}
-
 	private DatabaseAccessor mAccessor = null;
 
 	private ReadService(Context context) {
 		if (null == mAccessor) {
 			mAccessor = DatabaseAccessor.getAccessor(context, R.xml.tables);
 		}
+	}
+
+	public static ReadService getReadService(Context context) {
+		if (null == instance) {
+			instance = new ReadService(context);
+		}
+		return instance;
 	}
 
 	/**

@@ -66,6 +66,51 @@ public class TotalListFragment extends Fragment {
 	}
 
 	/**
+	 * @author GT
+	 * 
+	 *         asynctask for load data
+	 * 
+	 *         a progress dialog will be showing when loading
+	 * 
+	 *         all implementation will use {@link loadData()} and {@link
+	 *         setData()}
+	 */
+	class LoadDataTask extends
+			AsyncTask<Void, Integer, ArrayList<HashMap<String, Object>>> {
+	
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			mDialog = new ProgressDialog(getActivity());
+			mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+	
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					LoadDataTask.this.cancel(true);
+				}
+			});
+			mDialog.show();
+	
+			mAccessor = DatabaseAccessor.getAccessor(getActivity()
+					.getApplicationContext(), R.xml.tables);
+			mPackageManager = getActivity().getPackageManager();
+		}
+	
+		@Override
+		protected ArrayList<HashMap<String, Object>> doInBackground(
+				Void... params) {
+			return loadData();
+		}
+	
+		@Override
+		protected void onPostExecute(ArrayList<HashMap<String, Object>> result) {
+			super.onPostExecute(result);
+			mDialog.dismiss();
+			setData(result);
+		}
+	}
+
+	/**
 	 * load package list and ignore list
 	 * 
 	 * mDataList will be modified
@@ -172,50 +217,5 @@ public class TotalListFragment extends Fragment {
 						}
 					}
 				});
-	}
-
-	/**
-	 * @author GT
-	 * 
-	 *         asynctask for load data
-	 * 
-	 *         a progress dialog will be showing when loading
-	 * 
-	 *         all implementation will use {@link loadData()} and {@link
-	 *         setData()}
-	 */
-	class LoadDataTask extends
-			AsyncTask<Void, Integer, ArrayList<HashMap<String, Object>>> {
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			mDialog = new ProgressDialog(getActivity());
-			mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					LoadDataTask.this.cancel(true);
-				}
-			});
-			mDialog.show();
-
-			mAccessor = DatabaseAccessor.getAccessor(getActivity()
-					.getApplicationContext(), R.xml.tables);
-			mPackageManager = getActivity().getPackageManager();
-		}
-
-		@Override
-		protected ArrayList<HashMap<String, Object>> doInBackground(
-				Void... params) {
-			return loadData();
-		}
-
-		@Override
-		protected void onPostExecute(ArrayList<HashMap<String, Object>> result) {
-			super.onPostExecute(result);
-			mDialog.dismiss();
-			setData(result);
-		}
 	}
 }

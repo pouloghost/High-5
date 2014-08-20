@@ -49,6 +49,18 @@ public class DatabaseAccessor {
 	private static SparseArray<SoftReference<DatabaseAccessor>> accessorCache = new SparseArray<SoftReference<DatabaseAccessor>>();
 
 	/**
+	 * singleton constructor
+	 * 
+	 * @param context
+	 * @param parser
+	 */
+	private DatabaseAccessor(Context context, TableParser parser) {
+		mTableParser = parser;
+		mManager = new DatabaseManager(context, parser);
+		mDatabase = mManager.getWritableDatabase();
+	}
+
+	/**
 	 * for the caller need a TableParser for other usage
 	 * 
 	 * @param context
@@ -102,22 +114,36 @@ public class DatabaseAccessor {
 	}
 
 	/**
-	 * singleton constructor
-	 * 
-	 * @param context
-	 * @param parser
-	 */
-	private DatabaseAccessor(Context context, TableParser parser) {
-		mTableParser = parser;
-		mManager = new DatabaseManager(context, parser);
-		mDatabase = mManager.getWritableDatabase();
-	}
-
-	/**
 	 * @return record tables defined in xml
 	 */
 	public Class<? extends RecordTable>[] getTables() {
 		return mTableParser.getTables();
+	}
+
+	/**
+	 * proxy accessor for data filler, a factory
+	 * 
+	 * @param clazz
+	 *            type
+	 * @return data filler
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public DataFiller getDataFiller(Class<? extends RecordTable> clazz)
+			throws InstantiationException, IllegalAccessException {
+		return (DataFiller) mTableParser.getInfo(clazz).getFiller()
+				.newInstance();
+	}
+
+	/**
+	 * proxy accessor for title in pager, a factory
+	 * 
+	 * @param clazz
+	 *            type
+	 * @return title
+	 */
+	public String getTableTitle(Class<? extends RecordTable> clazz) {
+		return mTableParser.getInfo(clazz).getTitle();
 	}
 
 	// ---------------------CRUD--------------------------
@@ -217,30 +243,6 @@ public class DatabaseAccessor {
 		}
 	}
 
-	// ----------------------sql command interface-------------------
-	public boolean excute(String sql) {
-		try {
-			mDatabase.execSQL(sql);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	/**
-	 * raw query remember to close cursor
-	 * 
-	 * @param sql
-	 * @return
-	 */
-	public Cursor query(String sql) {
-		try {
-			return mDatabase.rawQuery(sql, null);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
 	/**
 	 * increase count of the table
 	 * 
@@ -264,6 +266,30 @@ public class DatabaseAccessor {
 	public boolean exists(Table table) {
 		ArrayList<Table> query = R(table);
 		return null == query || 0 == query.size();
+	}
+
+	// ----------------------sql command interface-------------------
+	public boolean excute(String sql) {
+		try {
+			mDatabase.execSQL(sql);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * raw query remember to close cursor
+	 * 
+	 * @param sql
+	 * @return
+	 */
+	public Cursor query(String sql) {
+		try {
+			return mDatabase.rawQuery(sql, null);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -348,32 +374,6 @@ public class DatabaseAccessor {
 			// reopen database
 			mDatabase = mManager.getWritableDatabase();
 		}
-	}
-
-	/**
-	 * proxy accessor for data filler, a factory
-	 * 
-	 * @param clazz
-	 *            type
-	 * @return data filler
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 */
-	public DataFiller getDataFiller(Class<? extends RecordTable> clazz)
-			throws InstantiationException, IllegalAccessException {
-		return (DataFiller) mTableParser.getInfo(clazz).getFiller()
-				.newInstance();
-	}
-
-	/**
-	 * proxy accessor for title in pager, a factory
-	 * 
-	 * @param clazz
-	 *            type
-	 * @return title
-	 */
-	public String getTableTitle(Class<? extends RecordTable> clazz) {
-		return mTableParser.getInfo(clazz).getTitle();
 	}
 
 	/**

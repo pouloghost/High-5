@@ -28,6 +28,11 @@ public class WifiName extends SimpleRecordTable {
 	}
 
 	@Override
+	public float getDefaultPossibility(Context context) {
+		return 0.2f;
+	}
+
+	@Override
 	public boolean currentQueryStatus(RecordContext context) {
 		WifiManager manager = (WifiManager) context.getContext()
 				.getSystemService(Context.WIFI_SERVICE);
@@ -53,10 +58,5 @@ public class WifiName extends SimpleRecordTable {
 	public boolean initDefault(RecordContext context) {
 		count = 1;
 		return currentQueryStatus(context);
-	}
-
-	@Override
-	public float getDefaultPossibility(Context context) {
-		return 0.2f;
 	}
 }

@@ -24,30 +24,6 @@ public final class LastPackage extends SimpleRecordTable {
 
 	/*
 	 * @see
-	 * gt.high5.database.model.RecordTable#currentQueryStatus(gt.high5.core.
-	 * service.RecordContext)
-	 * 
-	 * set the first package in recent list
-	 */
-	@Override
-	public boolean currentQueryStatus(RecordContext context) {
-		PackageProvider provider = null;
-		RecordService service = null;
-		List<String> order = null;
-		if (null != (service = context.getRecordService())
-				&& null != (provider = service.getPackageProvider())
-				&& null != (order = provider.getLastPackageOrder(context
-						.getContext()))) {
-			if (order.size() > 0) {
-				lastPackage = order.get(0);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/*
-	 * @see
 	 * gt.high5.database.model.SimpleRecordTable#initDefault(gt.high5.core.service
 	 * .RecordContext)
 	 * 
@@ -68,6 +44,30 @@ public final class LastPackage extends SimpleRecordTable {
 			// exists and not last one
 			if (-1 != index && order.size() - 1 != index) {
 				lastPackage = order.get(index + 1);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/*
+	 * @see
+	 * gt.high5.database.model.RecordTable#currentQueryStatus(gt.high5.core.
+	 * service.RecordContext)
+	 * 
+	 * set the first package in recent list
+	 */
+	@Override
+	public boolean currentQueryStatus(RecordContext context) {
+		PackageProvider provider = null;
+		RecordService service = null;
+		List<String> order = null;
+		if (null != (service = context.getRecordService())
+				&& null != (provider = service.getPackageProvider())
+				&& null != (order = provider.getLastPackageOrder(context
+						.getContext()))) {
+			if (order.size() > 0) {
+				lastPackage = order.get(0);
 				return true;
 			}
 		}

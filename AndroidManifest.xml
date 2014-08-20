@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="gt.high5"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0" xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="19" tools:ignore="OldTargetApi"/>
 
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -13,8 +13,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!--
     need to move to system/app to gain this permission  <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
-    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
-    -->
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />    -->
     <application
         android:name=".High5Application"
         android:allowBackup="true"

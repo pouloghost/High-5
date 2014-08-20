@@ -87,6 +87,11 @@ public class HackPackageProvider extends PackageProvider {
 		return result;
 	}
 
+	@Override
+	public List<String> getLastPackageOrder(Context context) {
+		return mOrderedPackages;
+	}
+
 	private ArrayList<LaunchInfo> getRecentLaunchInfo(Context context) {
 
 		ArrayList<LaunchInfo> infos = new ArrayList<LaunchInfo>(MEMORY_SIZE);
@@ -119,10 +124,5 @@ public class HackPackageProvider extends PackageProvider {
 				componentName);
 		int count = mLaunchCountField.getInt(pkgStats);
 		return new LaunchInfo(componentName.getPackageName(), count);
-	}
-
-	@Override
-	public List<String> getLastPackageOrder(Context context) {
-		return mOrderedPackages;
 	}
 }

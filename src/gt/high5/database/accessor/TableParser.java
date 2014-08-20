@@ -47,11 +47,6 @@ public class TableParser {
 		setTables(loadTables(parser));
 	}
 
-	private void setTables(
-			HashMap<Class<? extends RecordTable>, TableInfo> tables) {
-		mTables = tables;
-	}
-
 	@SuppressWarnings("unchecked")
 	public HashMap<Class<? extends RecordTable>, TableInfo> loadTables(
 			XmlPullParser parser) throws XmlPullParserException, IOException,
@@ -153,6 +148,25 @@ public class TableParser {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
+	public Class<? extends RecordTable>[] getTables() {
+		Class<? extends RecordTable>[] typeArray;
+		typeArray = new Class[0];
+		return (Class<? extends RecordTable>[]) mTables.keySet().toArray(
+				typeArray);
+	}
+
+	/**
+	 * get info about a record type
+	 * 
+	 * @param clazz
+	 *            record class
+	 * @return record info
+	 */
+	public TableInfo getInfo(Class<? extends RecordTable> clazz) {
+		return mTables.get(clazz);
+	}
+
 	public int getVersion() {
 		return mVersion;
 	}
@@ -177,23 +191,9 @@ public class TableParser {
 		this.mModelPackage = mPackage;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Class<? extends RecordTable>[] getTables() {
-		Class<? extends RecordTable>[] typeArray;
-		typeArray = new Class[0];
-		return (Class<? extends RecordTable>[]) mTables.keySet().toArray(
-				typeArray);
-	}
-
-	/**
-	 * get info about a record type
-	 * 
-	 * @param clazz
-	 *            record class
-	 * @return record info
-	 */
-	public TableInfo getInfo(Class<? extends RecordTable> clazz) {
-		return mTables.get(clazz);
+	private void setTables(
+			HashMap<Class<? extends RecordTable>, TableInfo> tables) {
+		mTables = tables;
 	}
 
 }

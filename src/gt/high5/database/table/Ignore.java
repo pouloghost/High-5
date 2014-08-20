@@ -18,14 +18,6 @@ public class Ignore extends Table {
 	@TableAnnotation(defaultValue = "")
 	private String name = "";// package
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	@Override
 	public String getCreator() {
 		return TableUtils.buildCreator(this.getClass(), Table.class);
@@ -114,6 +106,14 @@ public class Ignore extends Table {
 	@Override
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

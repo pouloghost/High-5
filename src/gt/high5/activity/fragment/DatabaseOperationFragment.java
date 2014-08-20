@@ -16,6 +16,34 @@ import android.widget.Toast;
 
 public class DatabaseOperationFragment extends Fragment {
 
+	class AsyncTaskWithProgress extends AsyncTask<Runnable, Void, Void> {
+		private ProgressDialog mDialog = null;
+
+		public AsyncTaskWithProgress(Context context) {
+			mDialog = new ProgressDialog(context);
+		}
+
+		@Override
+		protected Void doInBackground(Runnable... runnables) {
+			runnables[0].run();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			mDialog.dismiss();
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			mDialog.show();
+			mDialog.setCancelable(false);
+		}
+
+	}
+
 	/**
 	 * db definition xml files, the R.xml.xx
 	 */
@@ -29,7 +57,7 @@ public class DatabaseOperationFragment extends Fragment {
 				false);
 		((Button) root.findViewById(R.id.db_backup_button))
 				.setOnClickListener(new View.OnClickListener() {
-
+	
 					@Override
 					public void onClick(View v) {
 						backup(getActivity());
@@ -37,7 +65,7 @@ public class DatabaseOperationFragment extends Fragment {
 				});
 		((Button) root.findViewById(R.id.db_restore_button))
 				.setOnClickListener(new View.OnClickListener() {
-
+	
 					@Override
 					public void onClick(View v) {
 						restore(getActivity());
@@ -45,7 +73,7 @@ public class DatabaseOperationFragment extends Fragment {
 				});
 		((Button) root.findViewById(R.id.db_clean_button))
 				.setOnClickListener(new View.OnClickListener() {
-
+	
 					@Override
 					public void onClick(View v) {
 						clean(getActivity());
@@ -75,27 +103,6 @@ public class DatabaseOperationFragment extends Fragment {
 				} });
 	}
 
-	private void restore(final Context context) {
-		new AsyncTaskWithProgress(context)
-				.execute(new Runnable[] { new Runnable() {
-
-					@Override
-					public void run() {
-						for (int id : dbs) {
-							try {
-								DatabaseAccessor.getAccessor(context, id)
-										.restore();
-							} catch (Exception e) {
-								e.printStackTrace();
-								Toast.makeText(context,
-										R.string.db_restore_failed,
-										Toast.LENGTH_SHORT).show();
-							}
-						}
-					}
-				} });
-	}
-
 	private void clean(final Context context) {
 		new AsyncTaskWithProgress(context)
 				.execute(new Runnable[] { new Runnable() {
@@ -117,31 +124,24 @@ public class DatabaseOperationFragment extends Fragment {
 				} });
 	}
 
-	class AsyncTaskWithProgress extends AsyncTask<Runnable, Void, Void> {
-		private ProgressDialog mDialog = null;
+	private void restore(final Context context) {
+		new AsyncTaskWithProgress(context)
+				.execute(new Runnable[] { new Runnable() {
 
-		public AsyncTaskWithProgress(Context context) {
-			mDialog = new ProgressDialog(context);
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			mDialog.show();
-			mDialog.setCancelable(false);
-		}
-
-		@Override
-		protected Void doInBackground(Runnable... runnables) {
-			runnables[0].run();
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			mDialog.dismiss();
-		}
-
+					@Override
+					public void run() {
+						for (int id : dbs) {
+							try {
+								DatabaseAccessor.getAccessor(context, id)
+										.restore();
+							} catch (Exception e) {
+								e.printStackTrace();
+								Toast.makeText(context,
+										R.string.db_restore_failed,
+										Toast.LENGTH_SHORT).show();
+							}
+						}
+					}
+				} });
 	}
 }

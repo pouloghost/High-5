@@ -15,20 +15,6 @@ public class LaunchInfo {
 		this.mLaunchCount = count;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof LaunchInfo)) {
-			return false;
-		}
-		return mPackage.equals(((LaunchInfo) o).mPackage);
-	}
-
-	@Override
-	public int hashCode() {
-		// TODO Auto-generated method stub
-		return mPackage.hashCode();
-	}
-
 	public String getPackage() {
 		return mPackage;
 	}
@@ -43,6 +29,19 @@ public class LaunchInfo {
 
 	public void setLaunchCount(int mLaunchCount) {
 		this.mLaunchCount = mLaunchCount;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof LaunchInfo)) {
+			return false;
+		}
+		return mPackage.equals(((LaunchInfo) o).mPackage);
+	}
+
+	@Override
+	public int hashCode() {
+		return mPackage.hashCode();
 	}
 
 }

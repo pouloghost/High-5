@@ -37,15 +37,15 @@ public class RecordDetailPagerFragment extends Fragment implements
 	 */
 	private static final CHART_TYPE[] ID2TYPE = { CHART_TYPE.PIE,
 			CHART_TYPE.BAR, CHART_TYPE.LINE };
-
 	private Spinner mGraphTypeSpinner = null;
 	private ProgressBar mLoadingBar = null;
 	private XYPlot mXyChart = null;
 	private PieChart mPieChart = null;
-	private ImageView mErrorImage = null;
 
+	private ImageView mErrorImage = null;
 	// this chart display the mRecordType data of mTotal
 	private Total mTotal = null;
+
 	private Class<? extends RecordTable> mRecordType = null;
 
 	/**
@@ -83,22 +83,22 @@ public class RecordDetailPagerFragment extends Fragment implements
 				.findViewById(R.id.record_detail_view_pie_chart);
 		mErrorImage = (ImageView) root
 				.findViewById(R.id.record_detail_view_error_image);
-
+	
 		mGraphTypeSpinner
 				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
+	
 					@Override
 					public void onItemSelected(AdapterView<?> parent,
 							View view, int position, long id) {
 						loadGraph();
 					}
-
+	
 					@Override
 					public void onNothingSelected(AdapterView<?> arg0) {
-
+	
 					}
 				});
-
+	
 		mId2Views = new View[] { mPieChart, mXyChart, mXyChart };
 		return root;
 	}
@@ -115,13 +115,17 @@ public class RecordDetailPagerFragment extends Fragment implements
 		loadGraph();
 	}
 
-	private void loadGraph() {
-		if (null != mTotal && null != mGraphTypeSpinner) {
-			int id = (int) mGraphTypeSpinner.getSelectedItemId();
-			FillContext context = new FillContext(ID2TYPE[id], mId2Views[id],
-					getActivity().getApplicationContext(), mTotal, mRecordType);
-			new AsyncGraphDrawer().execute(context);
+	@Override
+	public void cancel() {
+		if (isCancelable()) {
+			mDrawer.cancel(true);
+			onFinishLoading(null);
 		}
+	}
+
+	@Override
+	public boolean isCancelable() {
+		return null != mDrawer;
 	}
 
 	/**
@@ -130,18 +134,7 @@ public class RecordDetailPagerFragment extends Fragment implements
 	 *         async task for filling up the chart view
 	 */
 	class AsyncGraphDrawer extends AsyncTask<FillContext, Void, FillContext> {
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			mXyChart.setVisibility(View.GONE);
-			mPieChart.setVisibility(View.GONE);
-			mErrorImage.setVisibility(View.GONE);
-			mLoadingBar.setVisibility(View.VISIBLE);
-
-			mDrawer = this;
-		}
-
+	
 		@Override
 		protected FillContext doInBackground(FillContext... arg0) {
 			FillContext fillContext = arg0[0];
@@ -156,13 +149,33 @@ public class RecordDetailPagerFragment extends Fragment implements
 			}
 			return fillContext;
 		}
-
+	
 		@Override
 		protected void onPostExecute(FillContext result) {
 			super.onPostExecute(result);
 			onFinishLoading(result);
 		}
+	
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			mXyChart.setVisibility(View.GONE);
+			mPieChart.setVisibility(View.GONE);
+			mErrorImage.setVisibility(View.GONE);
+			mLoadingBar.setVisibility(View.VISIBLE);
+	
+			mDrawer = this;
+		}
+	
+	}
 
+	private void loadGraph() {
+		if (null != mTotal && null != mGraphTypeSpinner) {
+			int id = (int) mGraphTypeSpinner.getSelectedItemId();
+			FillContext context = new FillContext(ID2TYPE[id], mId2Views[id],
+					getActivity().getApplicationContext(), mTotal, mRecordType);
+			new AsyncGraphDrawer().execute(context);
+		}
 	}
 
 	private void onFinishLoading(FillContext result) {
@@ -175,18 +188,5 @@ public class RecordDetailPagerFragment extends Fragment implements
 		} else {
 			mErrorImage.setVisibility(View.VISIBLE);
 		}
-	}
-
-	@Override
-	public void cancel() {
-		if (isCancelable()) {
-			mDrawer.cancel(true);
-			onFinishLoading(null);
-		}
-	}
-
-	@Override
-	public boolean isCancelable() {
-		return null != mDrawer;
 	}
 }

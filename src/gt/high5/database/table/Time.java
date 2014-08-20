@@ -18,12 +18,12 @@ public class Time extends SimpleRecordTable {
 	// time region length in minutes
 	private static int regionLength = 15;
 
+	@TableAnnotation(defaultValue = "-1")
+	private int region = -1;
+
 	public static void setRegionLength(int length) {
 		Time.regionLength = length;
 	}
-
-	@TableAnnotation(defaultValue = "-1")
-	private int region = -1;
 
 	public int getRegion() {
 		return region;

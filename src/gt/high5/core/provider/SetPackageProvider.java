@@ -14,11 +14,11 @@ import android.content.Context;
  */
 public class SetPackageProvider extends PackageProvider {
 
+	private ArrayList<String> mRecentPackage = null;
+
 	public SetPackageProvider() throws CannotCreateException {
 		super();
 	}
-
-	private ArrayList<String> mRecentPackage = null;
 
 	@Override
 	public Collection<LaunchInfo> getChangedPackages(Context context) {
@@ -49,6 +49,11 @@ public class SetPackageProvider extends PackageProvider {
 		return result;
 	}
 
+	@Override
+	public List<String> getLastPackageOrder(Context context) {
+		return mRecentPackage;
+	}
+
 	/**
 	 * get recent packages up to MEMORY_SIZE
 	 * 
@@ -68,10 +73,5 @@ public class SetPackageProvider extends PackageProvider {
 			packages.add(recent.baseIntent.getComponent().getPackageName());
 		}
 		return packages;
-	}
-
-	@Override
-	public List<String> getLastPackageOrder(Context context) {
-		return mRecentPackage;
 	}
 }

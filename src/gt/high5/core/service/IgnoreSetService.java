@@ -30,17 +30,17 @@ public class IgnoreSetService {
 	// singleton
 	private static IgnoreSetService instance = null;
 
+	private IgnoreSetService(Context context) {
+		if (null == mAccessor) {
+			mAccessor = DatabaseAccessor.getAccessor(context, R.xml.tables);
+		}
+	}
+
 	public static IgnoreSetService getIgnoreSetService(Context context) {
 		if (null == instance) {
 			instance = new IgnoreSetService(context);
 		}
 		return instance;
-	}
-
-	private IgnoreSetService(Context context) {
-		if (null == mAccessor) {
-			mAccessor = DatabaseAccessor.getAccessor(context, R.xml.tables);
-		}
 	}
 
 	/**

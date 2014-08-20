@@ -85,6 +85,11 @@ public abstract class SimpleRecordTable extends RecordTable {
 	}
 
 	@Override
+	public void increaseCount(int add) {
+		count += add;
+	}
+
+	@Override
 	public RecordTable clone() {
 		RecordTable result = null;
 		try {
@@ -99,11 +104,6 @@ public abstract class SimpleRecordTable extends RecordTable {
 
 	@Override
 	public abstract boolean initDefault(RecordContext context);
-
-	@Override
-	public void increaseCount(int add) {
-		count += add;
-	}
 
 	@Override
 	public int getId() {

@@ -25,6 +25,30 @@ public class TableUtils {
 		typeMap.put(double.class, "DOUBLE");
 	}
 
+	public static <T> String buildCreator(Class<? extends T> clazz,
+			Class<T> base) {
+		StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS "
+				+ clazz.getSimpleName()
+				+ " (id INTEGER PRIMARY KEY AUTOINCREMENT");
+		// Field[] fields = clazz.getDeclaredFields();
+		Field[] fields = ClassUtils.getAllFields(clazz, base);
+		for (Field field : fields) {
+			if (shouldIgnoreField(field, true)) {
+				continue;
+			}
+			sql.append(", " + field.getName() + " "
+					+ typeMap.get(field.getType()));
+		}
+		sql.append(")");
+	
+		String sqlString = sql.toString();
+		if (isDebugging()) {
+			Log.d(LogService.LOG_TAG, "creator " + clazz.getSimpleName() + " "
+					+ sqlString);
+		}
+		return sqlString;
+	}
+
 	// -------------------sql command generators using
 	// reflection----------------------------
 	public static <T> String C(T table, Class<T> base)
@@ -206,28 +230,34 @@ public class TableUtils {
 		return sqlString;
 	}
 
-	public static <T> String buildCreator(Class<? extends T> clazz,
-			Class<T> base) {
-		StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS "
-				+ clazz.getSimpleName()
-				+ " (id INTEGER PRIMARY KEY AUTOINCREMENT");
-		// Field[] fields = clazz.getDeclaredFields();
-		Field[] fields = ClassUtils.getAllFields(clazz, base);
-		for (Field field : fields) {
-			if (shouldIgnoreField(field, true)) {
-				continue;
-			}
-			sql.append(", " + field.getName() + " "
-					+ typeMap.get(field.getType()));
+	/**
+	 * should ignore field using general filter
+	 * 
+	 * @param field
+	 * @param forceIgnoreId
+	 *            should ignore id
+	 * @return whether should ignore this field in reflection
+	 */
+	public static boolean shouldIgnoreField(Field field, boolean forceIgnoreId) {
+		if (forceIgnoreId && "id".equalsIgnoreCase(field.getName())) {
+			return true;
 		}
-		sql.append(")");
+		if (Modifier.isStatic(field.getModifiers())) {
+			return true;
+		}
+		TableAnnotation annotation = field.getAnnotation(TableAnnotation.class);
+		if (annotation.isTransient()) {
+			return true;
+		}
+		return false;
+	}
 
-		String sqlString = sql.toString();
-		if (isDebugging()) {
-			Log.d(LogService.LOG_TAG, "creator " + clazz.getSimpleName() + " "
-					+ sqlString);
-		}
-		return sqlString;
+	public static boolean isDebugging() {
+		return isDebugging;
+	}
+
+	public static void setDebugging(boolean isDebugging) {
+		TableUtils.isDebugging = isDebugging;
 	}
 
 	private static <T> String getWhereClause(T table, Class<T> base)
@@ -238,12 +268,12 @@ public class TableUtils {
 		Field[] fields = ClassUtils.getAllFields(clazz, base);
 		boolean hasValue = false;
 		StringBuilder sql = new StringBuilder(" WHERE ");
-
+	
 		for (Field field : fields) {
 			if (shouldIgnoreField(field, false)) {
 				continue;
 			}
-
+	
 			Object def = ClassUtils.getDefaultValue(field);
 			if (null == def) {
 				continue;
@@ -261,7 +291,7 @@ public class TableUtils {
 		if (!hasValue) {
 			return null;
 		}
-
+	
 		String sqlString = sql.toString();
 		// Log.d(MainActivity.GT_TAG, "where " +
 		// table.getClass().getSimpleName()
@@ -297,33 +327,11 @@ public class TableUtils {
 					stepString = "" + s.doubleValue();
 				}
 			}
-
+	
 			return stepString;
 		} else {
 			return null;
 		}
-	}
-
-	/**
-	 * should ignore field using general filter
-	 * 
-	 * @param field
-	 * @param forceIgnoreId
-	 *            should ignore id
-	 * @return whether should ignore this field in reflection
-	 */
-	public static boolean shouldIgnoreField(Field field, boolean forceIgnoreId) {
-		if (forceIgnoreId && "id".equalsIgnoreCase(field.getName())) {
-			return true;
-		}
-		if (Modifier.isStatic(field.getModifiers())) {
-			return true;
-		}
-		TableAnnotation annotation = field.getAnnotation(TableAnnotation.class);
-		if (annotation.isTransient()) {
-			return true;
-		}
-		return false;
 	}
 
 	private static String getFieldValueString(Field field, Object val) {
@@ -334,13 +342,5 @@ public class TableUtils {
 			valueString = "" + val;
 		}
 		return valueString;
-	}
-
-	public static boolean isDebugging() {
-		return isDebugging;
-	}
-
-	public static void setDebugging(boolean isDebugging) {
-		TableUtils.isDebugging = isDebugging;
 	}
 }

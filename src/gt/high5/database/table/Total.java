@@ -29,41 +29,6 @@ public class Total extends RecordTable implements Parcelable {
 	@TableAnnotation(defaultValue = "1", isTransient = true)
 	private float possibility = 1;
 
-	/**
-	 * comparator for sorting total to get high 5
-	 */
-	private static Comparator<Table> comparator = new Comparator<Table>() {
-
-		@Override
-		public int compare(Table arg0, Table arg1) {
-			float p0 = ((Total) arg0).getPossibility();
-			float p1 = ((Total) arg1).getPossibility();
-			return p1 > p0 ? 1 : p1 == p0 ? 0 : -1;
-		}
-	};
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public int getCount() {
-		return count;
-	}
-
-	public void setCount(int count) {
-		this.count = count;
-	}
-
-	@Override
-	public String getCreator() {
-		return TableUtils.buildCreator(this.getClass(), Table.class);
-	}
-
 	public static Comparator<Table> getComparator() {
 		return comparator;
 	}
@@ -73,9 +38,8 @@ public class Total extends RecordTable implements Parcelable {
 	}
 
 	@Override
-	public boolean currentQueryStatus(RecordContext context) {
-		this.name = context.getTotal().getName();
-		return true;
+	public String getCreator() {
+		return TableUtils.buildCreator(this.getClass(), Table.class);
 	}
 
 	@Override
@@ -175,6 +139,22 @@ public class Total extends RecordTable implements Parcelable {
 	}
 
 	@Override
+	public void increaseCount(int add) {
+		count += add;
+	}
+
+	@Override
+	public boolean currentQueryStatus(RecordContext context) {
+		this.name = context.getTotal().getName();
+		return true;
+	}
+
+	@Override
+	public float getDefaultPossibility(Context context) {
+		return 0.01f;
+	}
+
+	@Override
 	public int getId() {
 		return id;
 	}
@@ -184,9 +164,21 @@ public class Total extends RecordTable implements Parcelable {
 		this.id = id;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	@Override
-	public void increaseCount(int add) {
-		count += add;
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 	@Override
@@ -221,11 +213,18 @@ public class Total extends RecordTable implements Parcelable {
 		this.possibility *= possibility;
 	}
 
-	@Override
-	public float getDefaultPossibility(Context context) {
-		return 0.01f;
-	}
-
+	/**
+	 * comparator for sorting total to get high 5
+	 */
+	private static Comparator<Table> comparator = new Comparator<Table>() {
+	
+		@Override
+		public int compare(Table arg0, Table arg1) {
+			float p0 = ((Total) arg0).getPossibility();
+			float p1 = ((Total) arg1).getPossibility();
+			return p1 > p0 ? 1 : p1 == p0 ? 0 : -1;
+		}
+	};
 	public static Creator<Total> CREATOR = new Creator<Total>() {
 
 		@Override

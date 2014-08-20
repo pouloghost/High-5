@@ -26,6 +26,21 @@ public class High5Application extends Application {
 
 	}
 
+	private void initDefaultIgnore() {
+		// init default ignore list
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(getApplicationContext());
+		String key = "ignore_initialed";
+		if (!prefs.getBoolean(key, false)) {
+			prefs.edit()
+					.putBoolean(
+							key,
+							IgnoreSetService.getIgnoreSetService(
+									getApplicationContext()).initDefault(
+									getApplicationContext())).commit();
+		}
+	}
+
 	private void initLogFile() {
 		// init log file
 		if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
@@ -53,20 +68,5 @@ public class High5Application extends Application {
 				getApplicationContext()).getRegionLength());
 		TableUtils.setDebugging(PreferenceReadService.getPreferenceReadService(
 				getApplicationContext()).shouldLog(TableUtils.class));
-	}
-
-	private void initDefaultIgnore() {
-		// init default ignore list
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
-		String key = "ignore_initialed";
-		if (!prefs.getBoolean(key, false)) {
-			prefs.edit()
-					.putBoolean(
-							key,
-							IgnoreSetService.getIgnoreSetService(
-									getApplicationContext()).initDefault(
-									getApplicationContext())).commit();
-		}
 	}
 }

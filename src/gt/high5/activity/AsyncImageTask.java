@@ -19,8 +19,8 @@ import android.widget.ImageView;
  */
 public class AsyncImageTask extends AsyncTask<Object, Void, Drawable> {
 
-	private PackageManager mPackageManager = null;
 	private ImageView imageView = null;
+	private PackageManager mPackageManager = null;
 
 	public AsyncImageTask(PackageManager packageManager) {
 		mPackageManager = packageManager;

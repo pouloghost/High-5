@@ -32,6 +32,38 @@ public class ClassUtils {
 		return result;
 	}
 
+	/**
+	 * get fields from clazz and all its super classes
+	 * 
+	 * @param clazz
+	 * @param base
+	 *            first parent class that should not be reflected in extend
+	 *            hierarchy
+	 * @return all fields
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Field[] getAllFields(Class<? extends T> clazz,
+			Class<T> base) {
+		ArrayMap<String, Field> name2Field = new ArrayMap<String, Field>();
+		while (clazz != base) {
+			Field[] fields = clazz.getDeclaredFields();
+			String name = null;
+			for (Field field : fields) {
+				name = field.getName();
+				if (!name2Field.containsKey(name)) {
+					name2Field.put(name, field);
+				}
+			}
+
+			clazz = (Class<? extends T>) clazz.getSuperclass();
+		}
+
+		Field[] fields = new Field[name2Field.size()];
+		fields = name2Field.values().toArray(fields);
+
+		return fields;
+	}
+
 	public static Object getDefaultValue(Field field) {
 		TableAnnotation annotation = field.getAnnotation(TableAnnotation.class);
 		if (null != annotation) {
@@ -69,6 +101,20 @@ public class ClassUtils {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <T> Method methodForName(Class<? extends T> clazz,
+			Class<T> base, String name, Class<?>... parameterTypes) {
+		Method result = null;
+		while (null == result && clazz != base) {
+			try {
+				result = clazz.getDeclaredMethod(name, parameterTypes);
+			} catch (NoSuchMethodException e) {
+				clazz = (Class<? extends T>) clazz.getSuperclass();
+			}
+		}
+		return result;
+	}
+
 	public static <T> void setValue(T table, Field field, Object value)
 			throws IllegalAccessException, IllegalArgumentException {
 		Class<?> clazz = field.getType();
@@ -84,51 +130,5 @@ public class ClassUtils {
 		} else if (Double.class == clazz) {
 			field.set(table, ((Double) value));
 		}
-	}
-
-	/**
-	 * get fields from clazz and all its super classes
-	 * 
-	 * @param clazz
-	 * @param base
-	 *            first parent class that should not be reflected in extend
-	 *            hierarchy
-	 * @return all fields
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> Field[] getAllFields(Class<? extends T> clazz,
-			Class<T> base) {
-		ArrayMap<String, Field> name2Field = new ArrayMap<String, Field>();
-		while (clazz != base) {
-			Field[] fields = clazz.getDeclaredFields();
-			String name = null;
-			for (Field field : fields) {
-				name = field.getName();
-				if (!name2Field.containsKey(name)) {
-					name2Field.put(name, field);
-				}
-			}
-
-			clazz = (Class<? extends T>) clazz.getSuperclass();
-		}
-
-		Field[] fields = new Field[name2Field.size()];
-		fields = name2Field.values().toArray(fields);
-
-		return fields;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T> Method methodForName(Class<? extends T> clazz,
-			Class<T> base, String name, Class<?>... parameterTypes) {
-		Method result = null;
-		while (null == result && clazz != base) {
-			try {
-				result = clazz.getDeclaredMethod(name, parameterTypes);
-			} catch (NoSuchMethodException e) {
-				clazz = (Class<? extends T>) clazz.getSuperclass();
-			}
-		}
-		return result;
 	}
 }
