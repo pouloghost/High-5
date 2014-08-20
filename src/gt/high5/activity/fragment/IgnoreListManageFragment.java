@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.ToggleButton;
 
@@ -151,23 +152,46 @@ public class IgnoreListManageFragment extends Fragment {
 				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
+					public void onItemClick(AdapterView<?> parent,
+							final View view, int position, long id) {
 						if (id != -1) {
 							int pos = (int) id;
 							// get package name
-							String name = (String) mDataList.get(pos).get(
-									KEYS.PACKAGE.toString());
-							ToggleButton toggle = (ToggleButton) view
+							final String name = (String) mDataList.get(pos)
+									.get(KEYS.PACKAGE.toString());
+							final ToggleButton toggle = (ToggleButton) view
 									.findViewById(R.id.ignore_list_ignore_toggle);
-							HashSet<String> ignoreSet = IgnoreSetService
-									.getIgnoreSetService(
-											getActivity()
-													.getApplicationContext())
-									.update(name, toggle.isChecked());
-							toggle.setChecked(ignoreSet.contains(name));
-							// update
-							// mAdapter.notifyDataSetChanged();
+							final ProgressBar bar = (ProgressBar) view
+									.findViewById(R.id.ignore_list_loading_bar);
+							new AsyncTask<Void, Void, HashSet<String>>() {
+
+								@Override
+								protected void onPreExecute() {
+									super.onPreExecute();
+									toggle.setVisibility(View.GONE);
+									bar.setVisibility(View.VISIBLE);
+								}
+
+								@Override
+								protected HashSet<String> doInBackground(
+										Void... params) {
+									return IgnoreSetService
+											.getIgnoreSetService(
+													getActivity()
+															.getApplicationContext())
+											.update(name, toggle.isChecked());
+								}
+
+								@Override
+								protected void onPostExecute(
+										HashSet<String> result) {
+									super.onPostExecute(result);
+									toggle.setChecked(ignoreSet.contains(name));
+									toggle.setVisibility(View.VISIBLE);
+									bar.setVisibility(View.GONE);
+								}
+
+							}.execute();
 						}
 					}
 				});
@@ -217,5 +241,4 @@ public class IgnoreListManageFragment extends Fragment {
 			setData(result);
 		}
 	}
-
 }

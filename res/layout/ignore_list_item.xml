@@ -47,4 +47,12 @@
         android:textOff="@string/ignore_toggle_off"
         android:textOn="@string/ignore_toggle_on" />
 
+    <ProgressBar
+        android:id="@+id/ignore_list_loading_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
+
 </RelativeLayout>
