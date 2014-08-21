@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
@@ -128,11 +129,16 @@ public class DatabaseAccessor {
 	 * @return data filler
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalArgumentException
 	 */
 	public DataFiller getDataFiller(Class<? extends RecordTable> clazz)
-			throws InstantiationException, IllegalAccessException {
+			throws InstantiationException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException,
+			NoSuchMethodException {
 		return (DataFiller) mTableParser.getInfo(clazz).getFiller()
-				.newInstance();
+				.getDeclaredConstructor().newInstance();
 	}
 
 	/**

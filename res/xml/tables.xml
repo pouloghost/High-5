@@ -7,7 +7,6 @@
 
     <table
         clazz="Total"
-        filler="TotalDataFiller"
         title="Total" />
     <table
         clazz="Time"
@@ -15,7 +14,7 @@
         title="Time" />
     <table
         clazz="WifiName"
-        filler="TotalDataFiller"
+        filler="WifiNameDataFiller"
         title="Wifi Name" />
     <table
         clazz="Network"

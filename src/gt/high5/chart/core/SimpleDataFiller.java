@@ -57,7 +57,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 	@Override
 	protected void addFillers() {
 		// pie chart
-		mFillers.put(CHART_TYPE.PIE, new ViewFiller() {
+		mFillers.add(new ViewFiller() {
 
 			@SuppressWarnings("unchecked")
 			@Override
@@ -68,7 +68,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 
 						int colors = initSegmentFormatters(mData.size());
 						// fill data
-						PieChart pieChart = (PieChart) mContext.getView();
+						PieChart pieChart = mContext.getPieChart();
 						pieChart.clear();
 						T record = null;
 						for (int i = 0; i < mData.size(); ++i) {
@@ -80,6 +80,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 						pieChart.getBorderPaint().setColor(Color.TRANSPARENT);
 						pieChart.getBackgroundPaint().setColor(
 								Color.TRANSPARENT);
+						mContext.setView2Show(pieChart);
 						return true;
 					}
 				}
@@ -87,7 +88,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 			}
 		});
 		// bar chart
-		mFillers.put(CHART_TYPE.BAR, new ViewFiller() {
+		mFillers.add(new ViewFiller() {
 
 			@SuppressWarnings("unchecked")
 			@Override
@@ -97,7 +98,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 					formatter.configure(mContext.getContext(),
 							R.xml.bar_formatter);
 					if (fillXYPlot(formatter)) {
-						for (Object renderer : ((XYPlot) mContext.getView())
+						for (Object renderer : mContext.getXyPlot()
 								.getRendererList()) {
 							if (renderer instanceof BarRenderer<?>) {
 								((BarRenderer<BarFormatter>) renderer)
@@ -111,7 +112,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 			}
 		});
 		// line chart
-		mFillers.put(CHART_TYPE.LINE, new ViewFiller() {
+		mFillers.add(new ViewFiller() {
 
 			@Override
 			public boolean fillView() {
@@ -152,7 +153,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 			return false;
 		}
 		// fill data
-		XYPlot xyPlot = (XYPlot) mContext.getView();
+		XYPlot xyPlot = mContext.getXyPlot();
 		xyPlot.clear();
 		// init data
 		Number[] numbers = new Number[mData.size()];
@@ -168,7 +169,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 						.getTableTitle(mContext.getRecord()));
 		xyPlot.setOnTouchListener(new ZoomAndDragListener(series));
 		xyPlot.addSeries(series, (XYSeriesFormatter) formatter);
-
+		mContext.setView2Show(xyPlot);
 		return true;
 	}
 

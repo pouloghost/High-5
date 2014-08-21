@@ -4,11 +4,11 @@ import gt.high5.R;
 import gt.high5.activity.CancelableTask;
 import gt.high5.activity.fragment.RecordDetailFragment.BUNDLE_KEYS;
 import gt.high5.chart.core.DataFiller;
-import gt.high5.chart.core.DataFiller.CHART_TYPE;
 import gt.high5.chart.core.FillContext;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -32,11 +33,6 @@ import com.androidplot.xy.XYPlot;
 public class RecordDetailPagerFragment extends Fragment implements
 		CancelableTask {
 
-	/**
-	 * spinner id to chart type mapping
-	 */
-	private static final CHART_TYPE[] ID2TYPE = { CHART_TYPE.PIE,
-			CHART_TYPE.BAR, CHART_TYPE.LINE };
 	private Spinner mGraphTypeSpinner = null;
 	private ProgressBar mLoadingBar = null;
 	private XYPlot mXyChart = null;
@@ -46,12 +42,9 @@ public class RecordDetailPagerFragment extends Fragment implements
 	// this chart display the mRecordType data of mTotal
 	private Total mTotal = null;
 
-	private Class<? extends RecordTable> mRecordType = null;
+	private DataFiller mFiller = null;
 
-	/**
-	 * spinner id to view pointer mapping
-	 */
-	private View[] mId2Views = null;
+	private Class<? extends RecordTable> mRecordType = null;
 
 	private AsyncGraphDrawer mDrawer = null;
 
@@ -99,15 +92,22 @@ public class RecordDetailPagerFragment extends Fragment implements
 					}
 				});
 
-		mId2Views = new View[] { mPieChart, mXyChart, mXyChart };
+		try {
+			mFiller = DatabaseAccessor.getAccessor(
+					getActivity().getApplicationContext(), R.xml.tables)
+					.getDataFiller(mRecordType);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		setEntries();
+
 		return root;
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		mXyChart.setVisibility(View.GONE);
-		mPieChart.setVisibility(View.GONE);
 		loadGraph();
 	}
 
@@ -140,14 +140,10 @@ public class RecordDetailPagerFragment extends Fragment implements
 		@Override
 		protected FillContext doInBackground(FillContext... arg0) {
 			FillContext fillContext = arg0[0];
-			try {
-				DataFiller filler = DatabaseAccessor.getAccessor(
-						getActivity().getApplicationContext(), R.xml.tables)
-						.getDataFiller(mRecordType);
-				filler.fillView(fillContext);
-			} catch (Exception e) {
-				fillContext.setView(null);
-				e.printStackTrace();
+			if (null != mFiller) {
+				mFiller.fillView(fillContext);
+			} else {
+				fillContext.setView2Show(null);
 			}
 			return fillContext;
 		}
@@ -171,10 +167,24 @@ public class RecordDetailPagerFragment extends Fragment implements
 
 	}
 
+	private void setEntries() {
+		if (null != mFiller) {
+			int[] ids = mFiller.getEntryIds();
+			String[] entries = new String[ids.length];
+			Resources resources = getActivity().getResources();
+			for (int i = 0; i < ids.length; ++i) {
+				entries[i] = resources.getString(ids[i]);
+			}
+			mGraphTypeSpinner.setAdapter(new ArrayAdapter<String>(
+					getActivity(), R.layout.record_detail_pager_spinner_item,
+					R.id.record_detail_spinner_text, entries));
+		}
+	}
+
 	private void loadGraph() {
 		if (null != mTotal && null != mGraphTypeSpinner) {
 			int id = (int) mGraphTypeSpinner.getSelectedItemId();
-			FillContext context = new FillContext(ID2TYPE[id], mId2Views[id],
+			FillContext context = new FillContext(id, mXyChart, mPieChart,
 					getActivity().getApplicationContext(), mTotal, mRecordType);
 			new AsyncGraphDrawer().execute(context);
 		}
@@ -185,8 +195,8 @@ public class RecordDetailPagerFragment extends Fragment implements
 		mDrawer = null;
 		// if view not filled properly the reference in fillContext will be
 		// set to be null
-		if (null != result && null != result.getView()) {
-			result.getView().setVisibility(View.VISIBLE);
+		if (null != result && null != result.getView2Show()) {
+			result.getView2Show().setVisibility(View.VISIBLE);
 		} else {
 			mErrorImage.setVisibility(View.VISIBLE);
 		}

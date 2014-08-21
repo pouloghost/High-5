@@ -2,23 +2,18 @@ package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
-import gt.high5.database.table.Network;
 import gt.high5.database.table.Total;
+import gt.high5.database.table.WifiName;
 
-public class NetworkDataFiller extends SimpleDataFiller<Network> {
+public class WifiNameDataFiller extends SimpleDataFiller<WifiName> {
 
 	@Override
-	public int[] getEntryIds() {
-		return new int[] { R.string.record_detail_spinner_pie };
+	protected String getName(WifiName record) {
+		return record.getBssid() + ":" + getCount(record);
 	}
 
 	@Override
-	protected String getName(Network record) {
-		return record.getConnection() + ":" + getCount(record);
-	}
-
-	@Override
-	protected int getCount(Network record) {
+	protected int getCount(WifiName record) {
 		return record.getCount();
 	}
 
@@ -26,13 +21,18 @@ public class NetworkDataFiller extends SimpleDataFiller<Network> {
 	protected void loadData() {
 		if (null != mContext && null == mData) {
 			Total total = mContext.getTotal();
-			Network query = new Network();
+			WifiName query = new WifiName();
 			query.setPid(total.getId());
 			getAccessor();
 			if (null != mAccessor) {
 				mData = mAccessor.R(query);
 			}
 		}
+	}
+
+	@Override
+	public int[] getEntryIds() {
+		return new int[] { R.string.record_detail_spinner_pie };
 	}
 
 }

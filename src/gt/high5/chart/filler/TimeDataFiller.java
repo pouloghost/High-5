@@ -84,7 +84,7 @@ public class TimeDataFiller extends DataFiller {
 	@Override
 	protected void addFillers() {
 		// pie chart
-		mFillers.put(CHART_TYPE.PIE, new ViewFiller() {
+		mFillers.add(new ViewFiller() {
 
 			@Override
 			public boolean fillView() {
@@ -92,7 +92,7 @@ public class TimeDataFiller extends DataFiller {
 					loadData();
 					int colors = initSegmentFormatters(mData.size());
 					// fill data
-					PieChart pieChart = (PieChart) mContext.getView();
+					PieChart pieChart = mContext.getPieChart();
 					pieChart.clear();
 					Time time = null;
 					for (int i = 0; i < mData.size(); ++i) {
@@ -104,13 +104,15 @@ public class TimeDataFiller extends DataFiller {
 					}
 					pieChart.getBorderPaint().setColor(Color.TRANSPARENT);
 					pieChart.getBackgroundPaint().setColor(Color.TRANSPARENT);
+
+					mContext.setView2Show(pieChart);
 					return true;
 				}
 				return false;
 			}
 		});
 		// bar chart
-		mFillers.put(CHART_TYPE.BAR, new ViewFiller() {
+		mFillers.add(new ViewFiller() {
 
 			@SuppressWarnings("unchecked")
 			@Override
@@ -120,7 +122,7 @@ public class TimeDataFiller extends DataFiller {
 					formatter.configure(mContext.getContext(),
 							R.xml.bar_formatter);
 					fillXYPlot(formatter);
-					for (Object renderer : ((XYPlot) mContext.getView())
+					for (Object renderer : mContext.getXyPlot()
 							.getRendererList()) {
 						if (renderer instanceof BarRenderer<?>) {
 							((BarRenderer<BarFormatter>) renderer)
@@ -134,7 +136,7 @@ public class TimeDataFiller extends DataFiller {
 			}
 		});
 		// line chart
-		mFillers.put(CHART_TYPE.LINE, new ViewFiller() {
+		mFillers.add(new ViewFiller() {
 
 			@Override
 			public boolean fillView() {
@@ -163,6 +165,13 @@ public class TimeDataFiller extends DataFiller {
 		this.mAccessor = mAccessor;
 	}
 
+	@Override
+	public int[] getEntryIds() {
+		return new int[] { R.string.record_detail_spinner_pie,
+				R.string.record_detail_spinner_bar,
+				R.string.record_detail_spinner_line };
+	}
+
 	private void loadData() {
 		if (null != mContext && null == mData) {
 			Total total = mContext.getTotal();
@@ -175,7 +184,8 @@ public class TimeDataFiller extends DataFiller {
 
 					@Override
 					public int compare(Table lhs, Table rhs) {
-						return ((Time) lhs).getRegion() - ((Time) rhs).getRegion();
+						return ((Time) lhs).getRegion()
+								- ((Time) rhs).getRegion();
 					}
 				});
 			}
@@ -186,7 +196,7 @@ public class TimeDataFiller extends DataFiller {
 	private void fillXYPlot(Formatter<XYPlot> formatter) {
 		loadData();
 		// fill data
-		XYPlot xyPlot = (XYPlot) mContext.getView();
+		XYPlot xyPlot = mContext.getXyPlot();
 		xyPlot.clear();
 		// init data
 		Number[] numbers = new Number[REGION6TITLE.length];
@@ -214,5 +224,7 @@ public class TimeDataFiller extends DataFiller {
 				mAccessor.getTableTitle(mContext.getRecord()));
 		xyPlot.setOnTouchListener(new ZoomAndDragListener(series));
 		xyPlot.addSeries(series, (XYSeriesFormatter) formatter);
+
+		mContext.setView2Show(xyPlot);
 	}
 }

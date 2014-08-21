@@ -2,7 +2,7 @@ package gt.high5.chart.core;
 
 import gt.high5.R;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import com.androidplot.pie.SegmentFormatter;
 
@@ -28,7 +28,7 @@ public abstract class DataFiller {
 
 	protected static SegmentFormatter[] pieFormatters = null;
 
-	protected HashMap<CHART_TYPE, ViewFiller> mFillers = new HashMap<CHART_TYPE, ViewFiller>();
+	protected ArrayList<ViewFiller> mFillers = new ArrayList<ViewFiller>();
 	protected FillContext mContext = null;
 
 	public DataFiller() {
@@ -41,17 +41,19 @@ public abstract class DataFiller {
 	 * @param context
 	 */
 	public void fillView(FillContext context) {
-	
+
 		mContext = context;
-		ViewFiller filler = mFillers.get(context.getType());
+		ViewFiller filler = mFillers.get(context.getIndex());
 		if (null != filler) {
 			if (!filler.fillView()) {
-				context.setView(null);
+				context.setView2Show(null);
 			}
 		}
 	}
 
 	protected abstract void addFillers();
+
+	public abstract int[] getEntryIds();
 
 	protected int initSegmentFormatters(int size) {
 		if (null == pieFormatters) {

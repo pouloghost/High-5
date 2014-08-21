@@ -1,41 +1,62 @@
 package gt.high5.chart.core;
 
-import gt.high5.chart.core.DataFiller.CHART_TYPE;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
 import android.content.Context;
 import android.view.View;
 
+import com.androidplot.pie.PieChart;
+import com.androidplot.xy.XYPlot;
+
 public class FillContext {
-	private CHART_TYPE mType = null;
-	private View mView = null;
+	private int mIndex = -1;
 	private Context mContext = null;
 	private Total mTotal = null;
 	private Class<? extends RecordTable> mRecord = null;
+	private XYPlot mXyPlot = null;
+	private PieChart mPieChart = null;
+	private View mView2Show = null;
 
-	public FillContext(CHART_TYPE type, View view, Context context,
-			Total total, Class<? extends RecordTable> record) {
-		setType(type);
-		setView(view);
+	public FillContext(int index, XYPlot xyPlot, PieChart pieChart,
+			Context context, Total total, Class<? extends RecordTable> record) {
+		setXyPlot(xyPlot);
+		setPieChart(pieChart);
+		setIndex(index);
 		setContext(context);
 		setRecord(record);
 		setTotal(total);
 	}
 
-	public CHART_TYPE getType() {
-		return mType;
+	public int getIndex() {
+		return mIndex;
 	}
 
-	public void setType(CHART_TYPE mType) {
-		this.mType = mType;
+	public void setIndex(int mIndex) {
+		this.mIndex = mIndex;
 	}
 
-	public View getView() {
-		return mView;
+	public XYPlot getXyPlot() {
+		return mXyPlot;
 	}
 
-	public void setView(View mView) {
-		this.mView = mView;
+	public void setXyPlot(XYPlot mXyPlot) {
+		this.mXyPlot = mXyPlot;
+	}
+
+	public PieChart getPieChart() {
+		return mPieChart;
+	}
+
+	public void setPieChart(PieChart mPieChart) {
+		this.mPieChart = mPieChart;
+	}
+
+	public View getView2Show() {
+		return mView2Show;
+	}
+
+	public void setView2Show(View mView2Show) {
+		this.mView2Show = mView2Show;
 	}
 
 	public Context getContext() {

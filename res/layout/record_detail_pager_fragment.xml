@@ -9,8 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_margin="10dp"
-        android:entries="@array/record_detail_spinner" />
+        android:layout_margin="10dp" />
 
     <ProgressBar
         android:id="@+id/record_detail_view_load_progress_bar"

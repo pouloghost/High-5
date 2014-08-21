@@ -33,5 +33,8 @@
     <string name="settings_log_off">Log off</string>
     <!-- detail chart -->
     <string name="total_detail_count_hint">Count:</string>
+    <string name="record_detail_spinner_pie">Pie</string>
+    <string name="record_detail_spinner_bar">Bar</string>
+    <string name="record_detail_spinner_line">Line</string>
 
 </resources>

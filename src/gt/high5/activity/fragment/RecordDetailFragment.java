@@ -60,14 +60,14 @@ public class RecordDetailFragment extends Fragment implements CancelableTask {
 	}
 
 	class ChartFragmentAdapter extends FragmentPagerAdapter {
-	
+
 		private Class<? extends RecordTable>[] mRecords = null;
 		private DatabaseAccessor mAccessor = null;
-	
+
 		@SuppressWarnings("unchecked")
 		public ChartFragmentAdapter(FragmentManager fm) {
 			super(fm);
-	
+
 			mAccessor = DatabaseAccessor.getAccessor(getActivity()
 					.getApplicationContext(), R.xml.tables);
 			Class<? extends RecordTable>[] tables = mAccessor.getTables();
@@ -96,12 +96,12 @@ public class RecordDetailFragment extends Fragment implements CancelableTask {
 			System.arraycopy(tables, 0, mRecords, 1, mRecords.length - 1);
 			mRecords[0] = Total.class;
 		}
-	
+
 		@Override
 		public Fragment getItem(int position) {
 			Fragment fragment = position == 0 ? new TotalDetailPagerFragment()
 					: new RecordDetailPagerFragment();
-	
+
 			Bundle args = new Bundle();
 			args.putParcelable(BUNDLE_KEYS.TOTAL.toString(), mTotal);
 			args.putString(BUNDLE_KEYS.CLASS.toString(),
@@ -109,16 +109,16 @@ public class RecordDetailFragment extends Fragment implements CancelableTask {
 			fragment.setArguments(args);
 			return fragment;
 		}
-	
+
 		@Override
 		public int getCount() {
 			return mRecords.length;
 		}
-	
+
 		@Override
 		public CharSequence getPageTitle(int position) {
 			return mAccessor.getTableTitle(mRecords[position]);
 		}
-	
+
 	}
 }
