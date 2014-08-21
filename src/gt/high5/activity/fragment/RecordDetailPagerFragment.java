@@ -105,10 +105,15 @@ public class RecordDetailPagerFragment extends Fragment implements
 		return root;
 	}
 
+	// replacement for onResume, this is actually functioning as onResume should
 	@Override
-	public void onResume() {
-		super.onResume();
-		loadGraph();
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		// the chart are overlapping each other
+		if (isVisibleToUser
+				&& (mXyChart.getVisibility() == mPieChart.getVisibility())) {
+			loadGraph();
+		}
+		super.setUserVisibleHint(isVisibleToUser);
 	}
 
 	public void setData(Total total, Class<? extends RecordTable> clazz) {
@@ -138,6 +143,17 @@ public class RecordDetailPagerFragment extends Fragment implements
 	class AsyncGraphDrawer extends AsyncTask<FillContext, Void, FillContext> {
 
 		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			mXyChart.setVisibility(View.GONE);
+			mPieChart.setVisibility(View.GONE);
+			mErrorImage.setVisibility(View.GONE);
+			mLoadingBar.setVisibility(View.VISIBLE);
+
+			mDrawer = this;
+		}
+
+		@Override
 		protected FillContext doInBackground(FillContext... arg0) {
 			FillContext fillContext = arg0[0];
 			if (null != mFiller) {
@@ -152,17 +168,6 @@ public class RecordDetailPagerFragment extends Fragment implements
 		protected void onPostExecute(FillContext result) {
 			super.onPostExecute(result);
 			onFinishLoading(result);
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			mXyChart.setVisibility(View.GONE);
-			mPieChart.setVisibility(View.GONE);
-			mErrorImage.setVisibility(View.GONE);
-			mLoadingBar.setVisibility(View.VISIBLE);
-
-			mDrawer = this;
 		}
 
 	}

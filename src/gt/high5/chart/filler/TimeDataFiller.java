@@ -31,7 +31,7 @@ import com.androidplot.xy.XYSeriesFormatter;
 
 public class TimeDataFiller extends DataFiller {
 
-	private final static String[] REGION6TITLE = { "0:00-0:15", "0:15-0:30",
+	private final static String[] REGION2TITLE = { "0:00-0:15", "0:15-0:30",
 			"0:30-0:45", "0:45-1:00", "1:00-1:15", "1:15-1:30", "1:30-1:45",
 			"1:45-2:00", "2:00-2:15", "2:15-2:30", "2:30-2:45", "2:45-3:00",
 			"3:00-3:15", "3:15-3:30", "3:30-3:45", "3:45-4:00", "4:00-4:15",
@@ -66,7 +66,9 @@ public class TimeDataFiller extends DataFiller {
 		@Override
 		public StringBuffer format(double value, StringBuffer buffer,
 				FieldPosition field) {
-			return new StringBuffer(REGION6TITLE[(int) value]);
+			int index = (int) value;
+			index = index < REGION2TITLE.length ? index : REGION2TITLE.length;
+			return new StringBuffer(REGION2TITLE[index]);
 		}
 
 		@Override
@@ -98,7 +100,7 @@ public class TimeDataFiller extends DataFiller {
 					for (int i = 0; i < mData.size(); ++i) {
 						time = (Time) mData.get(i);
 						pieChart.addSeries(
-								new Segment(REGION6TITLE[time.getRegion()]
+								new Segment(REGION2TITLE[time.getRegion()]
 										+ ":" + time.getCount(), time
 										.getCount()), pieFormatters[i % colors]);
 					}
@@ -199,12 +201,12 @@ public class TimeDataFiller extends DataFiller {
 		XYPlot xyPlot = mContext.getXyPlot();
 		xyPlot.clear();
 		// init data
-		Number[] numbers = new Number[REGION6TITLE.length];
+		Number[] numbers = new Number[REGION2TITLE.length];
 		// i for all the labels
 		// j for record in db
 		int i, j;
 		Time time = null;
-		for (i = 0, j = 0; i < REGION6TITLE.length; ++i) {
+		for (i = 0, j = 0; i < REGION2TITLE.length; ++i) {
 			if (j < mData.size()) {
 				time = (Time) mData.get(j);
 			}
