@@ -28,5 +28,9 @@
         clazz="WeekDay"
         filler="WeekDayDataFiller"
         title="Day Of Week" />
+    <table
+        clazz="DayOfMonth"
+        filler="DayOfMonthDataFiller"
+        title="Day Of Month" />
 
 </tables>
