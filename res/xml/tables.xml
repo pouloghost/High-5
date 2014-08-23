@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tables
     file="statics.db"
-    model_pack="gt.high5.database.table"
     filler_pack="gt.high5.chart.filler"
-    version="1" >
+    model_pack="gt.high5.database.table"
+    version="2" >
 
     <table
         clazz="Total"
@@ -24,5 +24,9 @@
         clazz="LastPackage"
         filler="LastPackageDataFiller"
         title="Last App" />
+    <table
+        clazz="WeekDay"
+        filler="WeekDayDataFiller"
+        title="Day Of Week" />
 
 </tables>

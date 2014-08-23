@@ -28,7 +28,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 	protected DatabaseAccessor mAccessor = null;
 	protected ArrayList<Table> mData = null;
 
-	private NumberFormat mTitleFormat = new NumberFormat() {
+	protected NumberFormat mTitleFormat = new NumberFormat() {
 		/**
 		 * 
 		 */

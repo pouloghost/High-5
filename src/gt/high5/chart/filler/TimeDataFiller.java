@@ -197,6 +197,9 @@ public class TimeDataFiller extends DataFiller {
 	@SuppressWarnings("rawtypes")
 	private void fillXYPlot(Formatter<XYPlot> formatter) {
 		loadData();
+		if (null == mData) {
+			return;
+		}
 		// fill data
 		XYPlot xyPlot = mContext.getXyPlot();
 		xyPlot.clear();
