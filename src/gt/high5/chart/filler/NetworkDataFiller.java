@@ -14,7 +14,7 @@ public class NetworkDataFiller extends SimpleDataFiller<Network> {
 
 	@Override
 	protected String getName(Network record) {
-		return record.getConnection() + ":" + getCount(record);
+		return record.getConnection();
 	}
 
 	@Override

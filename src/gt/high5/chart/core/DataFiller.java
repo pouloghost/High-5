@@ -1,10 +1,9 @@
 package gt.high5.chart.core;
 
-import gt.high5.R;
-
 import java.util.ArrayList;
 
-import com.androidplot.pie.SegmentFormatter;
+import android.graphics.Color;
+import android.view.View;
 
 /**
  * @author GT
@@ -20,14 +19,16 @@ public abstract class DataFiller {
 	 */
 	public interface ViewFiller {
 		public boolean fillView();
+
+		public View onFinish();
 	}
 
 	public enum CHART_TYPE {
 		BAR, LINE, PIE
 	}
 
-	protected static SegmentFormatter[] pieFormatters = null;
-
+	private static final int[] ALL_COLORS = { Color.BLUE, Color.CYAN,
+			Color.GREEN, Color.RED, Color.YELLOW, Color.MAGENTA };
 	protected ArrayList<ViewFiller> mFillers = new ArrayList<ViewFiller>();
 	protected FillContext mContext = null;
 
@@ -40,43 +41,31 @@ public abstract class DataFiller {
 	 * 
 	 * @param context
 	 */
-	public void fillView(FillContext context) {
+	public ViewFiller fillView(FillContext context) {
 
 		mContext = context;
 		ViewFiller filler = mFillers.get(context.getIndex());
 		if (null != filler) {
 			if (!filler.fillView()) {
-				context.setView2Show(null);
+				filler = null;
 			}
 		}
+		return filler;
 	}
 
 	protected abstract void addFillers();
 
 	public abstract int[] getEntryIds();
 
-	protected int initSegmentFormatters(int size) {
-		if (null == pieFormatters) {
-			pieFormatters = new SegmentFormatter[] { new SegmentFormatter(),
-					new SegmentFormatter(), new SegmentFormatter(),
-					new SegmentFormatter(), new SegmentFormatter(), };
-			// init formatters
-			pieFormatters[0].configure(mContext.getContext(),
-					R.xml.pie_segment_0);
-			pieFormatters[1].configure(mContext.getContext(),
-					R.xml.pie_segment_1);
-			pieFormatters[2].configure(mContext.getContext(),
-					R.xml.pie_segment_2);
-			pieFormatters[3].configure(mContext.getContext(),
-					R.xml.pie_segment_3);
-			pieFormatters[3].configure(mContext.getContext(),
-					R.xml.pie_segment_4);
-		}
+	protected int[] getColors(int size) {
+		int[] result = new int[size];
 		int colors = 2;
-		while (0 == (size - 1) % colors && colors < pieFormatters.length) {
+		while (0 == (size - 1) % colors && colors < ALL_COLORS.length) {
 			++colors;
 		}
-
-		return colors;
+		for (int i = 0; i < size; ++i) {
+			result[i] = ALL_COLORS[i % colors];
+		}
+		return result;
 	}
 }

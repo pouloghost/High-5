@@ -2,32 +2,26 @@ package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.DataFiller;
-import gt.high5.chart.core.ZoomAndDragListener;
+import gt.high5.chart.core.RendererFactory;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.Table;
 import gt.high5.database.table.Time;
 import gt.high5.database.table.Total;
 
-import java.text.FieldPosition;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
-import android.graphics.Color;
+import org.achartengine.ChartFactory;
+import org.achartengine.chart.BarChart.Type;
+import org.achartengine.model.CategorySeries;
+import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
+import org.achartengine.renderer.DefaultRenderer;
+import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
-import com.androidplot.pie.PieChart;
-import com.androidplot.pie.Segment;
-import com.androidplot.ui.Formatter;
-import com.androidplot.xy.BarFormatter;
-import com.androidplot.xy.BarRenderer;
-import com.androidplot.xy.LineAndPointFormatter;
-import com.androidplot.xy.SimpleXYSeries;
-import com.androidplot.xy.XYPlot;
-import com.androidplot.xy.XYSeries;
-import com.androidplot.xy.XYSeriesFormatter;
+import android.graphics.Color;
+import android.view.View;
 
 public class TimeDataFiller extends DataFiller {
 
@@ -57,100 +51,121 @@ public class TimeDataFiller extends DataFiller {
 	private DatabaseAccessor mAccessor = null;
 	private ArrayList<Table> mData = null;
 
-	private NumberFormat mTitleFormat = new NumberFormat() {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public StringBuffer format(double value, StringBuffer buffer,
-				FieldPosition field) {
-			int index = (int) value;
-			index = index < REGION2TITLE.length ? index : REGION2TITLE.length;
-			return new StringBuffer(REGION2TITLE[index]);
-		}
-
-		@Override
-		public StringBuffer format(long value, StringBuffer buffer,
-				FieldPosition field) {
-			throw new UnsupportedOperationException("Not yet implemented.");
-		}
-
-		@Override
-		public Number parse(String string, ParsePosition position) {
-			throw new UnsupportedOperationException("Not yet implemented.");
-		}
-	};
-
 	@Override
 	protected void addFillers() {
 		// pie chart
 		mFillers.add(new ViewFiller() {
+			private DefaultRenderer mRenderer = null;
+			private CategorySeries mCategorySeries = null;
+			private boolean mResult = false;
 
 			@Override
 			public boolean fillView() {
 				if (null != mContext) {
 					loadData();
-					int colors = initSegmentFormatters(mData.size());
-					// fill data
-					PieChart pieChart = mContext.getPieChart();
-					pieChart.clear();
+					String title = getAccessor().getTableTitle(
+							mContext.getRecord());
+					mRenderer = RendererFactory.buildCategoryRenderer(
+							mContext.getContext(), getColors(mData.size()));
+					mCategorySeries = new CategorySeries(title);
 					Time time = null;
-					for (int i = 0; i < mData.size(); ++i) {
-						time = (Time) mData.get(i);
-						pieChart.addSeries(
-								new Segment(REGION2TITLE[time.getRegion()]
-										+ ":" + time.getCount(), time
-										.getCount()), pieFormatters[i % colors]);
+					for (Table table : mData) {
+						time = (Time) table;
+						mCategorySeries.add(REGION2TITLE[time.getRegion()],
+								time.getCount());
 					}
-					pieChart.getBorderPaint().setColor(Color.TRANSPARENT);
-					pieChart.getBackgroundPaint().setColor(Color.TRANSPARENT);
 
-					mContext.setView2Show(pieChart);
-					return true;
+					mResult = true;
 				}
-				return false;
+				return mResult;
+			}
+
+			@Override
+			public View onFinish() {
+				View view = null;
+				if (mResult) {
+					view = ChartFactory.getPieChartView(mContext.getContext(),
+							mCategorySeries, mRenderer);
+				}
+				return view;
 			}
 		});
 		// bar chart
 		mFillers.add(new ViewFiller() {
+			private XYMultipleSeriesRenderer mRenderer = null;
+			private XYMultipleSeriesDataset mDataset = null;
+			private boolean mResult = false;
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public boolean fillView() {
 				if (null != mContext) {
-					BarFormatter formatter = new BarFormatter();
-					formatter.configure(mContext.getContext(),
-							R.xml.bar_formatter);
-					fillXYPlot(formatter);
-					for (Object renderer : mContext.getXyPlot()
-							.getRendererList()) {
-						if (renderer instanceof BarRenderer<?>) {
-							((BarRenderer<BarFormatter>) renderer)
-									.setBarWidth(10);
-						}
-					}
+					try {
+						loadData();
+						String title = getAccessor().getTableTitle(
+								mContext.getRecord());
+						mRenderer = RendererFactory.buildBarRenderer(
+								mContext.getContext(), Color.BLUE);
 
-					return true;
+						addXTitles(mRenderer, 30);
+
+						mDataset = new XYMultipleSeriesDataset();
+						mDataset.addSeries(getDataset(title));
+
+						mResult = true;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-				return false;
+				return mResult;
+			}
+
+			@Override
+			public View onFinish() {
+				View view = null;
+				if (mResult) {
+					view = ChartFactory.getBarChartView(mContext.getContext(),
+							mDataset, mRenderer, Type.DEFAULT);
+				}
+				return view;
 			}
 		});
 		// line chart
 		mFillers.add(new ViewFiller() {
+			private XYMultipleSeriesRenderer mRenderer = null;
+			private XYMultipleSeriesDataset mDataset = null;
+			private boolean mResult = false;
 
 			@Override
 			public boolean fillView() {
 				if (null != mContext) {
-					// format
-					LineAndPointFormatter formatter = new LineAndPointFormatter();
-					formatter.configure(mContext.getContext(),
-							R.xml.line_point_formatter);
-					fillXYPlot(formatter);
-					return true;
+					try {
+						loadData();
+						String title = getAccessor().getTableTitle(
+								mContext.getRecord());
+						mRenderer = RendererFactory.buildLineRenderer(
+								mContext.getContext(), Color.BLUE);
+
+						addXTitles(mRenderer, 30);
+
+						mDataset = new XYMultipleSeriesDataset();
+						mDataset.addSeries(getDataset(title));
+
+						mResult = true;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-				return false;
+				return mResult;
+			}
+
+			@Override
+			public View onFinish() {
+				View view = null;
+				if (mResult) {
+					view = ChartFactory.getLineChartView(mContext.getContext(),
+							mDataset, mRenderer);
+				}
+				return view;
 			}
 		});
 	}
@@ -179,34 +194,19 @@ public class TimeDataFiller extends DataFiller {
 			Total total = mContext.getTotal();
 			Time query = new Time();
 			query.setPid(total.getId());
-			getAccessor();
-			if (null != mAccessor) {
-				mData = mAccessor.R(query);
-				Collections.sort(mData, new Comparator<Table>() {
+			mData = getAccessor().R(query);
+			Collections.sort(mData, new Comparator<Table>() {
 
-					@Override
-					public int compare(Table lhs, Table rhs) {
-						return ((Time) lhs).getRegion()
-								- ((Time) rhs).getRegion();
-					}
-				});
-			}
+				@Override
+				public int compare(Table lhs, Table rhs) {
+					return ((Time) lhs).getRegion() - ((Time) rhs).getRegion();
+				}
+			});
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	private void fillXYPlot(Formatter<XYPlot> formatter) {
-		loadData();
-		if (null == mData) {
-			return;
-		}
-		// fill data
-		XYPlot xyPlot = mContext.getXyPlot();
-		xyPlot.clear();
-		// init data
-		Number[] numbers = new Number[REGION2TITLE.length];
-		// i for all the labels
-		// j for record in db
+	private XYSeries getDataset(String title) {
+		XYSeries dataset = new XYSeries(title);
 		int i, j;
 		Time time = null;
 		for (i = 0, j = 0; i < REGION2TITLE.length; ++i) {
@@ -214,22 +214,24 @@ public class TimeDataFiller extends DataFiller {
 				time = (Time) mData.get(j);
 			}
 			if (i == time.getRegion()) {
-				numbers[i] = time.getCount();
+				dataset.add(i, time.getCount());
 				++j;
 			} else {
-				numbers[i] = 0;
+				dataset.add(i, 0);
 			}
 		}
+		return dataset;
+	}
 
-		xyPlot.setTicksPerRangeLabel(10);
-		xyPlot.setTicksPerDomainLabel(1);
-		xyPlot.setDomainValueFormat(mTitleFormat);
-		XYSeries series = new SimpleXYSeries(Arrays.asList(numbers),
-				SimpleXYSeries.ArrayFormat.Y_VALS_ONLY,
-				mAccessor.getTableTitle(mContext.getRecord()));
-		xyPlot.setOnTouchListener(new ZoomAndDragListener(series));
-		xyPlot.addSeries(series, (XYSeriesFormatter) formatter);
-
-		mContext.setView2Show(xyPlot);
+	private void addXTitles(XYMultipleSeriesRenderer renderer, int skip) {
+		String empty = "";
+		renderer.clearXTextLabels();
+		for (int i = 0; i < REGION2TITLE.length; ++i) {
+			if (0 == i % skip) {
+				renderer.addXTextLabel(i, REGION2TITLE[i]);
+			} else {
+				renderer.addXTextLabel(i, empty);
+			}
+		}
 	}
 }

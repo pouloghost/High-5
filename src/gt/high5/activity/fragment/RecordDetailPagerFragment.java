@@ -5,6 +5,7 @@ import gt.high5.activity.CancelableTask;
 import gt.high5.activity.fragment.RecordDetailFragment.BUNDLE_KEYS;
 import gt.high5.chart.core.DataFiller;
 import gt.high5.chart.core.FillContext;
+import gt.high5.chart.core.DataFiller.ViewFiller;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
@@ -18,11 +19,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-
-import com.androidplot.pie.PieChart;
-import com.androidplot.xy.XYPlot;
 
 /**
  * @author GT
@@ -35,8 +34,7 @@ public class RecordDetailPagerFragment extends Fragment implements
 
 	private Spinner mGraphTypeSpinner = null;
 	private ProgressBar mLoadingBar = null;
-	private XYPlot mXyChart = null;
-	private PieChart mPieChart = null;
+	private LinearLayout mLayout = null;
 
 	private ImageView mErrorImage = null;
 	// this chart display the mRecordType data of mTotal
@@ -71,9 +69,7 @@ public class RecordDetailPagerFragment extends Fragment implements
 				.findViewById(R.id.record_detail_view_graph_type_spinner);
 		mLoadingBar = (ProgressBar) root
 				.findViewById(R.id.record_detail_view_load_progress_bar);
-		mXyChart = (XYPlot) root.findViewById(R.id.record_detail_view_xy_chart);
-		mPieChart = (PieChart) root
-				.findViewById(R.id.record_detail_view_pie_chart);
+		mLayout = (LinearLayout) root.findViewById(R.id.chart);
 		mErrorImage = (ImageView) root
 				.findViewById(R.id.record_detail_view_error_image);
 
@@ -109,10 +105,10 @@ public class RecordDetailPagerFragment extends Fragment implements
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		// the chart are overlapping each other
-		if (isVisibleToUser
-				&& (mXyChart.getVisibility() == mPieChart.getVisibility())) {
-			loadGraph();
-		}
+		// if (isVisibleToUser
+		// && (mXyChart.getVisibility() == mPieChart.getVisibility())) {
+		// loadGraph();
+		// }
 		super.setUserVisibleHint(isVisibleToUser);
 	}
 
@@ -140,13 +136,12 @@ public class RecordDetailPagerFragment extends Fragment implements
 	 * 
 	 *         async task for filling up the chart view
 	 */
-	class AsyncGraphDrawer extends AsyncTask<FillContext, Void, FillContext> {
+	class AsyncGraphDrawer extends AsyncTask<FillContext, Void, ViewFiller> {
 
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			mXyChart.setVisibility(View.GONE);
-			mPieChart.setVisibility(View.GONE);
+			mLayout.setVisibility(View.GONE);
 			mErrorImage.setVisibility(View.GONE);
 			mLoadingBar.setVisibility(View.VISIBLE);
 
@@ -154,18 +149,17 @@ public class RecordDetailPagerFragment extends Fragment implements
 		}
 
 		@Override
-		protected FillContext doInBackground(FillContext... arg0) {
+		protected ViewFiller doInBackground(FillContext... arg0) {
 			FillContext fillContext = arg0[0];
+			ViewFiller filler = null;
 			if (null != mFiller) {
-				mFiller.fillView(fillContext);
-			} else {
-				fillContext.setView2Show(null);
+				filler = mFiller.fillView(fillContext);
 			}
-			return fillContext;
+			return filler;
 		}
 
 		@Override
-		protected void onPostExecute(FillContext result) {
+		protected void onPostExecute(ViewFiller result) {
 			super.onPostExecute(result);
 			onFinishLoading(result);
 		}
@@ -189,19 +183,25 @@ public class RecordDetailPagerFragment extends Fragment implements
 	private void loadGraph() {
 		if (null != mTotal && null != mGraphTypeSpinner) {
 			int id = (int) mGraphTypeSpinner.getSelectedItemId();
-			FillContext context = new FillContext(id, mXyChart, mPieChart,
-					getActivity().getApplicationContext(), mTotal, mRecordType);
+			FillContext context = new FillContext(id, getActivity()
+					.getApplicationContext(), mTotal, mRecordType);
 			new AsyncGraphDrawer().execute(context);
 		}
 	}
 
-	private void onFinishLoading(FillContext result) {
+	private void onFinishLoading(ViewFiller filler) {
 		mLoadingBar.setVisibility(View.GONE);
 		mDrawer = null;
 		// if view not filled properly the reference in fillContext will be
 		// set to be null
-		if (null != result && null != result.getView2Show()) {
-			result.getView2Show().setVisibility(View.VISIBLE);
+		View view2show = null;
+		if (null != filler) {
+			view2show = filler.onFinish();
+		}
+		if (null != view2show) {
+			mLayout.setVisibility(View.VISIBLE);
+			mLayout.removeAllViews();
+			mLayout.addView(view2show);
 		} else {
 			mErrorImage.setVisibility(View.VISIBLE);
 		}

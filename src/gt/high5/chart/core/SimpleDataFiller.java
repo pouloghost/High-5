@@ -8,20 +8,17 @@ import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
-import java.util.Arrays;
+
+import org.achartengine.ChartFactory;
+import org.achartengine.chart.BarChart.Type;
+import org.achartengine.model.CategorySeries;
+import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
+import org.achartengine.renderer.DefaultRenderer;
+import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
 import android.graphics.Color;
-
-import com.androidplot.pie.PieChart;
-import com.androidplot.pie.Segment;
-import com.androidplot.ui.Formatter;
-import com.androidplot.xy.BarFormatter;
-import com.androidplot.xy.BarRenderer;
-import com.androidplot.xy.LineAndPointFormatter;
-import com.androidplot.xy.SimpleXYSeries;
-import com.androidplot.xy.XYPlot;
-import com.androidplot.xy.XYSeries;
-import com.androidplot.xy.XYSeriesFormatter;
+import android.view.View;
 
 public abstract class SimpleDataFiller<T> extends DataFiller {
 
@@ -58,72 +55,127 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 	protected void addFillers() {
 		// pie chart
 		mFillers.add(new ViewFiller() {
+			private DefaultRenderer mRenderer = null;
+			private CategorySeries mCategorySeries = null;
+			private boolean mResult = false;
 
 			@SuppressWarnings("unchecked")
 			@Override
 			public boolean fillView() {
 				if (null != mContext) {
-					loadData();
-					if (null != mData) {
-
-						int colors = initSegmentFormatters(mData.size());
-						// fill data
-						PieChart pieChart = mContext.getPieChart();
-						pieChart.clear();
-						T record = null;
-						for (int i = 0; i < mData.size(); ++i) {
-							record = (T) mData.get(i);
-							pieChart.addSeries(new Segment(getName(record),
-									getCount(record)),
-									pieFormatters[i % colors]);
+					try {
+						loadData();
+						String title = getAccessor().getTableTitle(
+								mContext.getRecord());
+						try {
+							mRenderer = RendererFactory.buildCategoryRenderer(
+									mContext.getContext(),
+									getColors(mData.size()));
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
-						pieChart.getBorderPaint().setColor(Color.TRANSPARENT);
-						pieChart.getBackgroundPaint().setColor(
-								Color.TRANSPARENT);
-						mContext.setView2Show(pieChart);
-						return true;
+						mCategorySeries = new CategorySeries(title);
+						T record = null;
+						for (Table table : mData) {
+							record = (T) table;
+							mCategorySeries.add(getName(record),
+									getCount(record));
+						}
+
+						mResult = true;
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
-				return false;
+				return mResult;
+			}
+
+			@Override
+			public View onFinish() {
+				View view = null;
+				if (mResult) {
+					view = ChartFactory.getPieChartView(mContext.getContext(),
+							mCategorySeries, mRenderer);
+				}
+				return view;
 			}
 		});
 		// bar chart
 		mFillers.add(new ViewFiller() {
+			private XYMultipleSeriesRenderer mRenderer = null;
+			private XYMultipleSeriesDataset mDataset = null;
+			private boolean mResult = false;
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public boolean fillView() {
 				if (null != mContext) {
-					BarFormatter formatter = new BarFormatter();
-					formatter.configure(mContext.getContext(),
-							R.xml.bar_formatter);
-					if (fillXYPlot(formatter)) {
-						for (Object renderer : mContext.getXyPlot()
-								.getRendererList()) {
-							if (renderer instanceof BarRenderer<?>) {
-								((BarRenderer<BarFormatter>) renderer)
-										.setBarWidth(10);
-							}
-						}
-						return true;
+					try {
+						loadData();
+						String title = getAccessor().getTableTitle(
+								mContext.getRecord());
+						mRenderer = RendererFactory.buildBarRenderer(
+								mContext.getContext(), Color.BLUE);
+
+						addXTitles(mRenderer, 30);
+
+						mDataset = new XYMultipleSeriesDataset();
+						mDataset.addSeries(getDataset(title));
+
+						mResult = true;
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
-				return false;
+				return mResult;
+			}
+
+			@Override
+			public View onFinish() {
+				View view = null;
+				if (mResult) {
+					view = ChartFactory.getBarChartView(mContext.getContext(),
+							mDataset, mRenderer, Type.DEFAULT);
+				}
+				return view;
 			}
 		});
 		// line chart
 		mFillers.add(new ViewFiller() {
+			private XYMultipleSeriesRenderer mRenderer = null;
+			private XYMultipleSeriesDataset mDataset = null;
+			private boolean mResult = false;
 
 			@Override
 			public boolean fillView() {
 				if (null != mContext) {
-					// format
-					LineAndPointFormatter formatter = new LineAndPointFormatter();
-					formatter.configure(mContext.getContext(),
-							R.xml.line_point_formatter);
-					return fillXYPlot(formatter);
+					try {
+						loadData();
+						String title = getAccessor().getTableTitle(
+								mContext.getRecord());
+						mRenderer = RendererFactory.buildLineRenderer(
+								mContext.getContext(), Color.BLUE);
+
+						addXTitles(mRenderer, 30);
+
+						mDataset = new XYMultipleSeriesDataset();
+						mDataset.addSeries(getDataset(title));
+
+						mResult = true;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-				return false;
+				return mResult;
+			}
+
+			@Override
+			public View onFinish() {
+				View view = null;
+				if (mResult) {
+					view = ChartFactory.getLineChartView(mContext.getContext(),
+							mDataset, mRenderer);
+				}
+				return view;
 			}
 		});
 	}
@@ -146,31 +198,34 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 
 	protected abstract void loadData();
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected boolean fillXYPlot(Formatter<XYPlot> formatter) {
-		loadData();
-		if (null == mData) {
-			return false;
+	@SuppressWarnings("unchecked")
+	protected XYSeries getDataset(String title) {
+		XYSeries dataset = new XYSeries(title);
+		T record = null;
+		int i = 0;
+		for (Table table : mData) {
+			record = (T) table;
+			dataset.add(i, getCount(record));
+			++i;
 		}
-		// fill data
-		XYPlot xyPlot = mContext.getXyPlot();
-		xyPlot.clear();
-		// init data
-		Number[] numbers = new Number[mData.size()];
-		for (int i = 0; i < mData.size(); ++i) {
-			numbers[i] = getCount((T) mData.get(i));
-		}
+		return dataset;
+	}
 
-		xyPlot.setTicksPerRangeLabel(10);
-		xyPlot.setTicksPerDomainLabel(1);
-		xyPlot.setDomainValueFormat(mTitleFormat);
-		XYSeries series = new SimpleXYSeries(Arrays.asList(numbers),
-				SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, getAccessor()
-						.getTableTitle(mContext.getRecord()));
-		xyPlot.setOnTouchListener(new ZoomAndDragListener(series));
-		xyPlot.addSeries(series, (XYSeriesFormatter) formatter);
-		mContext.setView2Show(xyPlot);
-		return true;
+	@SuppressWarnings("unchecked")
+	protected void addXTitles(XYMultipleSeriesRenderer renderer, int skip) {
+		String empty = "";
+		renderer.clearXTextLabels();
+		T record = null;
+		int i = 0;
+		for (Table table : mData) {
+			record = (T) table;
+			if (0 == i % skip) {
+				renderer.addXTextLabel(i, getName(record));
+			} else {
+				renderer.addXTextLabel(i, empty);
+			}
+			++i;
+		}
 	}
 
 }

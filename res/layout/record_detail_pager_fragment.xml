@@ -19,23 +19,15 @@
         android:layout_centerVertical="true"
         android:visibility="gone" />
 
-    <com.androidplot.xy.XYPlot
-        android:id="@+id/record_detail_view_xy_chart"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+    <LinearLayout
+        android:id="@+id/chart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/record_detail_view_graph_type_spinner"
+        android:layout_alignParentTop="true"
         android:layout_margin="10dp"
-        android:visibility="gone" >
-    </com.androidplot.xy.XYPlot>
-
-    <com.androidplot.pie.PieChart
-        android:id="@+id/record_detail_view_pie_chart"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/record_detail_view_graph_type_spinner"
-        android:layout_margin="10dp"
-        android:visibility="gone" >
-    </com.androidplot.pie.PieChart>
+        android:orientation="horizontal"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/record_detail_view_error_image"

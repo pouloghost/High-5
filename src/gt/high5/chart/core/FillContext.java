@@ -3,24 +3,16 @@ package gt.high5.chart.core;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
 import android.content.Context;
-import android.view.View;
-
-import com.androidplot.pie.PieChart;
-import com.androidplot.xy.XYPlot;
 
 public class FillContext {
 	private int mIndex = -1;
 	private Context mContext = null;
 	private Total mTotal = null;
 	private Class<? extends RecordTable> mRecord = null;
-	private XYPlot mXyPlot = null;
-	private PieChart mPieChart = null;
-	private View mView2Show = null;
+	private boolean mSuccess = false;
 
-	public FillContext(int index, XYPlot xyPlot, PieChart pieChart,
-			Context context, Total total, Class<? extends RecordTable> record) {
-		setXyPlot(xyPlot);
-		setPieChart(pieChart);
+	public FillContext(int index, Context context, Total total,
+			Class<? extends RecordTable> record) {
 		setIndex(index);
 		setContext(context);
 		setRecord(record);
@@ -33,30 +25,6 @@ public class FillContext {
 
 	public void setIndex(int mIndex) {
 		this.mIndex = mIndex;
-	}
-
-	public XYPlot getXyPlot() {
-		return mXyPlot;
-	}
-
-	public void setXyPlot(XYPlot mXyPlot) {
-		this.mXyPlot = mXyPlot;
-	}
-
-	public PieChart getPieChart() {
-		return mPieChart;
-	}
-
-	public void setPieChart(PieChart mPieChart) {
-		this.mPieChart = mPieChart;
-	}
-
-	public View getView2Show() {
-		return mView2Show;
-	}
-
-	public void setView2Show(View mView2Show) {
-		this.mView2Show = mView2Show;
 	}
 
 	public Context getContext() {
@@ -81,6 +49,14 @@ public class FillContext {
 
 	public void setRecord(Class<? extends RecordTable> mRecord) {
 		this.mRecord = mRecord;
+	}
+
+	public boolean isSuccess() {
+		return mSuccess;
+	}
+
+	public void setSuccess(boolean mSuccess) {
+		this.mSuccess = mSuccess;
 	}
 
 }

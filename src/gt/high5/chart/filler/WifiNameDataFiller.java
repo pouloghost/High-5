@@ -9,7 +9,7 @@ public class WifiNameDataFiller extends SimpleDataFiller<WifiName> {
 
 	@Override
 	protected String getName(WifiName record) {
-		return record.getBssid() + ":" + getCount(record);
+		return record.getBssid();
 	}
 
 	@Override

@@ -2,20 +2,11 @@ package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
-import gt.high5.chart.core.ZoomAndDragListener;
 import gt.high5.database.table.Total;
 import gt.high5.database.table.WeekDay;
 
-import java.text.FieldPosition;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
-import java.util.Arrays;
-
-import com.androidplot.ui.Formatter;
-import com.androidplot.xy.SimpleXYSeries;
-import com.androidplot.xy.XYPlot;
-import com.androidplot.xy.XYSeries;
-import com.androidplot.xy.XYSeriesFormatter;
+import org.achartengine.model.XYSeries;
+import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
 public class WeekDayDataFiller extends SimpleDataFiller<WeekDay> {
 
@@ -24,7 +15,7 @@ public class WeekDayDataFiller extends SimpleDataFiller<WeekDay> {
 
 	@Override
 	protected String getName(WeekDay record) {
-		return DAY2TITLE[record.getDay()] + ":" + getCount(record);
+		return DAY2TITLE[record.getDay()];
 	}
 
 	@Override
@@ -52,69 +43,45 @@ public class WeekDayDataFiller extends SimpleDataFiller<WeekDay> {
 				R.string.record_detail_spinner_line };
 	}
 
-	@Override
-	protected boolean fillXYPlot(Formatter<XYPlot> formatter) {
+	protected XYSeries getDataset(String title) {
 		loadData();
-		if (null == mData) {
-			return false;
-		}
-		// fill data
-		XYPlot xyPlot = mContext.getXyPlot();
-		xyPlot.clear();
-		// init data
-		Number[] numbers = new Number[DAY2TITLE.length];
-		// i for all the labels
-		// j for record in db
+		XYSeries dataset = new XYSeries(title);
 		int i, j;
-		WeekDay weekDay = null;
+		WeekDay record = null;
 		for (i = 0, j = 0; i < DAY2TITLE.length; ++i) {
 			if (j < mData.size()) {
-				weekDay = (WeekDay) mData.get(j);
+				record = (WeekDay) mData.get(j);
 			}
-			if (i == weekDay.getDay()) {
-				numbers[i] = weekDay.getCount();
+			if (i == record.getDay()) {
+				dataset.add(i, record.getCount());
 				++j;
 			} else {
-				numbers[i] = 0;
+				dataset.add(i, 0);
 			}
 		}
-
-		xyPlot.setTicksPerRangeLabel(10);
-		xyPlot.setTicksPerDomainLabel(1);
-		xyPlot.setDomainValueFormat(new NumberFormat() {
-
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Number parse(String arg0, ParsePosition arg1) {
-				throw new UnsupportedOperationException("Not yet implemented.");
-			}
-
-			@Override
-			public StringBuffer format(long arg0, StringBuffer arg1,
-					FieldPosition arg2) {
-				throw new UnsupportedOperationException("Not yet implemented.");
-			}
-
-			@Override
-			public StringBuffer format(double value, StringBuffer buffer,
-					FieldPosition field) {
-				int index = (int) value;
-				index = index < DAY2TITLE.length ? index : DAY2TITLE.length;
-				return new StringBuffer(DAY2TITLE[index]);
-			}
-		});
-		XYSeries series = new SimpleXYSeries(Arrays.asList(numbers),
-				SimpleXYSeries.ArrayFormat.Y_VALS_ONLY,
-				mAccessor.getTableTitle(mContext.getRecord()));
-		xyPlot.setOnTouchListener(new ZoomAndDragListener(series));
-		xyPlot.addSeries(series, (XYSeriesFormatter<?>) formatter);
-
-		mContext.setView2Show(xyPlot);
-
-		return true;
+		return dataset;
 	}
+
+	protected void addXTitles(XYMultipleSeriesRenderer renderer, int skip) {
+		String empty = "";
+		renderer.clearXTextLabels();
+		int last = -skip - 1;
+		int i, j;
+		WeekDay record = null;
+		for (i = 0, j = 0; i < DAY2TITLE.length; ++i) {
+			if (j < mData.size()) {
+				record = (WeekDay) mData.get(j);
+			}
+			String title = empty;
+			if (i == record.getDay()) {
+				if (i - last > skip) {
+					title = getName(record);
+					last = i;
+				}
+				++j;
+			}
+			renderer.addXTextLabel(i, title);
+		}
+	}
+
 }
