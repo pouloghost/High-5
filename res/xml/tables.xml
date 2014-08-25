@@ -3,6 +3,7 @@
     file="statics.db"
     filler_pack="gt.high5.chart.filler"
     model_pack="gt.high5.database.table"
+    predictor="gt.high5.core.predictor.NaiveBayesPredictor"
     version="2" >
 
     <table

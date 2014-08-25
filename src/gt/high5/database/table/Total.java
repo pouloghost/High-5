@@ -190,34 +190,15 @@ public class Total extends RecordTable implements Parcelable {
 		return possibility;
 	}
 
-	/**
-	 * set P(Status|CurrentApp) or P(Current)
-	 * 
-	 * naive bayes
-	 * 
-	 * @param count
-	 *            other status count
-	 * 
-	 * @param isAll
-	 *            is setting P(Current)
-	 */
-	public void setPossibility(int count, boolean isAll) {
-		if (isAll) {
-			this.possibility *= (float) this.count / count;
-		} else {
-			this.possibility *= (float) count / this.count;
-		}
-	}
-
 	public void setPossibility(float possibility) {
-		this.possibility *= possibility;
+		this.possibility = possibility;
 	}
 
 	/**
 	 * comparator for sorting total to get high 5
 	 */
 	private static Comparator<Table> comparator = new Comparator<Table>() {
-	
+
 		@Override
 		public int compare(Table arg0, Table arg1) {
 			float p0 = ((Total) arg0).getPossibility();

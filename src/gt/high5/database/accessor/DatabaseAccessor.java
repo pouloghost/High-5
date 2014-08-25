@@ -1,6 +1,7 @@
 package gt.high5.database.accessor;
 
 import gt.high5.chart.core.DataFiller;
+import gt.high5.core.predictor.Predictor;
 import gt.high5.database.model.ClassUtils;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
@@ -139,6 +140,15 @@ public class DatabaseAccessor {
 			NoSuchMethodException {
 		return (DataFiller) mTableParser.getInfo(clazz).getFiller()
 				.getDeclaredConstructor().newInstance();
+	}
+
+	/**
+	 * get predictor defined in xml
+	 * 
+	 * @return
+	 */
+	public Predictor getPredictor() {
+		return mTableParser.getPredictor();
 	}
 
 	/**
