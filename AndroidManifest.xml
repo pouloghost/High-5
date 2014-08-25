@@ -1,11 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="gt.high5"
     android:versionCode="1"
-    android:versionName="1.0" xmlns:tools="http://schemas.android.com/tools">
+    android:versionName="1.0" >
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="19" tools:ignore="OldTargetApi"/>
+        android:targetSdkVersion="19"
+        tools:ignore="OldTargetApi" />
 
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -13,7 +15,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!--
     need to move to system/app to gain this permission  <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
-    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />    -->
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
+    -->
     <application
         android:name=".High5Application"
         android:allowBackup="true"
@@ -50,9 +53,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_setting" />
         </receiver>
-        <receiver
-            android:name="gt.high5.activity.SystemBroadcastReceiver"
-            android:process=":system" >
+        <receiver android:name="gt.high5.activity.SystemBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.PACKAGE_RESTARTED" />

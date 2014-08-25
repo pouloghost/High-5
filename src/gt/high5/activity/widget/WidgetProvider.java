@@ -61,6 +61,8 @@ public class WidgetProvider extends AppWidgetProvider {
 		// shut down all recording service
 		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
 				.cancel(getUpdateIntent(context, null));
+		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
+				.cancel(getRecordIntent(context));
 	}
 
 	@Override
