@@ -5,6 +5,7 @@ import gt.high5.database.table.Time;
 
 import java.util.Set;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -21,6 +22,8 @@ public class SettingsFragment extends PreferenceFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings);
+		getPreferenceManager().setSharedPreferencesMode(
+				Context.MODE_MULTI_PROCESS);
 		getPreferenceManager()
 				.getSharedPreferences()
 				.registerOnSharedPreferenceChangeListener(
