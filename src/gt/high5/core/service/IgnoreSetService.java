@@ -28,19 +28,24 @@ public class IgnoreSetService {
 
 	private DatabaseAccessor mAccessor = null;
 	// singleton
-	private static IgnoreSetService instance = null;
+	private static IgnoreSetService mInstance = null;
 
 	private IgnoreSetService(Context context) {
 		if (null == mAccessor) {
-			mAccessor = DatabaseAccessor.getAccessor(context, R.xml.tables);
+			synchronized (IgnoreSetService.class) {
+				if (null == mAccessor) {
+					mAccessor = DatabaseAccessor.getAccessor(context,
+							R.xml.tables);
+				}
+			}
 		}
 	}
 
 	public static IgnoreSetService getIgnoreSetService(Context context) {
-		if (null == instance) {
-			instance = new IgnoreSetService(context);
+		if (null == mInstance) {
+			mInstance = new IgnoreSetService(context);
 		}
-		return instance;
+		return mInstance;
 	}
 
 	/**

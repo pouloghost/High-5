@@ -6,13 +6,17 @@ import android.preference.PreferenceManager;
 
 public class PreferenceReadService {
 
-	private static PreferenceReadService instance = null;
+	private static PreferenceReadService mInstance = null;
 
 	public static PreferenceReadService getPreferenceReadService(Context context) {
-		if (null == instance) {
-			instance = new PreferenceReadService(context);
+		if (null == mInstance) {
+			synchronized (PreferenceReadService.class) {
+				if (null == mInstance) {
+					mInstance = new PreferenceReadService(context);
+				}
+			}
 		}
-		return instance;
+		return mInstance;
 	}
 
 	private volatile SharedPreferences mPreferences = null;

@@ -29,7 +29,7 @@ public class RecordService {
 	private PackageProvider mPackageProvider = null;
 
 	// singleton
-	private static RecordService instance = null;
+	private static RecordService mInstance = null;
 
 	private RecordService(Context context) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException, NotFoundException,
@@ -44,10 +44,14 @@ public class RecordService {
 			throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, NotFoundException, XmlPullParserException,
 			IOException {
-		if (null == instance) {
-			instance = new RecordService(context);
+		if (null == mInstance) {
+			synchronized (RecordContext.class) {
+				if (null == mInstance) {
+					mInstance = new RecordService(context);
+				}
+			}
 		}
-		return instance;
+		return mInstance;
 	}
 
 	public PackageProvider getPackageProvider() {

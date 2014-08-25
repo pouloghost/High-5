@@ -21,7 +21,7 @@ public class ReadService {
 
 	private static float MIN_POSSIBILITY = 1E-3f;
 	// singleton
-	private static ReadService instance = null;
+	private static ReadService mInstance = null;
 
 	private DatabaseAccessor mAccessor = null;
 
@@ -32,10 +32,14 @@ public class ReadService {
 	}
 
 	public static ReadService getReadService(Context context) {
-		if (null == instance) {
-			instance = new ReadService(context);
+		if (null == mInstance) {
+			synchronized (ReadService.class) {
+				if (null == mInstance) {
+					mInstance = new ReadService(context);
+				}
+			}
 		}
-		return instance;
+		return mInstance;
 	}
 
 	/**

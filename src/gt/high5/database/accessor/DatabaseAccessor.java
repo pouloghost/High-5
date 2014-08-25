@@ -76,12 +76,17 @@ public class DatabaseAccessor {
 		SoftReference<DatabaseAccessor> reference = accessorCache.get(id);
 		DatabaseAccessor accessor = null;
 		if (null == reference) {
-			if (null != context && null != parser) {
-				accessor = new DatabaseAccessor(context, parser);
-				reference = new SoftReference<DatabaseAccessor>(accessor);
-			} else {
-				// null if not enough params in
-				reference = new SoftReference<DatabaseAccessor>(null);
+			synchronized (DatabaseAccessor.class) {
+				if (null == reference) {
+					if (null != context && null != parser) {
+						accessor = new DatabaseAccessor(context, parser);
+						reference = new SoftReference<DatabaseAccessor>(
+								accessor);
+					} else {
+						// null if not enough params in
+						reference = new SoftReference<DatabaseAccessor>(null);
+					}
+				}
 			}
 		}
 		accessor = reference.get();
