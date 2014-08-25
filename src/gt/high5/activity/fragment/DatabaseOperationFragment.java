@@ -1,6 +1,7 @@
 package gt.high5.activity.fragment;
 
 import gt.high5.R;
+import gt.high5.core.service.IgnoreSetService;
 import gt.high5.database.accessor.DatabaseAccessor;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -24,6 +25,13 @@ public class DatabaseOperationFragment extends Fragment {
 		}
 
 		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			mDialog.show();
+			mDialog.setCancelable(false);
+		}
+
+		@Override
 		protected Void doInBackground(Runnable... runnables) {
 			runnables[0].run();
 			return null;
@@ -33,13 +41,6 @@ public class DatabaseOperationFragment extends Fragment {
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 			mDialog.dismiss();
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			mDialog.show();
-			mDialog.setCancelable(false);
 		}
 
 	}
@@ -57,7 +58,7 @@ public class DatabaseOperationFragment extends Fragment {
 				false);
 		((Button) root.findViewById(R.id.db_backup_button))
 				.setOnClickListener(new View.OnClickListener() {
-	
+
 					@Override
 					public void onClick(View v) {
 						backup(getActivity());
@@ -65,7 +66,7 @@ public class DatabaseOperationFragment extends Fragment {
 				});
 		((Button) root.findViewById(R.id.db_restore_button))
 				.setOnClickListener(new View.OnClickListener() {
-	
+
 					@Override
 					public void onClick(View v) {
 						restore(getActivity());
@@ -73,7 +74,7 @@ public class DatabaseOperationFragment extends Fragment {
 				});
 		((Button) root.findViewById(R.id.db_clean_button))
 				.setOnClickListener(new View.OnClickListener() {
-	
+
 					@Override
 					public void onClick(View v) {
 						clean(getActivity());
@@ -120,6 +121,8 @@ public class DatabaseOperationFragment extends Fragment {
 										Toast.LENGTH_SHORT).show();
 							}
 						}
+						IgnoreSetService.getIgnoreSetService(context)
+								.initDefault(context);
 					}
 				} });
 	}

@@ -103,11 +103,16 @@ public class IgnoreSetService {
 
 	/**
 	 * init default ignore set
-	 * @param context application context
+	 * 
+	 * @param context
+	 *            application context
 	 * @return whether default is initialized
 	 */
 	public boolean initDefault(Context context) {
 		try {
+			if (null != mIgnoreSet) {
+				mIgnoreSet.clear();
+			}
 			FilterParser parser = new FilterParser(context.getResources()
 					.getXml(R.xml.filters));
 			ArrayList<Filter> filters = parser.getFilters();
