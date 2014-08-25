@@ -23,6 +23,11 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_category_debug" >
         <CheckBoxPreference
+            android:key="log_to_file"
+            android:summaryOff="@string/settings_log_to_console"
+            android:summaryOn="@string/settings_log_to_file"
+            android:title="Log To File" />
+        <CheckBoxPreference
             android:key="ReadService"
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"

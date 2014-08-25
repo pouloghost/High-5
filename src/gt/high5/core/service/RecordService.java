@@ -113,7 +113,7 @@ public class RecordService {
 	private void recordPackage(Context context, String packageName, int count) {
 		if (null != packageName) {
 			LogService.d(RecordService.class, "current package " + packageName,
-					context);
+					context.getApplicationContext());
 
 			RecordContext recordContext = new RecordContext(context, this, null);
 			// read total with current package name
@@ -131,7 +131,7 @@ public class RecordService {
 				total = (Total) list.get(0);
 
 				LogService.d(RecordService.class, "total " + total.getName(),
-						context);
+						context.getApplicationContext());
 
 				recordContext.setTotal(total);
 				// each type of record
@@ -160,7 +160,8 @@ public class RecordService {
 									// this
 									// app, create one record
 					LogService.d(RecordService.class, "create new "
-							+ table.getClass().getSimpleName(), context);
+							+ table.getClass().getSimpleName(),
+							context.getApplicationContext());
 
 					if (table.initDefault(recordContext)) {
 						table.setPid(total.getId());
@@ -169,7 +170,8 @@ public class RecordService {
 				} else {// existing condition just update
 
 					LogService.d(RecordService.class, "increase old "
-							+ table.getClass().getSimpleName(), context);
+							+ table.getClass().getSimpleName(),
+							context.getApplicationContext());
 
 					table = (RecordTable) list.get(0);
 					RecordTable select = table.clone();

@@ -15,29 +15,32 @@ public class PreferenceReadService {
 		return instance;
 	}
 
-	private SharedPreferences preferences = null;
+	private volatile SharedPreferences mPreferences = null;
 
 	private PreferenceReadService(Context context) {
-		preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 
 	public int getUpdateInterval() {
-		return Integer.parseInt(preferences.getString("update_interval",
+		return Integer.parseInt(mPreferences.getString("update_interval",
 				"600000"));
 	}
 
 	public int getRecordInterval() {
-		return Integer.parseInt(preferences.getString("record_interval",
+		return Integer.parseInt(mPreferences.getString("record_interval",
 				"600000"));
 	}
 
 	public int getRegionLength() {
-		return Integer.parseInt(preferences.getString("region_length", "15"));
+		return Integer.parseInt(mPreferences.getString("region_length", "15"));
 	}
 
 	public boolean shouldLog(Class<?> clazz) {
 		String key = clazz.getSimpleName();
-		return preferences.getBoolean(key, false);
+		return mPreferences.getBoolean(key, false);
 	}
 
+	public boolean shouldLogToFile() {
+		return mPreferences.getBoolean("log_to_file", false);
+	}
 }

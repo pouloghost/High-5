@@ -29,8 +29,10 @@
     <string name="settings_update_default">600000</string>
     <string name="settings_record_default">600000</string>
     <string name="settings_region_default">15</string>
-    <string name="settings_log_on">Log to file</string>
+    <string name="settings_log_on">Log on</string>
     <string name="settings_log_off">Log off</string>
+    <string name="settings_log_to_console">Log to console</string>
+    <string name="settings_log_to_file">Log to file</string>
     <!-- detail chart -->
     <string name="total_detail_count_hint">Count:</string>
     <string name="record_detail_spinner_pie">Pie</string>

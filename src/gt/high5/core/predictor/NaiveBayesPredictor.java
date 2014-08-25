@@ -92,6 +92,7 @@ public class NaiveBayesPredictor implements Predictor {
 		total.setPossibility(possibility);
 		possibilityLog.append("possibility:");
 		possibilityLog.append(total.getPossibility());
-		LogService.d(ReadService.class, possibilityLog.toString(), context);
+		LogService.d(ReadService.class, possibilityLog.toString(),
+				context.getApplicationContext());
 	}
 }

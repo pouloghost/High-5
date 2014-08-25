@@ -56,7 +56,8 @@ public class WidgetProvider extends AppWidgetProvider {
 
 		super.onDisabled(context);
 
-		LogService.d(WidgetProvider.class, "disable", context);
+		LogService.d(WidgetProvider.class, "disable",
+				context.getApplicationContext());
 
 		// shut down all recording service
 		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
@@ -69,7 +70,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onReceive(Context context, Intent intent) {
 
 		LogService.d(WidgetProvider.class, "recieved " + intent.getAction(),
-				context);
+				context.getApplicationContext());
 
 		if (LAUNCH_ACT.equalsIgnoreCase(intent.getAction())) {
 			String packageName = intent.getStringExtra(LAUNCH_PACKAGE);
@@ -103,14 +104,19 @@ public class WidgetProvider extends AppWidgetProvider {
 		appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
 				R.id.launcher);
 		// start update interval
-		startInterval(context,
-				PreferenceReadService.getPreferenceReadService(context)
-						.getUpdateInterval(),
+		startInterval(
+				context,
+				PreferenceReadService.getPreferenceReadService(
+						context.getApplicationContext()).getUpdateInterval(),
 				getUpdateIntent(context, appWidgetIds));
 
-		LogService.d(WidgetProvider.class, "update "
-				+ PreferenceReadService.getPreferenceReadService(context)
-						.getUpdateInterval(), context);
+		LogService.d(
+				WidgetProvider.class,
+				"update "
+						+ PreferenceReadService.getPreferenceReadService(
+								context.getApplicationContext())
+								.getUpdateInterval(), context
+						.getApplicationContext());
 
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
 	}
@@ -121,12 +127,16 @@ public class WidgetProvider extends AppWidgetProvider {
 	 * @param context
 	 */
 	public static void restartUpdateAndRecord(Context context) {
-		startInterval(context,
-				PreferenceReadService.getPreferenceReadService(context)
-						.getUpdateInterval(), getUpdateIntent(context, null));
-		startInterval(context,
-				PreferenceReadService.getPreferenceReadService(context)
-						.getRecordInterval(), getRecordIntent(context));
+		startInterval(
+				context,
+				PreferenceReadService.getPreferenceReadService(
+						context.getApplicationContext()).getUpdateInterval(),
+				getUpdateIntent(context, null));
+		startInterval(
+				context,
+				PreferenceReadService.getPreferenceReadService(
+						context.getApplicationContext()).getRecordInterval(),
+				getRecordIntent(context));
 	}
 
 	/**
@@ -137,9 +147,11 @@ public class WidgetProvider extends AppWidgetProvider {
 	public static void forceRefresh(Context context) {
 		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
 				.cancel(getUpdateIntent(context, null));
-		startInterval(context,
-				PreferenceReadService.getPreferenceReadService(context)
-						.getUpdateInterval(), getUpdateIntent(context, null));
+		startInterval(
+				context,
+				PreferenceReadService.getPreferenceReadService(
+						context.getApplicationContext()).getUpdateInterval(),
+				getUpdateIntent(context, null));
 	}
 
 	private static void startInterval(Context context, int interval,
@@ -180,12 +192,16 @@ public class WidgetProvider extends AppWidgetProvider {
 			RecordService.getRecordService(context).record(context);
 
 			startInterval(context, PreferenceReadService
-					.getPreferenceReadService(context).getRecordInterval(),
-					getRecordIntent(context));
+					.getPreferenceReadService(context.getApplicationContext())
+					.getRecordInterval(), getRecordIntent(context));
 
-			LogService.d(WidgetProvider.class, "record "
-					+ PreferenceReadService.getPreferenceReadService(context)
-							.getRecordInterval(), context);
+			LogService.d(
+					WidgetProvider.class,
+					"record "
+							+ PreferenceReadService.getPreferenceReadService(
+									context.getApplicationContext())
+									.getRecordInterval(), context
+							.getApplicationContext());
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

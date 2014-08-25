@@ -68,7 +68,8 @@ public class ReadService {
 					sortLog.append(((Total) total).getPossibility());
 					sortLog.append("\t");
 				}
-				LogService.d(ReadService.class, sortLog.toString(), context);
+				LogService.d(ReadService.class, sortLog.toString(),
+						context.getApplicationContext());
 
 				HashSet<String> ignoredSet = IgnoreSetService
 						.getIgnoreSetService(context).getIgnoreSet(mAccessor);
@@ -88,7 +89,8 @@ public class ReadService {
 				}
 			}
 		} else {
-			LogService.d(ReadService.class, "data accessor is null", context);
+			LogService.d(ReadService.class, "data accessor is null",
+					context.getApplicationContext());
 		}
 		return last;
 	}

@@ -27,8 +27,8 @@ public class SystemBroadcastReceiver extends BroadcastReceiver {
 				|| Intent.ACTION_PACKAGE_RESTARTED.equalsIgnoreCase(intent
 						.getAction())) {
 			// task manager killed broadcast.
-			LogService.d(SystemBroadcastReceiver.class, "killed in task manager",
-					context);
+			LogService.d(SystemBroadcastReceiver.class,
+					"killed in task manager", context.getApplicationContext());
 			WidgetProvider.restartUpdateAndRecord(context);
 		} else if (Intent.ACTION_PACKAGE_REMOVED.equalsIgnoreCase(intent
 				.getAction())) {
@@ -37,7 +37,8 @@ public class SystemBroadcastReceiver extends BroadcastReceiver {
 				// remove all records
 				String name = intent.getData().getSchemeSpecificPart();
 				LogService.d(SystemBroadcastReceiver.class,
-						"uninstalling package:" + name, context);
+						"uninstalling package:" + name,
+						context.getApplicationContext());
 				try {
 					RecordService.getRecordService(context).removeRecords(name,
 							context);
