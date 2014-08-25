@@ -38,7 +38,7 @@ public class SettingsFragment extends PreferenceFragment {
 									pref.setSummary(((ListPreference) pref)
 											.getEntry());
 									try {
-										getListView().invalidate();
+										getListView().invalidateViews();
 									} catch (Exception e) {
 										e.printStackTrace();
 									}
