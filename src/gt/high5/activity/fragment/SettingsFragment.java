@@ -37,6 +37,11 @@ public class SettingsFragment extends PreferenceFragment {
 								if ((pref = findPreference(key)) instanceof ListPreference) {
 									pref.setSummary(((ListPreference) pref)
 											.getEntry());
+									try {
+										getListView().invalidate();
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
 								}
 							}
 						});
