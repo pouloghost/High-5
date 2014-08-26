@@ -43,5 +43,6 @@ accessed via orm objects, class<? extends Table>.
 ###Special thanks to the open source libraries:###
 ---------
   * [android-xlog, log to file](https://github.com/curioustechizen/android-xlog)
-  * [android plot, chart library](http://androidplot.com/)
+  * [android plot, chart library](http://androidplot.com/) for branch androidplot
+  * [achartengine, chart library](http://achartengine.org/) for branch achartengine, this is significently more robust than androidplot.
   * [v4 compatible preference fragment](https://github.com/kolavar/android-support-v4-preferencefragment)
