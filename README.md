@@ -9,7 +9,7 @@ Functions are:
 * Show app usage data in charts
 * Configure ignores and logs
 
-High-5 uses naive bayes classifier to identify which app is more likely to be used. All static features 
+High-5 uses changeable predictor to identify which app is more likely to be used. All static features 
 are configurable via tables.xml. Each feature is stored and represented by a table in sqlite. All data 
 accessed via orm objects, class<? extends Table>.
 
@@ -31,6 +31,7 @@ accessed via orm objects, class<? extends Table>.
     a subclass of PackageProvider and add an object to the PackageProvider.priority array(the first 
     available one will be used).
   * gt.high5.core.service: Reader and Writers for db file and preference.
+  * gt.high5.core.predictor: Strategy used to predict based on database
 * gt.high5.database: Database interface, ORM utils
   * gt.high5.database.accessor: Overall database accessors for changing data in database.
   * gt.high5.database.filter: For initializing default package filters to init ignore set. Can be extended
