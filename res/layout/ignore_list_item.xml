@@ -44,6 +44,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:background="@android:color/transparent"
+        android:drawableBottom="@drawable/toggle_button"
+        android:textColor="@android:color/secondary_text_light_nodisable"
         android:textOff="@string/ignore_toggle_off"
         android:textOn="@string/ignore_toggle_on" />
 
