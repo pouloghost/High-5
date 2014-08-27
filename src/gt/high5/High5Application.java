@@ -36,8 +36,8 @@ public class High5Application extends Application {
 					.putBoolean(
 							key,
 							IgnoreSetService.getIgnoreSetService(
-									getApplicationContext()).initDefault(
-									getApplicationContext())).commit();
+									getApplicationContext()).initDefault())
+					.commit();
 		}
 	}
 

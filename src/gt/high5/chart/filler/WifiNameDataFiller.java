@@ -2,6 +2,7 @@ package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
+import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.table.Total;
 import gt.high5.database.table.WifiName;
 
@@ -23,9 +24,9 @@ public class WifiNameDataFiller extends SimpleDataFiller<WifiName> {
 			Total total = mContext.getTotal();
 			WifiName query = new WifiName();
 			query.setPid(total.getId());
-			getAccessor();
-			if (null != mAccessor) {
-				mData = mAccessor.R(query);
+			DatabaseAccessor accessor = getAccessor();
+			if (null != accessor) {
+				mData = accessor.R(query);
 			}
 		}
 	}

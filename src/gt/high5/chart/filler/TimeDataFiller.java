@@ -48,7 +48,6 @@ public class TimeDataFiller extends DataFiller {
 			"21:15-21:30", "21:30-21:45", "21:45-22:00", "22:00-22:15",
 			"22:15-22:30", "22:30-22:45", "22:45-23:00", "23:00-23:15",
 			"23:15-23:30", "23:30-23:45", "23:45-24:00", };
-	private DatabaseAccessor mAccessor = null;
 	private ArrayList<Table> mData = null;
 
 	@Override
@@ -171,15 +170,10 @@ public class TimeDataFiller extends DataFiller {
 	}
 
 	public DatabaseAccessor getAccessor() {
-		if (null != mContext && null == mAccessor) {
-			mAccessor = DatabaseAccessor.getAccessor(mContext.getContext(),
-					R.xml.tables);
+		if (null != mContext) {
+			return DatabaseAccessor.getAccessor(mContext.getContext(), XML_ID);
 		}
-		return mAccessor;
-	}
-
-	public void setAccessor(DatabaseAccessor mAccessor) {
-		this.mAccessor = mAccessor;
+		return null;
 	}
 
 	@Override

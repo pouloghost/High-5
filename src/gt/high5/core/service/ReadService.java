@@ -18,17 +18,18 @@ import android.content.Context;
  *         service for read records without specified type
  */
 public class ReadService {
+	private static int XML_ID = R.xml.tables;
 
 	private static float MIN_POSSIBILITY = 1E-3f;
 	// singleton
 	private static ReadService mInstance = null;
 
-	private DatabaseAccessor mAccessor = null;
+	private Context mContext = null;
+
+	// private DatabaseAccessor mAccessor = null;
 
 	private ReadService(Context context) {
-		if (null == mAccessor) {
-			mAccessor = DatabaseAccessor.getAccessor(context, R.xml.tables);
-		}
+		mContext = context;
 	}
 
 	public static ReadService getReadService(Context context) {
@@ -53,14 +54,15 @@ public class ReadService {
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	public ArrayList<String> getHigh5(Context context, ArrayList<String> last)
+	public ArrayList<String> getHigh5(ArrayList<String> last)
 			throws InstantiationException, IllegalAccessException {
-
-		if (null != mAccessor) {
+		DatabaseAccessor accessor = DatabaseAccessor.getAccessor(mContext,
+				XML_ID);
+		if (null != accessor) {
 			last.clear();
-			PredictContext predictContext = new PredictContext(mAccessor,
-					context);
-			ArrayList<Table> allTotals = mAccessor.getPredictor()
+			PredictContext predictContext = new PredictContext(accessor,
+					mContext);
+			ArrayList<Table> allTotals = accessor.getPredictor()
 					.predictPossibility(predictContext);
 			if (null != allTotals) {
 				Collections.sort(allTotals, Total.getComparator());
@@ -73,10 +75,10 @@ public class ReadService {
 					sortLog.append("\t");
 				}
 				LogService.d(ReadService.class, sortLog.toString(),
-						context.getApplicationContext());
+						mContext.getApplicationContext());
 
 				HashSet<String> ignoredSet = IgnoreSetService
-						.getIgnoreSetService(context).getIgnoreSet(mAccessor);
+						.getIgnoreSetService(mContext).getIgnoreSet(accessor);
 
 				int listSize = allTotals.size();
 				int size = Math.min(5, listSize);
@@ -94,7 +96,7 @@ public class ReadService {
 			}
 		} else {
 			LogService.d(ReadService.class, "data accessor is null",
-					context.getApplicationContext());
+					mContext.getApplicationContext());
 		}
 		return last;
 	}

@@ -1,6 +1,5 @@
 package gt.high5.chart.core;
 
-import gt.high5.R;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.Table;
 
@@ -21,8 +20,7 @@ import android.graphics.Color;
 import android.view.View;
 
 public abstract class SimpleDataFiller<T> extends DataFiller {
-
-	protected DatabaseAccessor mAccessor = null;
+	// protected DatabaseAccessor mAccessor = null;
 	protected ArrayList<Table> mData = null;
 
 	protected NumberFormat mTitleFormat = new NumberFormat() {
@@ -181,15 +179,10 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 	}
 
 	public DatabaseAccessor getAccessor() {
-		if (null != mContext && null == mAccessor) {
-			mAccessor = DatabaseAccessor.getAccessor(mContext.getContext(),
-					R.xml.tables);
+		if (null != mContext) {
+			return DatabaseAccessor.getAccessor(mContext.getContext(), XML_ID);
 		}
-		return mAccessor;
-	}
-
-	public void setAccessor(DatabaseAccessor mAccessor) {
-		this.mAccessor = mAccessor;
+		return null;
 	}
 
 	protected abstract String getName(T record);

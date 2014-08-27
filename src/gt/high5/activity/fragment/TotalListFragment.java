@@ -31,6 +31,8 @@ public class TotalListFragment extends Fragment {
 		ICON, PACKAGE, NAME
 	}
 
+	private static int XML_ID = R.xml.tables;
+
 	private ListView mTotalList = null;
 	private SimpleAdapter mAdapter = null;
 	private ArrayList<HashMap<String, Object>> mDataList = null;
@@ -40,7 +42,7 @@ public class TotalListFragment extends Fragment {
 
 	private PackageManager mPackageManager = null;
 
-	private DatabaseAccessor mAccessor = null;
+	// private DatabaseAccessor mAccessor = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -77,31 +79,29 @@ public class TotalListFragment extends Fragment {
 	 */
 	class LoadDataTask extends
 			AsyncTask<Void, Integer, ArrayList<HashMap<String, Object>>> {
-	
+
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 			mDialog = new ProgressDialog(getActivity());
 			mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-	
+
 				@Override
 				public void onCancel(DialogInterface dialog) {
 					LoadDataTask.this.cancel(true);
 				}
 			});
 			mDialog.show();
-	
-			mAccessor = DatabaseAccessor.getAccessor(getActivity()
-					.getApplicationContext(), R.xml.tables);
+
 			mPackageManager = getActivity().getPackageManager();
 		}
-	
+
 		@Override
 		protected ArrayList<HashMap<String, Object>> doInBackground(
 				Void... params) {
 			return loadData();
 		}
-	
+
 		@Override
 		protected void onPostExecute(ArrayList<HashMap<String, Object>> result) {
 			super.onPostExecute(result);
@@ -120,7 +120,8 @@ public class TotalListFragment extends Fragment {
 	private ArrayList<HashMap<String, Object>> loadData() {
 		// load all records
 		Total query = new Total();
-		ArrayList<Table> totals = mAccessor.R(query);
+		ArrayList<Table> totals = DatabaseAccessor.getAccessor(
+				getActivity().getApplicationContext(), XML_ID).R(query);
 
 		mDataList = new ArrayList<HashMap<String, Object>>();
 		if (null != totals) {

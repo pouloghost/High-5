@@ -3,6 +3,7 @@ package gt.high5.activity.fragment;
 import gt.high5.R;
 import gt.high5.activity.CancelableTask;
 import gt.high5.database.accessor.DatabaseAccessor;
+import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
 import android.os.Bundle;
@@ -62,15 +63,18 @@ public class RecordDetailFragment extends Fragment implements CancelableTask {
 	class ChartFragmentAdapter extends FragmentPagerAdapter {
 
 		private Class<? extends RecordTable>[] mRecords = null;
-		private DatabaseAccessor mAccessor = null;
+
+		// private DatabaseAccessor mAccessor = null;
+		private TableParser mParser = null;
 
 		@SuppressWarnings("unchecked")
 		public ChartFragmentAdapter(FragmentManager fm) {
 			super(fm);
 
-			mAccessor = DatabaseAccessor.getAccessor(getActivity()
-					.getApplicationContext(), R.xml.tables);
-			Class<? extends RecordTable>[] tables = mAccessor.getTables();
+			DatabaseAccessor accessor = DatabaseAccessor.getAccessor(
+					getActivity().getApplicationContext(), R.xml.tables);
+			mParser = accessor.getTableParser();
+			Class<? extends RecordTable>[] tables = accessor.getTables();
 			mRecords = new Class[tables.length];
 			for (int i = 0; i < tables.length - 1; ++i) {
 				if (Total.class == tables[i]) {// delete total
@@ -117,7 +121,7 @@ public class RecordDetailFragment extends Fragment implements CancelableTask {
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			return mAccessor.getTableTitle(mRecords[position]);
+			return mParser.getTableTitle(mRecords[position]);
 		}
 
 	}

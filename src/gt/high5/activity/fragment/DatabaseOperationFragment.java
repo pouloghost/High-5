@@ -1,6 +1,7 @@
 package gt.high5.activity.fragment;
 
 import gt.high5.R;
+import gt.high5.core.provider.PackageProvider;
 import gt.high5.core.service.IgnoreSetService;
 import gt.high5.database.accessor.DatabaseAccessor;
 import android.annotation.SuppressLint;
@@ -107,13 +108,12 @@ public class DatabaseOperationFragment extends Fragment {
 	private void clean(final Context context) {
 		new AsyncTaskWithProgress(context)
 				.execute(new Runnable[] { new Runnable() {
-
 					@Override
 					public void run() {
 						for (int id : dbs) {
 							try {
 								DatabaseAccessor.getAccessor(context, id)
-										.clean();
+										.clean(context);
 							} catch (Exception e) {
 								e.printStackTrace();
 								Toast.makeText(context,
@@ -122,7 +122,8 @@ public class DatabaseOperationFragment extends Fragment {
 							}
 						}
 						IgnoreSetService.getIgnoreSetService(context)
-								.initDefault(context);
+								.initDefault();
+						PackageProvider.resetProvider(context);
 					}
 				} });
 	}

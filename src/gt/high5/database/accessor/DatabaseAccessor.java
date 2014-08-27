@@ -10,17 +10,13 @@ import gt.high5.database.model.TableUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.content.Context;
-import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
@@ -57,7 +53,7 @@ public class DatabaseAccessor {
 	 * @param parser
 	 */
 	private DatabaseAccessor(Context context, TableParser parser) {
-		mTableParser = parser;
+		setTableParser(parser);
 		mManager = new DatabaseManager(context, parser);
 		mDatabase = mManager.getWritableDatabase();
 	}
@@ -101,30 +97,25 @@ public class DatabaseAccessor {
 	 * @return the DatabaseAccessor associated with id
 	 */
 	public static DatabaseAccessor getAccessor(Context context, int id) {
-		TableParser parser = null;
-		try {
-			parser = new TableParser(context.getResources().getXml(id));
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (NotFoundException e) {
-			e.printStackTrace();
-		} catch (XmlPullParserException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		SoftReference<DatabaseAccessor> reference = accessorCache.get(id);
+		if (null == reference) {
+			TableParser parser = null;
+			try {
+				parser = new TableParser(context.getResources().getXml(id));
+				return getAccessor(context, parser, id);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
 		}
-		return getAccessor(context, parser, id);
+		return reference.get();
 	}
 
 	/**
 	 * @return record tables defined in xml
 	 */
 	public Class<? extends RecordTable>[] getTables() {
-		return mTableParser.getTables();
+		return getTableParser().getTables();
 	}
 
 	/**
@@ -143,7 +134,7 @@ public class DatabaseAccessor {
 			throws InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException {
-		return (DataFiller) mTableParser.getInfo(clazz).getFiller()
+		return (DataFiller) getTableParser().getInfo(clazz).getFiller()
 				.getDeclaredConstructor().newInstance();
 	}
 
@@ -153,7 +144,7 @@ public class DatabaseAccessor {
 	 * @return
 	 */
 	public Predictor getPredictor() {
-		return mTableParser.getPredictor();
+		return getTableParser().getPredictor();
 	}
 
 	/**
@@ -164,7 +155,7 @@ public class DatabaseAccessor {
 	 * @return title
 	 */
 	public String getTableTitle(Class<? extends RecordTable> clazz) {
-		return mTableParser.getInfo(clazz).getTitle();
+		return getTableParser().getInfo(clazz).getTitle();
 	}
 
 	// ---------------------CRUD--------------------------
@@ -335,7 +326,7 @@ public class DatabaseAccessor {
 				if (!dstFolder.exists()) {
 					dstFolder.mkdir();
 				}
-				File dstFile = new File(dstFolder, mTableParser.getFile());
+				File dstFile = new File(dstFolder, getTableParser().getFile());
 				if (!dstFile.exists()) {
 					dstFile.createNewFile();
 				}
@@ -377,7 +368,7 @@ public class DatabaseAccessor {
 				if (!srcFolder.exists()) {
 					throw new Exception();
 				}
-				File srcFile = new File(srcFolder, mTableParser.getFile());
+				File srcFile = new File(srcFolder, getTableParser().getFile());
 				if (!srcFile.exists()) {
 					throw new Exception();
 				}
@@ -400,11 +391,22 @@ public class DatabaseAccessor {
 	/**
 	 * remove all data in database
 	 */
-	public void clean() {
+	public void clean(Context context) {
 		mDatabase.close();
-		String path = mDatabase.getPath();
-		File file = new File(path);
-		file.delete();
+		mManager.close();
+		// String path = mDatabase.getPath();
+		// File file = new File(path);
+		// file.delete();
+		context.deleteDatabase(getTableParser().getFile());
 		mDatabase = mManager.getWritableDatabase();
+		mManager.onCreate(mDatabase);
+	}
+
+	public TableParser getTableParser() {
+		return mTableParser;
+	}
+
+	public void setTableParser(TableParser mTableParser) {
+		this.mTableParser = mTableParser;
 	}
 }

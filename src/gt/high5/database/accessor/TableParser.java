@@ -174,6 +174,10 @@ public class TableParser {
 		return mTables.get(clazz);
 	}
 
+	public String getTableTitle(Class<? extends RecordTable> clazz) {
+		return getInfo(clazz).getTitle();
+	}
+
 	public int getVersion() {
 		return mVersion;
 	}

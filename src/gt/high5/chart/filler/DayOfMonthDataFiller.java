@@ -2,6 +2,7 @@ package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
+import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.table.DayOfMonth;
 import gt.high5.database.table.Total;
 
@@ -29,9 +30,9 @@ public class DayOfMonthDataFiller extends SimpleDataFiller<DayOfMonth> {
 			Total total = mContext.getTotal();
 			DayOfMonth query = new DayOfMonth();
 			query.setPid(total.getId());
-			getAccessor();
-			if (null != mAccessor) {
-				mData = mAccessor.R(query);
+			DatabaseAccessor accessor = getAccessor();
+			if (null != accessor) {
+				mData = accessor.R(query);
 			}
 		}
 	}

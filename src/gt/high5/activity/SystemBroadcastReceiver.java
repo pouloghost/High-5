@@ -4,15 +4,9 @@ import gt.high5.activity.widget.WidgetProvider;
 import gt.high5.core.service.IgnoreSetService;
 import gt.high5.core.service.LogService;
 import gt.high5.core.service.RecordService;
-
-import java.io.IOException;
-
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources.NotFoundException;
 
 /**
  * @author ayi.zty
@@ -40,19 +34,8 @@ public class SystemBroadcastReceiver extends BroadcastReceiver {
 						"uninstalling package:" + name,
 						context.getApplicationContext());
 				try {
-					RecordService.getRecordService(context).removeRecords(name,
-							context);
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (NotFoundException e) {
-					e.printStackTrace();
-				} catch (XmlPullParserException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
+					RecordService.getRecordService(context).removeRecords(name);
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 

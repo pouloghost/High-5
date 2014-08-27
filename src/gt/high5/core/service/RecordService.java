@@ -4,7 +4,6 @@ import gt.high5.R;
 import gt.high5.core.provider.LaunchInfo;
 import gt.high5.core.provider.PackageProvider;
 import gt.high5.database.accessor.DatabaseAccessor;
-import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.table.Total;
@@ -24,20 +23,15 @@ import android.content.res.Resources.NotFoundException;
  *         service for record current state
  */
 public class RecordService {
+	private static int XML_ID = R.xml.tables;
 
-	private DatabaseAccessor mAccessor = null;
-	private PackageProvider mPackageProvider = null;
+	private Context mContext = null;
 
 	// singleton
 	private static RecordService mInstance = null;
 
-	private RecordService(Context context) throws ClassNotFoundException,
-			InstantiationException, IllegalAccessException, NotFoundException,
-			XmlPullParserException, IOException {
-		TableParser parser = new TableParser(context.getResources().getXml(
-				R.xml.tables));
-		mAccessor = DatabaseAccessor.getAccessor(context, parser, R.xml.tables);
-		mPackageProvider = PackageProvider.getPackageProvider(context);
+	private RecordService(Context context) {
+		mContext = context;
 	}
 
 	public static RecordService getRecordService(Context context)
@@ -54,10 +48,6 @@ public class RecordService {
 		return mInstance;
 	}
 
-	public PackageProvider getPackageProvider() {
-		return mPackageProvider;
-	}
-
 	/**
 	 * record current status
 	 * 
@@ -65,11 +55,8 @@ public class RecordService {
 	 *            application context for accessing system state
 	 */
 	public void record(Context context) {
-		if (null == mAccessor || null == mPackageProvider) {
-			return;
-		}
-		Collection<LaunchInfo> packages = mPackageProvider
-				.getChangedPackages(context);
+		Collection<LaunchInfo> packages = PackageProvider.getPackageProvider(
+				context).getChangedPackages(context);
 		for (LaunchInfo info : packages) {
 			recordPackage(context, info.getPackage(), info.getLaunchCount());
 		}
@@ -81,20 +68,22 @@ public class RecordService {
 	 * @param name
 	 *            package name
 	 */
-	public void removeRecords(String name, Context context) {
+	public void removeRecords(String name) {
+		DatabaseAccessor accessor = DatabaseAccessor.getAccessor(mContext,
+				XML_ID);
 		Total total = new Total();
 		total.setName(name);
-		List<Table> list = mAccessor.R(total);
+		List<Table> list = accessor.R(total);
 		if (null != list) {
 			total = (Total) list.get(0);
-			mAccessor.D(total);
-			Class<? extends RecordTable>[] clazzes = mAccessor.getTables();
+			accessor.D(total);
+			Class<? extends RecordTable>[] clazzes = accessor.getTables();
 			for (Class<? extends RecordTable> clazz : clazzes) {
 				RecordTable table;
 				try {
 					table = clazz.newInstance();
 					table.setPid(total.getId());
-					mAccessor.D(table);
+					accessor.D(table);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -116,6 +105,8 @@ public class RecordService {
 	 */
 	private void recordPackage(Context context, String packageName, int count) {
 		if (null != packageName) {
+			DatabaseAccessor accessor = DatabaseAccessor.getAccessor(mContext,
+					XML_ID);
 			LogService.d(RecordService.class, "current package " + packageName,
 					context.getApplicationContext());
 
@@ -123,11 +114,11 @@ public class RecordService {
 			// read total with current package name
 			Total total = new Total();
 			total.setName(packageName);
-			List<Table> list = mAccessor.R(total);
+			List<Table> list = accessor.R(total);
 			if (null == list) {// create a new one for new package
 				if (total.initDefault(recordContext)) {
-					mAccessor.C(total);
-					list = mAccessor.R(total);
+					accessor.C(total);
+					list = accessor.R(total);
 				}
 			}
 			// record
@@ -139,7 +130,7 @@ public class RecordService {
 
 				recordContext.setTotal(total);
 				// each type of record
-				Class<? extends RecordTable>[] clazzes = mAccessor.getTables();
+				Class<? extends RecordTable>[] clazzes = accessor.getTables();
 				for (Class<? extends RecordTable> clazz : clazzes) {
 					recordTable(context, count, recordContext, total, clazz);
 				}
@@ -153,12 +144,14 @@ public class RecordService {
 		List<Table> list;
 
 		try {
+			DatabaseAccessor accessor = DatabaseAccessor.getAccessor(mContext,
+					XML_ID);
 			// read an existing record with the current pid and
 			// status
 			RecordTable table = clazz.newInstance();
 			table.setPid(total.getId());
 			if (table.currentQueryStatus(recordContext)) {
-				list = mAccessor.R(table);
+				list = accessor.R(table);
 
 				if (null == list) {// non-existing condition for
 									// this
@@ -169,7 +162,7 @@ public class RecordService {
 
 					if (table.initDefault(recordContext)) {
 						table.setPid(total.getId());
-						mAccessor.C(table);
+						accessor.C(table);
 					}
 				} else {// existing condition just update
 
@@ -180,12 +173,10 @@ public class RecordService {
 					table = (RecordTable) list.get(0);
 					RecordTable select = table.clone();
 					table.increaseCount(count);
-					mAccessor.U(select, table);
+					accessor.U(select, table);
 				}
 			}
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

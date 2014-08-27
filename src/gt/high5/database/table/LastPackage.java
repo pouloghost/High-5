@@ -2,7 +2,6 @@ package gt.high5.database.table;
 
 import gt.high5.core.provider.PackageProvider;
 import gt.high5.core.service.RecordContext;
-import gt.high5.core.service.RecordService;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
 
@@ -32,10 +31,9 @@ public final class LastPackage extends SimpleRecordTable {
 	@Override
 	public boolean initDefault(RecordContext context) {
 		PackageProvider provider = null;
-		RecordService service = null;
 		List<String> order = null;
-		if (null != (service = context.getRecordService())
-				&& null != (provider = service.getPackageProvider())
+		if (null != (provider = PackageProvider.getPackageProvider(context
+				.getContext()))
 				&& null != (order = provider.getLastPackageOrder(context
 						.getContext()))) {
 			count = 1;
@@ -60,10 +58,9 @@ public final class LastPackage extends SimpleRecordTable {
 	@Override
 	public boolean currentQueryStatus(RecordContext context) {
 		PackageProvider provider = null;
-		RecordService service = null;
 		List<String> order = null;
-		if (null != (service = context.getRecordService())
-				&& null != (provider = service.getPackageProvider())
+		if (null != (provider = PackageProvider.getPackageProvider(context
+				.getContext()))
 				&& null != (order = provider.getLastPackageOrder(context
 						.getContext()))) {
 			if (order.size() > 0) {

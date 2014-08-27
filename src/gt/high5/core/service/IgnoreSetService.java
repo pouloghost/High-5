@@ -23,27 +23,25 @@ import android.content.pm.PackageManager;
  */
 public class IgnoreSetService {
 
+	private static int XML_ID = R.xml.tables;
 	// cached data
 	private HashSet<String> mIgnoreSet = null;
 
-	private DatabaseAccessor mAccessor = null;
+	private Context mContext = null;
 	// singleton
 	private static IgnoreSetService mInstance = null;
 
 	private IgnoreSetService(Context context) {
-		if (null == mAccessor) {
-			synchronized (IgnoreSetService.class) {
-				if (null == mAccessor) {
-					mAccessor = DatabaseAccessor.getAccessor(context,
-							R.xml.tables);
-				}
-			}
-		}
+		mContext = context;
 	}
 
 	public static IgnoreSetService getIgnoreSetService(Context context) {
 		if (null == mInstance) {
-			mInstance = new IgnoreSetService(context);
+			synchronized (IgnoreSetService.class) {
+				if (null == mInstance) {
+					mInstance = new IgnoreSetService(context);
+				}
+			}
 		}
 		return mInstance;
 	}
@@ -54,10 +52,12 @@ public class IgnoreSetService {
 	 * @return ignore set
 	 */
 	public HashSet<String> getIgnoreSet() {
-		if (null == mAccessor) {
+		DatabaseAccessor accessor = DatabaseAccessor.getAccessor(mContext,
+				XML_ID);
+		if (null == accessor) {
 			return null;
 		}
-		return getIgnoreSet(mAccessor);
+		return getIgnoreSet(accessor);
 	}
 
 	/**
@@ -89,17 +89,22 @@ public class IgnoreSetService {
 	 * @return updated ignore set
 	 */
 	public HashSet<String> update(String name, boolean ignored) {
+		DatabaseAccessor accessor = DatabaseAccessor.getAccessor(mContext,
+				XML_ID);
+		if (null == accessor) {
+			new HashSet<String>();
+		}
 		if (null == mIgnoreSet) {
-			getIgnoreSet();
+			getIgnoreSet(accessor);
 		}
 		Ignore ignoreQuery = new Ignore();
 		ignoreQuery.setName(name);
 		// change ignore status
 		if (ignored) {// in database
-			mAccessor.D(ignoreQuery);
+			accessor.D(ignoreQuery);
 			mIgnoreSet.remove(name);
 		} else {
-			mAccessor.C(ignoreQuery);
+			accessor.C(ignoreQuery);
 			mIgnoreSet.add(name);
 		}
 
@@ -113,20 +118,20 @@ public class IgnoreSetService {
 	 *            application context
 	 * @return whether default is initialized
 	 */
-	public boolean initDefault(Context context) {
+	public boolean initDefault() {
 		try {
 			if (null != mIgnoreSet) {
 				mIgnoreSet.clear();
 			}
-			FilterParser parser = new FilterParser(context.getResources()
+			FilterParser parser = new FilterParser(mContext.getResources()
 					.getXml(R.xml.filters));
 			ArrayList<Filter> filters = parser.getFilters();
 
-			List<ApplicationInfo> infos = context.getPackageManager()
+			List<ApplicationInfo> infos = mContext.getPackageManager()
 					.getInstalledApplications(PackageManager.GET_META_DATA);
 
 			FilterContext filterContext = new FilterContext();
-			filterContext.setContext(context.getApplicationContext());
+			filterContext.setContext(mContext.getApplicationContext());
 
 			for (ApplicationInfo info : infos) {
 				boolean shouldIgnore = false;

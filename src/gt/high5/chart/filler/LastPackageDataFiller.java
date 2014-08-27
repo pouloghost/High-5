@@ -2,6 +2,7 @@ package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
+import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.table.LastPackage;
 import gt.high5.database.table.Total;
 import android.content.pm.ApplicationInfo;
@@ -48,9 +49,9 @@ public class LastPackageDataFiller extends SimpleDataFiller<LastPackage> {
 			Total total = mContext.getTotal();
 			LastPackage query = new LastPackage();
 			query.setPid(total.getId());
-			getAccessor();
-			if (null != mAccessor) {
-				mData = mAccessor.R(query);
+			DatabaseAccessor accessor = getAccessor();
+			if (null != accessor) {
+				mData = accessor.R(query);
 			}
 		}
 	}

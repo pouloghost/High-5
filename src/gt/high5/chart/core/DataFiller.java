@@ -1,5 +1,7 @@
 package gt.high5.chart.core;
 
+import gt.high5.R;
+
 import java.util.ArrayList;
 
 import android.graphics.Color;
@@ -11,6 +13,7 @@ import android.view.View;
  *         each table will have a data filler to display the data in a chart
  */
 public abstract class DataFiller {
+	protected static int XML_ID = R.xml.tables;
 
 	/**
 	 * @author GT

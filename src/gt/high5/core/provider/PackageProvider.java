@@ -2,7 +2,6 @@ package gt.high5.core.provider;
 
 import gt.high5.core.service.IgnoreSetService;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +32,8 @@ public abstract class PackageProvider {
 		priority[0] = SetPackageProvider.class;
 	}
 
+	private static PackageProvider mInstance = null;
+
 	/**
 	 * provide a proper packageProvider based on the context condition
 	 * 
@@ -41,32 +42,31 @@ public abstract class PackageProvider {
 	 * @return an instance of PackageProvider
 	 */
 	public static PackageProvider getPackageProvider(Context context) {
-		PackageProvider provider = null;
-		for (Class<? extends PackageProvider> clazz : priority) {
-			try {
-				provider = (PackageProvider) clazz.getDeclaredConstructor(
-						(Class[]) null).newInstance();
-				break;
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				if (e instanceof CannotCreateException) {
-					e.printStackTrace();
+		if (null == mInstance) {
+			synchronized (PackageProvider.class) {
+				if (null == mInstance) {
+					for (Class<? extends PackageProvider> clazz : priority) {
+						try {
+							mInstance = (PackageProvider) clazz
+									.getDeclaredConstructor((Class[]) null)
+									.newInstance();
+							break;
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 		}
-		return provider;
+		return mInstance;
 	}
 
-	public PackageProvider() throws CannotCreateException {
+	public static PackageProvider resetProvider(Context context) {
+		mInstance = null;
+		return getPackageProvider(context);
+	}
+
+	protected PackageProvider() throws CannotCreateException {
 	}
 
 	public List<ActivityManager.RecentTaskInfo> getLaunchableRecent(

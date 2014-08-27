@@ -117,7 +117,7 @@ public class GridAdapterService extends RemoteViewsService {
 		public void onDataSetChanged() {
 			try {
 				apps = ReadService.getReadService(getApplicationContext())
-						.getHigh5(getApplicationContext(), apps);
+						.getHigh5(apps);
 
 				LogService.d(GridAdapterService.class, "data set changed",
 						getApplicationContext());
