@@ -3,9 +3,12 @@
 
     <filter
         clazz="ContainsFilter">
-        <!-- can't use ctrl shift f -->
+        <!-- can't auto format -->
         <method name="addKeyword" count="1">
             <param>launcher</param>
+        </method>
+        <method name="addKeyword" count="1">
+            <param>gt.</param>
         </method>
     </filter>
     

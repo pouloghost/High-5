@@ -1,5 +1,7 @@
 package gt.high5.core.provider;
 
+import gt.high5.core.service.LogService;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,7 +30,10 @@ public class SetPackageProvider extends PackageProvider {
 		// backup for save to mRecentMemory
 		@SuppressWarnings("unchecked")
 		ArrayList<String> currentBackup = (ArrayList<String>) packages.clone();
-
+		StringBuilder log = new StringBuilder("current:\t");
+		for (String name : currentBackup) {
+			log.append(name).append("\t");
+		}
 		if (null != mRecentPackage) {// normal
 			// the relative complement of mRecentMemory in memory
 			packages.removeAll(mRecentPackage);
@@ -36,16 +41,18 @@ public class SetPackageProvider extends PackageProvider {
 		} else {// first time
 			// record nothing
 			packages.clear();
-
 		}
 
 		mRecentPackage = currentBackup;
 
 		ArrayList<LaunchInfo> result = new ArrayList<LaunchInfo>(
 				packages.size());
+		log.append("\nleft:\t");
 		for (String name : packages) {
+			log.append(name).append("\t");
 			result.add(new LaunchInfo(name, 1));
 		}
+		LogService.d(PackageProvider.class, log.toString(), context);
 		return result;
 	}
 

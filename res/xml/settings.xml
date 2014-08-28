@@ -62,6 +62,11 @@
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"
             android:title="SystemBroadcastReceiver" />
+        <CheckBoxPreference
+            android:key="PackageProvider"
+            android:summaryOff="@string/settings_log_off"
+            android:summaryOn="@string/settings_log_on"
+            android:title="PackageProvider" />
     </PreferenceCategory>
 
 </PreferenceScreen>
