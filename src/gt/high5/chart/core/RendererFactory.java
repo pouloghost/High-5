@@ -18,8 +18,7 @@ public class RendererFactory {
 		return (int) (dpValue * scale + 0.5f);
 	}
 
-	public static DefaultRenderer buildCategoryRenderer(Context context,
-			int[] colors) {
+	public static DefaultRenderer buildPieRenderer(Context context, int[] colors) {
 		DefaultRenderer renderer = new DefaultRenderer();
 		renderer.setDisplayValues(true);
 		renderer.setShowLabels(true);
@@ -43,6 +42,7 @@ public class RendererFactory {
 	public static XYMultipleSeriesRenderer buildBarRenderer(Context context,
 			int color) {
 		XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
+		renderer.setXLabels(0);
 		// text size
 		renderer.setLabelsTextSize(dip2px(context, 10));
 		renderer.setLegendTextSize(dip2px(context, 10));
@@ -60,6 +60,7 @@ public class RendererFactory {
 	public static XYMultipleSeriesRenderer buildLineRenderer(Context context,
 			int color) {
 		XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
+		renderer.setXLabels(0);
 		// text size
 		renderer.setLabelsTextSize(dip2px(context, 10));
 		renderer.setLegendTextSize(dip2px(context, 10));

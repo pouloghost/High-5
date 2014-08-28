@@ -73,7 +73,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 										mContext.getRecord());
 								try {
 									mRenderer = RendererFactory
-											.buildCategoryRenderer(
+											.buildPieRenderer(
 													mContext.getContext(),
 													getColors(mData.size()));
 								} catch (Exception e) {

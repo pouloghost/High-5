@@ -64,7 +64,7 @@ public class TimeDataFiller extends DataFiller {
 					loadData();
 					String title = getAccessor().getTableTitle(
 							mContext.getRecord());
-					mRenderer = RendererFactory.buildCategoryRenderer(
+					mRenderer = RendererFactory.buildPieRenderer(
 							mContext.getContext(), getColors(mData.size()));
 					mCategorySeries = new CategorySeries(title);
 					Time time = null;
@@ -105,7 +105,7 @@ public class TimeDataFiller extends DataFiller {
 						mRenderer = RendererFactory.buildBarRenderer(
 								mContext.getContext(), Color.BLUE);
 
-						addXTitles(mRenderer, 30);
+						addXTitles(mRenderer, 20);
 
 						mDataset = new XYMultipleSeriesDataset();
 						mDataset.addSeries(getDataset(title));
@@ -144,7 +144,7 @@ public class TimeDataFiller extends DataFiller {
 						mRenderer = RendererFactory.buildLineRenderer(
 								mContext.getContext(), Color.BLUE);
 
-						addXTitles(mRenderer, 30);
+						addXTitles(mRenderer, 20);
 
 						mDataset = new XYMultipleSeriesDataset();
 						mDataset.addSeries(getDataset(title));
