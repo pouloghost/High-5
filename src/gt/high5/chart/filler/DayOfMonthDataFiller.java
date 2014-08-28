@@ -2,9 +2,7 @@ package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
-import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.table.DayOfMonth;
-import gt.high5.database.table.Total;
 
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -22,19 +20,6 @@ public class DayOfMonthDataFiller extends SimpleDataFiller<DayOfMonth> {
 	@Override
 	protected int getCount(DayOfMonth record) {
 		return record.getCount();
-	}
-
-	@Override
-	protected void loadData() {
-		if (null != mContext && null == mData) {
-			Total total = mContext.getTotal();
-			DayOfMonth query = new DayOfMonth();
-			query.setPid(total.getId());
-			DatabaseAccessor accessor = getAccessor();
-			if (null != accessor) {
-				mData = accessor.R(query);
-			}
-		}
 	}
 
 	@Override

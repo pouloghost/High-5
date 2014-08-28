@@ -1,7 +1,10 @@
 package gt.high5.chart.core;
 
+import gt.high5.R;
 import gt.high5.database.accessor.DatabaseAccessor;
+import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
+import gt.high5.database.table.Total;
 
 import java.text.FieldPosition;
 import java.text.NumberFormat;
@@ -51,131 +54,147 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 
 	@Override
 	protected void addFillers() {
-		// pie chart
-		mFillers.add(new ViewFiller() {
-			private DefaultRenderer mRenderer = null;
-			private CategorySeries mCategorySeries = null;
-			private boolean mResult = false;
+		for (int id : getEntryIds()) {
+			switch (id) {
+			case R.string.record_detail_spinner_pie:
+				// pie chart
+				mFillers.add(new ViewFiller() {
+					private DefaultRenderer mRenderer = null;
+					private CategorySeries mCategorySeries = null;
+					private boolean mResult = false;
 
-			@SuppressWarnings("unchecked")
-			@Override
-			public boolean fillView() {
-				if (null != mContext) {
-					try {
-						loadData();
-						String title = getAccessor().getTableTitle(
-								mContext.getRecord());
-						try {
-							mRenderer = RendererFactory.buildCategoryRenderer(
-									mContext.getContext(),
-									getColors(mData.size()));
-						} catch (Exception e) {
-							e.printStackTrace();
+					@SuppressWarnings("unchecked")
+					@Override
+					public boolean fillView() {
+						if (null != mContext) {
+							try {
+								loadData();
+								String title = getAccessor().getTableTitle(
+										mContext.getRecord());
+								try {
+									mRenderer = RendererFactory
+											.buildCategoryRenderer(
+													mContext.getContext(),
+													getColors(mData.size()));
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								mCategorySeries = new CategorySeries(title);
+								T record = null;
+								for (Table table : mData) {
+									record = (T) table;
+									mCategorySeries.add(getName(record),
+											getCount(record));
+								}
+
+								mResult = true;
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
-						mCategorySeries = new CategorySeries(title);
-						T record = null;
-						for (Table table : mData) {
-							record = (T) table;
-							mCategorySeries.add(getName(record),
-									getCount(record));
+						return mResult;
+					}
+
+					@Override
+					public View onFinish() {
+						View view = null;
+						if (mResult) {
+							view = ChartFactory.getPieChartView(
+									mContext.getContext(), mCategorySeries,
+									mRenderer);
 						}
-
-						mResult = true;
-					} catch (Exception e) {
-						e.printStackTrace();
+						return view;
 					}
-				}
-				return mResult;
-			}
+				});
+				break;
+			case R.string.record_detail_spinner_bar:
+				// bar chart
+				mFillers.add(new ViewFiller() {
+					private XYMultipleSeriesRenderer mRenderer = null;
+					private XYMultipleSeriesDataset mDataset = null;
+					private boolean mResult = false;
 
-			@Override
-			public View onFinish() {
-				View view = null;
-				if (mResult) {
-					view = ChartFactory.getPieChartView(mContext.getContext(),
-							mCategorySeries, mRenderer);
-				}
-				return view;
-			}
-		});
-		// bar chart
-		mFillers.add(new ViewFiller() {
-			private XYMultipleSeriesRenderer mRenderer = null;
-			private XYMultipleSeriesDataset mDataset = null;
-			private boolean mResult = false;
+					@Override
+					public boolean fillView() {
+						if (null != mContext) {
+							try {
+								loadData();
+								String title = getAccessor().getTableTitle(
+										mContext.getRecord());
+								mRenderer = RendererFactory.buildBarRenderer(
+										mContext.getContext(), Color.BLUE);
 
-			@Override
-			public boolean fillView() {
-				if (null != mContext) {
-					try {
-						loadData();
-						String title = getAccessor().getTableTitle(
-								mContext.getRecord());
-						mRenderer = RendererFactory.buildBarRenderer(
-								mContext.getContext(), Color.BLUE);
+								addXTitles(mRenderer, 30);
 
-						addXTitles(mRenderer, 30);
+								mDataset = new XYMultipleSeriesDataset();
+								mDataset.addSeries(getDataset(title));
 
-						mDataset = new XYMultipleSeriesDataset();
-						mDataset.addSeries(getDataset(title));
-
-						mResult = true;
-					} catch (Exception e) {
-						e.printStackTrace();
+								mResult = true;
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+						return mResult;
 					}
-				}
-				return mResult;
-			}
 
-			@Override
-			public View onFinish() {
-				View view = null;
-				if (mResult) {
-					view = ChartFactory.getBarChartView(mContext.getContext(),
-							mDataset, mRenderer, Type.DEFAULT);
-				}
-				return view;
-			}
-		});
-		// line chart
-		mFillers.add(new ViewFiller() {
-			private XYMultipleSeriesRenderer mRenderer = null;
-			private XYMultipleSeriesDataset mDataset = null;
-			private boolean mResult = false;
-
-			@Override
-			public boolean fillView() {
-				if (null != mContext) {
-					try {
-						loadData();
-						String title = getAccessor().getTableTitle(
-								mContext.getRecord());
-						mRenderer = RendererFactory.buildLineRenderer(
-								mContext.getContext(), Color.BLUE);
-
-						addXTitles(mRenderer, 30);
-
-						mDataset = new XYMultipleSeriesDataset();
-						mDataset.addSeries(getDataset(title));
-
-						mResult = true;
-					} catch (Exception e) {
-						e.printStackTrace();
+					@Override
+					public View onFinish() {
+						View view = null;
+						if (mResult) {
+							view = ChartFactory.getBarChartView(
+									mContext.getContext(), mDataset, mRenderer,
+									Type.DEFAULT);
+						}
+						return view;
 					}
-				}
-				return mResult;
+				});
+				break;
+			case R.string.record_detail_spinner_line:
+				// line chart
+				mFillers.add(new ViewFiller() {
+					private XYMultipleSeriesRenderer mRenderer = null;
+					private XYMultipleSeriesDataset mDataset = null;
+					private boolean mResult = false;
+
+					@Override
+					public boolean fillView() {
+						if (null != mContext) {
+							try {
+								loadData();
+								String title = getAccessor().getTableTitle(
+										mContext.getRecord());
+								mRenderer = RendererFactory.buildLineRenderer(
+										mContext.getContext(), Color.BLUE);
+
+								addXTitles(mRenderer, 30);
+
+								mDataset = new XYMultipleSeriesDataset();
+								mDataset.addSeries(getDataset(title));
+
+								mResult = true;
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+						return mResult;
+					}
+
+					@Override
+					public View onFinish() {
+						View view = null;
+						if (mResult) {
+							view = ChartFactory.getLineChartView(
+									mContext.getContext(), mDataset, mRenderer);
+						}
+						return view;
+					}
+				});
+				break;
+			default:
+				break;
 			}
 
-			@Override
-			public View onFinish() {
-				View view = null;
-				if (mResult) {
-					view = ChartFactory.getLineChartView(mContext.getContext(),
-							mDataset, mRenderer);
-				}
-				return view;
-			}
-		});
+		}
 	}
 
 	public DatabaseAccessor getAccessor() {
@@ -189,7 +208,22 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 
 	protected abstract int getCount(T record);
 
-	protected abstract void loadData();
+	protected void loadData() {
+		if (null != mContext && null == mData) {
+			Total total = mContext.getTotal();
+			RecordTable query = null;
+			try {
+				query = mContext.getRecord().newInstance();
+				query.setPid(total.getId());
+				DatabaseAccessor accessor = getAccessor();
+				if (null != accessor) {
+					mData = accessor.R(query);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	protected XYSeries getDataset(String title) {

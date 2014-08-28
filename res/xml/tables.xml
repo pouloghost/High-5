@@ -4,7 +4,7 @@
     filler_pack="gt.high5.chart.filler"
     model_pack="gt.high5.database.table"
     predictor="gt.high5.core.predictor.NaiveBayesPredictor"
-    version="2" >
+    version="1" >
 
     <table
         clazz="Total"
@@ -33,5 +33,9 @@
         clazz="DayOfMonth"
         filler="DayOfMonthDataFiller"
         title="Day Of Month" />
+    <table
+        clazz="RingVolumn"
+        filler="VolumnDataFiller"
+        title="Ring Volumn" />
 
 </tables>

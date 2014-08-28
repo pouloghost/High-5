@@ -2,9 +2,7 @@ package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
-import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.table.Network;
-import gt.high5.database.table.Total;
 
 public class NetworkDataFiller extends SimpleDataFiller<Network> {
 
@@ -21,19 +19,6 @@ public class NetworkDataFiller extends SimpleDataFiller<Network> {
 	@Override
 	protected int getCount(Network record) {
 		return record.getCount();
-	}
-
-	@Override
-	protected void loadData() {
-		if (null != mContext && null == mData) {
-			Total total = mContext.getTotal();
-			Network query = new Network();
-			query.setPid(total.getId());
-			DatabaseAccessor accessor = getAccessor();
-			if (null != accessor) {
-				mData = accessor.R(query);
-			}
-		}
 	}
 
 }
