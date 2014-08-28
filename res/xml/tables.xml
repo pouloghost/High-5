@@ -37,5 +37,9 @@
         clazz="RingVolumn"
         filler="VolumnDataFiller"
         title="Ring Volumn" />
+    <table
+        clazz="RingMode"
+        filler="RingModeDataFiller"
+        title="Ring Mode" />
 
 </tables>
