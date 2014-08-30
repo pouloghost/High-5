@@ -16,14 +16,19 @@ public class DayOfMonth extends SimpleRecordTable {
 	@Override
 	public boolean initDefault(RecordContext context) {
 		count = 1;
-		return currentQueryStatus(context);
+		return queryForRecord(context);
 	}
 
 	@Override
-	public boolean currentQueryStatus(RecordContext context) {
+	public boolean queryForRecord(RecordContext context) {
 		Calendar calendar = Calendar.getInstance();
 		day = calendar.get(Calendar.DAY_OF_MONTH);
 		return true;
+	}
+
+	@Override
+	public boolean queryForRead(RecordContext context) {
+		return queryForRecord(context);
 	}
 
 	@Override

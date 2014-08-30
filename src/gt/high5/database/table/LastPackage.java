@@ -30,13 +30,18 @@ public final class LastPackage extends SimpleRecordTable {
 	 */
 	@Override
 	public boolean initDefault(RecordContext context) {
+		count = 1;
+		return queryForRecord(context);
+	}
+
+	@Override
+	public boolean queryForRecord(RecordContext context) {
 		PackageProvider provider = null;
 		List<String> order = null;
 		if (null != (provider = PackageProvider.getPackageProvider(context
 				.getContext()))
 				&& null != (order = provider.getLastPackageOrder(context
 						.getContext()))) {
-			count = 1;
 			Total total = context.getTotal();
 			int index = order.indexOf(total.getName());
 			// exists and not last one
@@ -56,7 +61,7 @@ public final class LastPackage extends SimpleRecordTable {
 	 * set the first package in recent list
 	 */
 	@Override
-	public boolean currentQueryStatus(RecordContext context) {
+	public boolean queryForRead(RecordContext context) {
 		PackageProvider provider = null;
 		List<String> order = null;
 		if (null != (provider = PackageProvider.getPackageProvider(context

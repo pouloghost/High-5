@@ -144,9 +144,14 @@ public class Total extends RecordTable implements Parcelable {
 	}
 
 	@Override
-	public boolean currentQueryStatus(RecordContext context) {
+	public boolean queryForRecord(RecordContext context) {
 		this.name = context.getTotal().getName();
 		return true;
+	}
+
+	@Override
+	public boolean queryForRead(RecordContext context) {
+		return queryForRecord(context);
 	}
 
 	@Override

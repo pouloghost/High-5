@@ -19,7 +19,9 @@ public abstract class RecordTable extends Table {
 	 * 
 	 * @return whether init is successful
 	 */
-	public abstract boolean currentQueryStatus(RecordContext context);
+	public abstract boolean queryForRecord(RecordContext context);
+
+	public abstract boolean queryForRead(RecordContext context);
 
 	public abstract int getCount();
 

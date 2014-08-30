@@ -34,7 +34,7 @@ public class Time extends SimpleRecordTable {
 	}
 
 	@Override
-	public boolean currentQueryStatus(RecordContext context) {
+	public boolean queryForRecord(RecordContext context) {
 		Calendar calendar = Calendar.getInstance();
 		int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60
 				+ calendar.get(Calendar.MINUTE);
@@ -44,9 +44,14 @@ public class Time extends SimpleRecordTable {
 	}
 
 	@Override
+	public boolean queryForRead(RecordContext context) {
+		return queryForRecord(context);
+	}
+
+	@Override
 	public boolean initDefault(RecordContext context) {
 		count = 1;
-		return currentQueryStatus(context);
+		return queryForRecord(context);
 	}
 
 	@Override

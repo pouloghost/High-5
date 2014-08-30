@@ -33,7 +33,7 @@ public class WifiName extends SimpleRecordTable {
 	}
 
 	@Override
-	public boolean currentQueryStatus(RecordContext context) {
+	public boolean queryForRecord(RecordContext context) {
 		WifiManager manager = (WifiManager) context.getContext()
 				.getSystemService(Context.WIFI_SERVICE);
 		if (null != manager) {
@@ -55,8 +55,13 @@ public class WifiName extends SimpleRecordTable {
 	}
 
 	@Override
+	public boolean queryForRead(RecordContext context) {
+		return queryForRecord(context);
+	}
+
+	@Override
 	public boolean initDefault(RecordContext context) {
 		count = 1;
-		return currentQueryStatus(context);
+		return queryForRecord(context);
 	}
 }

@@ -14,11 +14,11 @@ public abstract class AbstractVolumn extends SimpleRecordTable {
 	@Override
 	public boolean initDefault(RecordContext context) {
 		count = 1;
-		return currentQueryStatus(context);
+		return queryForRecord(context);
 	}
 
 	@Override
-	public boolean currentQueryStatus(RecordContext context) {
+	public boolean queryForRecord(RecordContext context) {
 		AudioManager manager = (AudioManager) context.getContext()
 				.getSystemService(Context.AUDIO_SERVICE);
 		int type = getType();
@@ -26,6 +26,11 @@ public abstract class AbstractVolumn extends SimpleRecordTable {
 		double current = manager.getStreamVolume(type);
 		percent = (int) (current / max * 10);
 		return true;
+	}
+
+	@Override
+	public boolean queryForRead(RecordContext context) {
+		return queryForRecord(context);
 	}
 
 	@Override

@@ -13,7 +13,7 @@ public class Network extends SimpleRecordTable {
 	private String connection = "";
 
 	@Override
-	public boolean currentQueryStatus(RecordContext context) {
+	public boolean queryForRecord(RecordContext context) {
 		ConnectivityManager manager = (ConnectivityManager) context
 				.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 		if (null != manager) {
@@ -30,9 +30,14 @@ public class Network extends SimpleRecordTable {
 	}
 
 	@Override
+	public boolean queryForRead(RecordContext context) {
+		return queryForRecord(context);
+	}
+
+	@Override
 	public boolean initDefault(RecordContext context) {
 		count = 1;
-		return currentQueryStatus(context);
+		return queryForRecord(context);
 	}
 
 	@Override

@@ -84,9 +84,7 @@ public class RecordService {
 					table = clazz.newInstance();
 					table.setPid(total.getId());
 					accessor.D(table);
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -150,7 +148,7 @@ public class RecordService {
 			// status
 			RecordTable table = clazz.newInstance();
 			table.setPid(total.getId());
-			if (table.currentQueryStatus(recordContext)) {
+			if (table.queryForRecord(recordContext)) {
 				list = accessor.R(table);
 
 				if (null == list) {// non-existing condition for
