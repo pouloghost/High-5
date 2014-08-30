@@ -93,6 +93,16 @@ public abstract class PackageProvider {
 		return recents;
 	}
 
+	public ActivityManager.RecentTaskInfo getRunningTask(Context context) {
+		if (null == mActivityManager) {
+			mActivityManager = (ActivityManager) context
+					.getSystemService(Service.ACTIVITY_SERVICE);
+		}
+		List<ActivityManager.RecentTaskInfo> recents = mActivityManager
+				.getRecentTasks(1, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
+		return recents.get(0);
+	}
+
 	/**
 	 * get the packages used since last call on this method
 	 * 

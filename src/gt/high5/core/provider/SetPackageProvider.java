@@ -4,9 +4,11 @@ import gt.high5.core.service.LogService;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.ActivityManager;
+import android.app.ActivityManager.RecentTaskInfo;
 import android.content.Context;
 
 /**
@@ -28,28 +30,55 @@ public class SetPackageProvider extends PackageProvider {
 		ArrayList<String> packages = getRecentPackages(context);
 
 		// backup for save to mRecentMemory
-		@SuppressWarnings("unchecked")
-		ArrayList<String> currentBackup = (ArrayList<String>) packages.clone();
 		StringBuilder log = new StringBuilder("current:\t");
-		for (String name : currentBackup) {
-			log.append(name).append("\t");
+		for (String name : packages) {
+			log.append(name).append(";\t");
 		}
+		List<String> changed = null;
 		if (null != mRecentPackage) {// normal
-			// the relative complement of mRecentMemory in memory
-			packages.removeAll(mRecentPackage);
-
+			// the packages are in the same order if nothing happens
+			// any inverse number means some actions are done to the app
+			// package name 2 index mapping
+			HashMap<String, Integer> indexOfPackage = new HashMap<String, Integer>();
+			for (int i = 0; i < mRecentPackage.size(); ++i) {
+				indexOfPackage.put(mRecentPackage.get(i), i);
+			}
+			// from the last app known
+			int last = MEMORY_SIZE + 1;
+			int i = packages.size() - 1;
+			for (; i >= 0; --i) {
+				Integer current = indexOfPackage.get(packages.get(i));
+				if (null == current) {// non-existing app, newly added
+					break;
+				}
+				if (current <= last) {// no inverse
+					last = current;
+				} else {// inverse
+					break;
+				}
+			}
+			if (i == -1) {
+				i = 0;
+				RecentTaskInfo info = getRunningTask(context);
+				if (null != info
+						&& info.baseIntent.getComponent().getPackageName()
+								.equals(packages.get(0))) {
+					// the newest recent is running
+					i = 1;
+				}
+			}
+			changed = packages.subList(0, i);
 		} else {// first time
 			// record nothing
-			packages.clear();
+			changed = new ArrayList<String>();
 		}
 
-		mRecentPackage = currentBackup;
+		mRecentPackage = packages;
 
-		ArrayList<LaunchInfo> result = new ArrayList<LaunchInfo>(
-				packages.size());
+		ArrayList<LaunchInfo> result = new ArrayList<LaunchInfo>(changed.size());
 		log.append("\nleft:\t");
-		for (String name : packages) {
-			log.append(name).append("\t");
+		for (String name : changed) {
+			log.append(name).append(";\t");
 			result.add(new LaunchInfo(name, 1));
 		}
 		LogService.d(PackageProvider.class, log.toString(), context);
