@@ -147,7 +147,6 @@ public class RecordService {
 			// read an existing record with the current pid and
 			// status
 			RecordTable table = clazz.newInstance();
-			table.setPid(total.getId());
 			if (table.queryForRecord(recordContext)) {
 				list = accessor.R(table);
 

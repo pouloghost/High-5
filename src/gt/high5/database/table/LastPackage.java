@@ -47,6 +47,7 @@ public final class LastPackage extends SimpleRecordTable {
 			// exists and not last one
 			if (-1 != index && order.size() - 1 != index) {
 				lastPackage = order.get(index + 1);
+				setPid(context.getTotal().getId());
 				return true;
 			}
 		}
@@ -70,6 +71,7 @@ public final class LastPackage extends SimpleRecordTable {
 						.getContext()))) {
 			if (order.size() > 0) {
 				lastPackage = order.get(0);
+				setPid(context.getTotal().getId());
 				return true;
 			}
 		}

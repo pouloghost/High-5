@@ -23,6 +23,7 @@ public class DayOfMonth extends SimpleRecordTable {
 	public boolean queryForRecord(RecordContext context) {
 		Calendar calendar = Calendar.getInstance();
 		day = calendar.get(Calendar.DAY_OF_MONTH);
+		setPid(context.getTotal().getId());
 		return true;
 	}
 

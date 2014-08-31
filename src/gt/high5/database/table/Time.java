@@ -39,7 +39,7 @@ public class Time extends SimpleRecordTable {
 		int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60
 				+ calendar.get(Calendar.MINUTE);
 		region = minutes / regionLength;
-
+		setPid(context.getTotal().getId());
 		return true;
 	}
 

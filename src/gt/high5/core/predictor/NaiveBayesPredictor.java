@@ -65,8 +65,7 @@ public class NaiveBayesPredictor implements Predictor {
 		float possibility = (float) totalCount / (float) all;
 		for (Class<? extends RecordTable> clazz : tables) {
 			RecordTable queryTable = clazz.newInstance();
-			queryTable.queryForRead(new RecordContext(context, service,
-					total));
+			queryTable.queryForRead(new RecordContext(context, service, total));
 			ArrayList<Table> allTables = accessor.R(queryTable);
 			if (null != allTables) {
 				possibility *= (float) ((RecordTable) allTables.get(0))

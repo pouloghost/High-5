@@ -47,7 +47,7 @@ public class WifiName extends SimpleRecordTable {
 				}
 			}
 			setBssid(bssid);
-
+			setPid(context.getTotal().getId());
 			return true;
 		} else {
 			return false;

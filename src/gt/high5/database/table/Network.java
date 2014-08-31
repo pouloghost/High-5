@@ -23,6 +23,7 @@ public class Network extends SimpleRecordTable {
 			} else {
 				setConnection(info.getTypeName() + "_" + info.getSubtypeName());
 			}
+			setPid(context.getTotal().getId());
 			return true;
 		} else {
 			return false;

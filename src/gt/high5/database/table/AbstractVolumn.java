@@ -25,6 +25,7 @@ public abstract class AbstractVolumn extends SimpleRecordTable {
 		double max = manager.getStreamMaxVolume(type);
 		double current = manager.getStreamVolume(type);
 		percent = (int) (current / max * 10);
+		setPid(context.getTotal().getId());
 		return true;
 	}
 

@@ -28,6 +28,7 @@ public class WeekDay extends SimpleRecordTable {
 		Calendar calendar = Calendar.getInstance();
 		int dayValue = calendar.get(Calendar.DAY_OF_WEEK);
 		day = Arrays.binarySearch(DAYS_INDEX, dayValue);
+		setPid(context.getTotal().getId());
 		return true;
 	}
 

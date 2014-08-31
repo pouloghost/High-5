@@ -22,6 +22,7 @@ public class RingMode extends SimpleRecordTable {
 		AudioManager manager = (AudioManager) context.getContext()
 				.getSystemService(Context.AUDIO_SERVICE);
 		setMode(manager.getMode());
+		setPid(context.getTotal().getId());
 		return true;
 	}
 
