@@ -104,11 +104,6 @@ public class RecordDetailPagerFragment extends Fragment implements
 	// replacement for onResume, this is actually functioning as onResume should
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
-		// the chart are overlapping each other
-		// if (isVisibleToUser
-		// && (mXyChart.getVisibility() == mPieChart.getVisibility())) {
-		// loadGraph();
-		// }
 		super.setUserVisibleHint(isVisibleToUser);
 	}
 
@@ -175,8 +170,8 @@ public class RecordDetailPagerFragment extends Fragment implements
 				entries[i] = resources.getString(ids[i]);
 			}
 			mGraphTypeSpinner.setAdapter(new ArrayAdapter<String>(
-					getActivity(), R.layout.record_detail_pager_spinner_item,
-					R.id.record_detail_spinner_text, entries));
+					getActivity(), R.layout.spinner_item, R.id.spinner_text,
+					entries));
 		}
 	}
 

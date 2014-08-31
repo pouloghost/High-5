@@ -8,6 +8,7 @@ import gt.high5.database.table.Total;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 
 import android.content.Context;
@@ -65,7 +66,14 @@ public class ReadService {
 			ArrayList<Table> allTotals = accessor.getPredictor()
 					.predictPossibility(predictContext);
 			if (null != allTotals) {
-				Collections.sort(allTotals, Total.getComparator());
+				Collections.sort(allTotals, new Comparator<Table>() {
+					@Override
+					public int compare(Table arg0, Table arg1) {
+						float p0 = ((Total) arg0).getPossibility();
+						float p1 = ((Total) arg1).getPossibility();
+						return p1 > p0 ? 1 : p1 == p0 ? 0 : -1;
+					}
+				});
 
 				StringBuilder sortLog = new StringBuilder("after sort ");
 				for (Table total : allTotals) {
@@ -100,5 +108,4 @@ public class ReadService {
 		}
 		return last;
 	}
-
 }

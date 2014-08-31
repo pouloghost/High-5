@@ -2,14 +2,18 @@ package gt.high5.activity.fragment;
 
 import gt.high5.R;
 import gt.high5.activity.AsyncImageTask;
+import gt.high5.core.predictor.PredictContext;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.Table;
 import gt.high5.database.table.Total;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -18,17 +22,20 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 
 public class TotalListFragment extends Fragment {
 	private static enum KEYS {
-		ICON, PACKAGE, NAME
+		ICON, POSSIBILITY, NAME, _ID, _TIME
 	}
 
 	private static int XML_ID = R.xml.tables;
@@ -36,13 +43,49 @@ public class TotalListFragment extends Fragment {
 	private ListView mTotalList = null;
 	private SimpleAdapter mAdapter = null;
 	private ArrayList<HashMap<String, Object>> mDataList = null;
-	private ArrayList<Table> mTotals = null;
+	private SparseArray<Total> mTotals = new SparseArray<Total>();
 
 	private ProgressDialog mDialog = null;
+	private Spinner mSortSpinner = null;
 
 	private PackageManager mPackageManager = null;
 
-	// private DatabaseAccessor mAccessor = null;
+	private Comparator<?>[] mComparators = {
+			new Comparator<HashMap<String, Object>>() {
+
+				@Override
+				public int compare(HashMap<String, Object> a,
+						HashMap<String, Object> b) {
+					return (Integer) a.get(KEYS._ID.toString())
+							- (Integer) b.get(KEYS._ID.toString());
+				}
+			}, new Comparator<HashMap<String, Object>>() {
+
+				@Override
+				public int compare(HashMap<String, Object> a,
+						HashMap<String, Object> b) {
+					return (int) ((Long) b.get(KEYS._TIME.toString()) - (Long) a
+							.get(KEYS._TIME.toString()));
+				}
+			}, new Comparator<HashMap<String, Object>>() {
+
+				@Override
+				public int compare(HashMap<String, Object> a,
+						HashMap<String, Object> b) {
+					float p0 = (Float) a.get(KEYS.POSSIBILITY.toString());
+					float p1 = (Float) b.get(KEYS.POSSIBILITY.toString());
+					return p1 > p0 ? 1 : p1 == p0 ? 0 : -1;
+				}
+			}, new Comparator<HashMap<String, Object>>() {
+
+				@Override
+				public int compare(HashMap<String, Object> a,
+						HashMap<String, Object> b) {
+					return ((String) a.get(KEYS.NAME.toString()))
+							.compareTo((String) b.get(KEYS.NAME.toString()));
+				}
+			} };
+	private String[] mEntries;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +99,36 @@ public class TotalListFragment extends Fragment {
 		View view = inflater.inflate(R.layout.total_list_layout, container,
 				false);
 		mTotalList = (ListView) view.findViewById(R.id.total_list);
+		mSortSpinner = (Spinner) view
+				.findViewById(R.id.total_list_sort_spinner);
 
+		mSortSpinner
+				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+					@SuppressWarnings("unchecked")
+					@Override
+					public void onItemSelected(AdapterView<?> parent,
+							View view, int position, long id) {
+
+						// after load done
+						if (null != mAdapter) {
+							Collections
+									.sort(mDataList,
+											(Comparator<HashMap<String, Object>>) mComparators[(int) id]);
+							mAdapter.notifyDataSetChanged();
+						}
+
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+
+					}
+				});
+		mEntries = getActivity().getResources().getStringArray(
+				R.array.total_list_sort_spinner);
+		mSortSpinner.setAdapter(new ArrayAdapter<String>(getActivity(),
+				R.layout.spinner_item, R.id.spinner_text, mEntries));
 		return view;
 	}
 
@@ -102,9 +174,14 @@ public class TotalListFragment extends Fragment {
 			return loadData();
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		protected void onPostExecute(ArrayList<HashMap<String, Object>> result) {
 			super.onPostExecute(result);
+			Collections
+					.sort(mDataList,
+							(Comparator<HashMap<String, Object>>) mComparators[(int) mSortSpinner
+									.getSelectedItemId()]);
 			mDialog.dismiss();
 			setData(result);
 		}
@@ -119,13 +196,16 @@ public class TotalListFragment extends Fragment {
 	 */
 	private ArrayList<HashMap<String, Object>> loadData() {
 		// load all records
-		Total query = new Total();
-		ArrayList<Table> totals = DatabaseAccessor.getAccessor(
-				getActivity().getApplicationContext(), XML_ID).R(query);
+		DatabaseAccessor accessor = DatabaseAccessor.getAccessor(getActivity()
+				.getApplicationContext(), XML_ID);
+		Context context = getActivity().getApplicationContext();
+		PredictContext predictContext = new PredictContext(accessor, context);
+		ArrayList<Table> totals = accessor.getPredictor().predictPossibility(
+				predictContext);
 
 		mDataList = new ArrayList<HashMap<String, Object>>();
 		if (null != totals) {
-			mTotals = totals;
+			mTotals.clear();
 			ApplicationInfo info = null;
 			for (Table total : totals) {
 				try {
@@ -136,9 +216,15 @@ public class TotalListFragment extends Fragment {
 					data.put(KEYS.ICON.toString(), info.packageName);
 					data.put(KEYS.NAME.toString(),
 							mPackageManager.getApplicationLabel(info));
-					data.put(KEYS.PACKAGE.toString(), info.packageName);
-
+					data.put(KEYS.POSSIBILITY.toString(),
+							Float.valueOf(((Total) total).getPossibility()));
+					// for sorting
+					data.put(KEYS._ID.toString(), total.getId());
+					data.put(KEYS._TIME.toString(),
+							Long.valueOf(((Total) total).getTimestamp()));
 					mDataList.add(data);
+
+					mTotals.put(total.getId(), (Total) total);
 				} catch (NameNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -156,9 +242,9 @@ public class TotalListFragment extends Fragment {
 	private void setData(ArrayList<HashMap<String, Object>> data) {
 		// set adapter
 		String[] from = { KEYS.ICON.toString(), KEYS.NAME.toString(),
-				KEYS.PACKAGE.toString() };
+				KEYS.POSSIBILITY.toString() };
 		int[] to = { R.id.total_list_icon_image, R.id.total_list_app_name,
-				R.id.total_list_package_name };
+				R.id.total_list_possibility };
 		mAdapter = new SimpleAdapter(getActivity().getApplicationContext(),
 				data, R.layout.total_list_item, from, to);
 
@@ -198,14 +284,17 @@ public class TotalListFragment extends Fragment {
 						if (id != -1) {
 							int pos = (int) id;
 							Bundle args = new Bundle();
+							HashMap<String, Object> mapping = mDataList
+									.get(pos);
 							args.putParcelable(
 									RecordDetailFragment.BUNDLE_KEYS.TOTAL
 											.toString(), (Total) mTotals
-											.get(pos));
+											.get((Integer) mapping.get(KEYS._ID
+													.toString())));
 							args.putString(
 									RecordDetailFragment.BUNDLE_KEYS.LABEL
-											.toString(), (String) mDataList
-											.get(pos).get(KEYS.NAME.toString()));
+											.toString(), (String) mapping
+											.get(KEYS.NAME.toString()));
 							// transaction
 							RecordDetailFragment recordDetail = new RecordDetailFragment();
 							recordDetail.setArguments(args);

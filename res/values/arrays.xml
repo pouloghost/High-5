@@ -28,5 +28,11 @@
         <item>Bar</item>
         <item>Line</item>
     </string-array>
+    <string-array name="total_list_sort_spinner">
+        <item>Default</item>
+        <item>Update Time</item>
+        <item>Possibility</item>
+        <item>App Name</item>
+    </string-array>
 
 </resources>

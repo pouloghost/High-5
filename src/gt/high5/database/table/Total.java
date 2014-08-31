@@ -6,9 +6,6 @@ import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.model.TableUtils;
-
-import java.util.Comparator;
-
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -31,14 +28,6 @@ public class Total extends RecordTable implements Parcelable {
 	@TableAnnotation(defaultValue = "1", isTransient = true)
 	private float possibility = 1;
 
-	public static Comparator<Table> getComparator() {
-		return comparator;
-	}
-
-	public static void setComparator(Comparator<Table> comparator) {
-		Total.comparator = comparator;
-	}
-
 	@Override
 	public String getCreator() {
 		return TableUtils.buildCreator(this.getClass(), Table.class);
@@ -52,7 +41,7 @@ public class Total extends RecordTable implements Parcelable {
 
 	@Override
 	public String C() {
-		timestamp = System.currentTimeMillis();
+		setTimestamp(System.currentTimeMillis());
 		String sql = null;
 		try {
 			sql = TableUtils.C(this, Table.class);
@@ -75,7 +64,7 @@ public class Total extends RecordTable implements Parcelable {
 
 	@Override
 	public String U(Table select) {
-		timestamp = System.currentTimeMillis();
+		setTimestamp(System.currentTimeMillis());
 		String sql = null;
 		try {
 			sql = TableUtils.U(select, this, Table.class);
@@ -98,7 +87,7 @@ public class Total extends RecordTable implements Parcelable {
 
 	@Override
 	public String increase() {
-		timestamp = System.currentTimeMillis();
+		setTimestamp(System.currentTimeMillis());
 		String sql = null;
 		try {
 			sql = TableUtils.increase(this);
@@ -180,18 +169,6 @@ public class Total extends RecordTable implements Parcelable {
 		this.possibility = possibility;
 	}
 
-	/**
-	 * comparator for sorting total to get high 5
-	 */
-	private static Comparator<Table> comparator = new Comparator<Table>() {
-
-		@Override
-		public int compare(Table arg0, Table arg1) {
-			float p0 = ((Total) arg0).getPossibility();
-			float p1 = ((Total) arg1).getPossibility();
-			return p1 > p0 ? 1 : p1 == p0 ? 0 : -1;
-		}
-	};
 	public static Creator<Total> CREATOR = new Creator<Total>() {
 
 		@Override
@@ -221,5 +198,13 @@ public class Total extends RecordTable implements Parcelable {
 		dest.writeString(name);
 		dest.writeInt(count);
 		dest.writeFloat(possibility);
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 }

@@ -27,7 +27,7 @@
         android:text="@string/unknown" />
 
     <TextView
-        android:id="@+id/total_list_package_name"
+        android:id="@+id/total_list_possibility"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/total_list_app_name"
