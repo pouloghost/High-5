@@ -75,6 +75,8 @@ public class ClassUtils {
 				result = annotation.defaultValue();
 			} else if (double.class == clazz || Double.class == clazz) {
 				result = Double.valueOf(annotation.defaultValue());
+			} else if (long.class == clazz || Long.class == clazz) {
+				result = Long.valueOf(annotation.defaultValue());
 			}
 			return result;
 		} else {
@@ -96,6 +98,10 @@ public class ClassUtils {
 		} else if (double.class == clazz) {
 			result = Double.valueOf(field.getDouble(table));
 		} else if (Double.class == clazz) {
+			result = field.get(table);
+		} else if (long.class == clazz) {
+			result = Long.valueOf(field.getLong(table));
+		} else if (Long.class == clazz) {
 			result = field.get(table);
 		}
 		return result;
@@ -129,6 +135,10 @@ public class ClassUtils {
 			field.set(table, ((Double) value).doubleValue());
 		} else if (Double.class == clazz) {
 			field.set(table, ((Double) value));
+		} else if (long.class == clazz) {
+			field.set(table, ((Long) value).longValue());
+		} else if (Long.class == clazz) {
+			field.set(table, (Long) value);
 		}
 	}
 }

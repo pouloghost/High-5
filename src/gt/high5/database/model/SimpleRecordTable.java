@@ -24,9 +24,7 @@ public abstract class SimpleRecordTable extends RecordTable {
 		String sql = null;
 		try {
 			sql = TableUtils.C(this, Table.class);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return sql;
@@ -37,9 +35,7 @@ public abstract class SimpleRecordTable extends RecordTable {
 		String sql = null;
 		try {
 			sql = TableUtils.R(this, Table.class);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return sql;
@@ -50,9 +46,7 @@ public abstract class SimpleRecordTable extends RecordTable {
 		String sql = null;
 		try {
 			sql = TableUtils.U(select, this, Table.class);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return sql;
@@ -63,9 +57,7 @@ public abstract class SimpleRecordTable extends RecordTable {
 		String sql = null;
 		try {
 			sql = TableUtils.D(this, Table.class);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return sql;
@@ -76,9 +68,7 @@ public abstract class SimpleRecordTable extends RecordTable {
 		String sql = null;
 		try {
 			sql = TableUtils.increase(this);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return sql;
@@ -94,9 +84,7 @@ public abstract class SimpleRecordTable extends RecordTable {
 		RecordTable result = null;
 		try {
 			result = (RecordTable) ClassUtils.clone(this, Table.class);
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result;
