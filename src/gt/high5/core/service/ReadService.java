@@ -21,7 +21,7 @@ import android.content.Context;
 public class ReadService {
 	private static int XML_ID = R.xml.tables;
 
-	private static float MIN_POSSIBILITY = 1E-3f;
+	private static float MIN_POSSIBILITY = 1E-10f;
 	// singleton
 	private static ReadService mInstance = null;
 
