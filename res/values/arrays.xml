@@ -33,6 +33,7 @@
         <item>Update Time</item>
         <item>Possibility</item>
         <item>App Name</item>
+        <item>Total Count</item>
     </string-array>
 
 </resources>

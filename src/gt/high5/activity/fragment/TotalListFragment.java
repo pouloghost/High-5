@@ -35,7 +35,7 @@ import android.widget.Spinner;
 
 public class TotalListFragment extends Fragment {
 	private static enum KEYS {
-		ICON, POSSIBILITY, NAME, _ID, _TIME
+		ICON, POSSIBILITY, NAME, _ID
 	}
 
 	private static int XML_ID = R.xml.tables;
@@ -64,8 +64,11 @@ public class TotalListFragment extends Fragment {
 				@Override
 				public int compare(HashMap<String, Object> a,
 						HashMap<String, Object> b) {
-					return (int) ((Long) b.get(KEYS._TIME.toString()) - (Long) a
-							.get(KEYS._TIME.toString()));
+					Total ta = mTotals
+							.get((Integer) a.get(KEYS._ID.toString()));
+					Total tb = mTotals
+							.get((Integer) b.get(KEYS._ID.toString()));
+					return (int) (tb.getTimestamp() - ta.getTimestamp());
 				}
 			}, new Comparator<HashMap<String, Object>>() {
 
@@ -83,6 +86,17 @@ public class TotalListFragment extends Fragment {
 						HashMap<String, Object> b) {
 					return ((String) a.get(KEYS.NAME.toString()))
 							.compareTo((String) b.get(KEYS.NAME.toString()));
+				}
+			}, new Comparator<HashMap<String, Object>>() {
+
+				@Override
+				public int compare(HashMap<String, Object> a,
+						HashMap<String, Object> b) {
+					Total ta = mTotals
+							.get((Integer) a.get(KEYS._ID.toString()));
+					Total tb = mTotals
+							.get((Integer) b.get(KEYS._ID.toString()));
+					return (int) (tb.getCount() - ta.getCount());
 				}
 			} };
 	private String[] mEntries;
@@ -220,8 +234,6 @@ public class TotalListFragment extends Fragment {
 							Float.valueOf(((Total) total).getPossibility()));
 					// for sorting
 					data.put(KEYS._ID.toString(), total.getId());
-					data.put(KEYS._TIME.toString(),
-							Long.valueOf(((Total) total).getTimestamp()));
 					mDataList.add(data);
 
 					mTotals.put(total.getId(), (Total) total);
@@ -229,7 +241,6 @@ public class TotalListFragment extends Fragment {
 					e.printStackTrace();
 				}
 			}
-			System.out.println("aaa");
 		}
 		return mDataList;
 	}
