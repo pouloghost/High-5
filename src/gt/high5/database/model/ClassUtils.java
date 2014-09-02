@@ -84,7 +84,7 @@ public class ClassUtils {
 		}
 	}
 
-	public static <T> Object getValue(T table, Field field)
+	public static Object getValue(Object table, Field field)
 			throws IllegalAccessException, IllegalArgumentException {
 		Class<?> clazz = field.getType();
 		field.setAccessible(true);
@@ -121,7 +121,7 @@ public class ClassUtils {
 		return result;
 	}
 
-	public static <T> void setValue(T table, Field field, Object value)
+	public static void setValue(Object table, Field field, Object value)
 			throws IllegalAccessException, IllegalArgumentException {
 		Class<?> clazz = field.getType();
 		field.setAccessible(true);

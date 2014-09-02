@@ -229,6 +229,7 @@ public class TotalListFragment extends Fragment {
 					e.printStackTrace();
 				}
 			}
+			System.out.println("aaa");
 		}
 		return mDataList;
 	}
