@@ -7,23 +7,37 @@
         android:id="@+id/db_clean_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/db_backup_button"
+        android:layout_above="@+id/db_splitter_0"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
+        android:background="@android:color/transparent"
         android:text="@string/db_clean" />
+
+    <View
+        android:id="@+id/db_splitter_0"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/db_backup_button"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@android:color/darker_gray" />
 
     <Button
         android:id="@+id/db_backup_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/db_restore_button"
+        android:layout_above="@+id/db_splitter_1"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
+        android:background="@android:color/transparent"
         android:text="@string/db_backup" />
+
+    <View
+        android:id="@+id/db_splitter_1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/db_restore_button"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@android:color/darker_gray" />
 
     <Button
         android:id="@+id/db_restore_button"
@@ -31,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
+        android:background="@android:color/transparent"
         android:text="@string/db_restore" />
 
 </RelativeLayout>
