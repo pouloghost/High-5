@@ -3,6 +3,7 @@ package gt.high5.activity.fragment;
 import gt.high5.R;
 import gt.high5.activity.CancelableTask;
 import gt.high5.activity.fragment.RecordDetailFragment.BUNDLE_KEYS;
+import gt.high5.core.service.RecordService;
 import gt.high5.database.table.Total;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -14,10 +15,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @author GT
@@ -27,13 +30,17 @@ import android.widget.TextView;
 public class TotalDetailPagerFragment extends Fragment implements
 		CancelableTask {
 
-	private static final int SPLITTER_SIZE = 1;
+	private static final int SPLITTER_SIZE = 2;
 
 	private RelativeLayout mNameWrapper = null;
 	private RelativeLayout mCountWrapper = null;
+	private RelativeLayout mOperationWrapper = null;
 	private ImageView mAppIconImage = null;
 	private TextView mAppNameText = null;
 	private TextView mCountText = null;
+	private Button mDeleteButton = null;
+
+	private RelativeLayout[] mWrappers = null;
 	private View[] mSplitters = null;
 
 	private ProgressBar mLoadingBar = null;
@@ -58,6 +65,8 @@ public class TotalDetailPagerFragment extends Fragment implements
 				.findViewById(R.id.total_detail_app_icon);
 		mAppNameText = (TextView) root.findViewById(R.id.total_detail_app_name);
 		mCountText = (TextView) root.findViewById(R.id.total_detail_count);
+		mDeleteButton = (Button) root
+				.findViewById(R.id.total_detail_operation_delete);
 		mLoadingBar = (ProgressBar) root
 				.findViewById(R.id.total_detail_view_load_progress_bar);
 		mErrorImage = (ImageView) root
@@ -66,6 +75,10 @@ public class TotalDetailPagerFragment extends Fragment implements
 				.findViewById(R.id.total_detail_name_wrapper);
 		mCountWrapper = (RelativeLayout) root
 				.findViewById(R.id.total_detail_count_wrapper);
+		mOperationWrapper = (RelativeLayout) root
+				.findViewById(R.id.total_detail_operation_wrapper);
+		mWrappers = new RelativeLayout[] { mNameWrapper, mCountWrapper,
+				mOperationWrapper };
 		// for more segments
 		mSplitters = new View[SPLITTER_SIZE];
 		String prefix = getResources().getResourcePackageName(
@@ -78,6 +91,16 @@ public class TotalDetailPagerFragment extends Fragment implements
 			mSplitters[i] = root.findViewById(getResources().getIdentifier(
 					prefix + i, null, null));
 		}
+		// controllers
+		mDeleteButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				if (null != mTotal) {
+					new DeleteAllTask().execute(mTotal.getName());
+				}
+			}
+		});
 		return root;
 	}
 
@@ -134,6 +157,41 @@ public class TotalDetailPagerFragment extends Fragment implements
 
 	}
 
+	class DeleteAllTask extends AsyncTask<String, Void, Boolean> {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			showLoading();
+		}
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			try {
+				RecordService.getRecordService(
+						getActivity().getApplicationContext()).removeRecords(
+						params[0]);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			if (result) {
+				getActivity().getSupportFragmentManager().popBackStack();
+			} else {
+				Toast.makeText(getActivity(),
+						R.string.total_detail_delete_failed, Toast.LENGTH_LONG)
+						.show();
+			}
+		}
+
+	}
+
 	/**
 	 * @author GT
 	 * 
@@ -144,13 +202,7 @@ public class TotalDetailPagerFragment extends Fragment implements
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			mNameWrapper.setVisibility(View.GONE);
-			mCountWrapper.setVisibility(View.GONE);
-			mErrorImage.setVisibility(View.GONE);
-			mLoadingBar.setVisibility(View.VISIBLE);
-			for (View v : mSplitters) {
-				v.setVisibility(View.GONE);
-			}
+			showLoading();
 
 			mLoader = this;
 		}
@@ -178,6 +230,17 @@ public class TotalDetailPagerFragment extends Fragment implements
 
 	}
 
+	private void showLoading() {
+		mErrorImage.setVisibility(View.GONE);
+		mLoadingBar.setVisibility(View.VISIBLE);
+		for (View v : mSplitters) {
+			v.setVisibility(View.GONE);
+		}
+		for (RelativeLayout l : mWrappers) {
+			l.setVisibility(View.GONE);
+		}
+	}
+
 	private void loadGraph() {
 		if (null != mTotal) {
 			new AsyncInfoLoader().execute();
@@ -196,8 +259,9 @@ public class TotalDetailPagerFragment extends Fragment implements
 			for (View v : mSplitters) {
 				v.setVisibility(View.VISIBLE);
 			}
-			mNameWrapper.setVisibility(View.VISIBLE);
-			mCountWrapper.setVisibility(View.VISIBLE);
+			for (RelativeLayout l : mWrappers) {
+				l.setVisibility(View.VISIBLE);
+			}
 
 		} else {
 			mErrorImage.setVisibility(View.VISIBLE);
