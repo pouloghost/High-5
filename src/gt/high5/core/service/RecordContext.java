@@ -10,12 +10,10 @@ import android.content.Context;
  */
 public class RecordContext {
 	private Context context = null;
-	private RecordService service = null;
 	private Total total = null;
 
-	public RecordContext(Context context, RecordService service, Total total) {
+	public RecordContext(Context context, Total total) {
 		setContext(context);
-		setRecordService(service);
 		setTotal(total);
 	}
 
@@ -25,14 +23,6 @@ public class RecordContext {
 
 	public void setContext(Context context) {
 		this.context = context;
-	}
-
-	public RecordService getRecordService() {
-		return service;
-	}
-
-	public void setRecordService(RecordService service) {
-		this.service = service;
 	}
 
 	public Total getTotal() {

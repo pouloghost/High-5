@@ -12,6 +12,9 @@ import android.content.Context;
  */
 public abstract class RecordTable extends Table {
 
+	public static final int DEFAULT_COUNT_INT = -1;
+	public static final String DEFAULT_COUNT_STRING = "-1";
+
 	/**
 	 * for query table using current status
 	 * 

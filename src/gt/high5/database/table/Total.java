@@ -21,8 +21,8 @@ public class Total extends RecordTable implements Parcelable {
 	private int id = -1;
 	@TableAnnotation(defaultValue = "")
 	private String name = "";// package
-	@TableAnnotation(defaultValue = "-1", increaseWhenUpdate = true)
-	private int count = -1;
+	@TableAnnotation(defaultValue = DEFAULT_COUNT_STRING, increaseWhenUpdate = true)
+	private int count = DEFAULT_COUNT_INT;
 	@TableAnnotation(defaultValue = "-1")
 	private long timestamp = -1;
 	@TableAnnotation(defaultValue = "1", isTransient = true)

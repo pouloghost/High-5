@@ -11,8 +11,8 @@ public abstract class SimpleRecordTable extends RecordTable {
 	private int id = -1;
 	@TableAnnotation(defaultValue = "-1")
 	private int pid = -1;
-	@TableAnnotation(defaultValue = "-1", increaseWhenUpdate = true)
-	protected int count = -1;
+	@TableAnnotation(defaultValue = DEFAULT_COUNT_STRING, increaseWhenUpdate = true)
+	protected int count = DEFAULT_COUNT_INT;
 
 	@Override
 	public String getCreator() {

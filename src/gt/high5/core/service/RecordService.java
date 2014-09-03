@@ -108,7 +108,7 @@ public class RecordService {
 			LogService.d(RecordService.class, "current package " + packageName,
 					context.getApplicationContext());
 
-			RecordContext recordContext = new RecordContext(context, this, null);
+			RecordContext recordContext = new RecordContext(context, null);
 			// read total with current package name
 			Total total = new Total();
 			total.setName(packageName);

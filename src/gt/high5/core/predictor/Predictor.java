@@ -1,6 +1,8 @@
 package gt.high5.core.predictor;
 
+import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
+import gt.high5.database.table.Total;
 
 import java.util.ArrayList;
 
@@ -18,4 +20,15 @@ public interface Predictor {
 	 * @return totals with predicted possibility
 	 */
 	public ArrayList<Table> predictPossibility(PredictContext context);
+
+	/**
+	 * get all records needed to calculate the possibility of total under
+	 * context
+	 * 
+	 * @param context
+	 * @param total
+	 * @return
+	 */
+	public ArrayList<RecordTable> getRelativeRecords(PredictContext context,
+			Total total);
 }
