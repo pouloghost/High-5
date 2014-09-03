@@ -50,6 +50,8 @@ public class TotalListFragment extends Fragment {
 
 	private PackageManager mPackageManager = null;
 
+	private LoadDataTask mTask = null;
+
 	private Comparator<?>[] mComparators = {
 			new Comparator<HashMap<String, Object>>() {
 
@@ -150,7 +152,10 @@ public class TotalListFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 
-		new LoadDataTask().execute();
+		if (null == mTask) {
+			mTask = new LoadDataTask();
+			mTask.execute();
+		}
 	}
 
 	/**
@@ -198,6 +203,7 @@ public class TotalListFragment extends Fragment {
 									.getSelectedItemId()]);
 			mDialog.dismiss();
 			setData(result);
+			mTask = null;
 		}
 	}
 

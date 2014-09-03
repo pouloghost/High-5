@@ -84,7 +84,9 @@ public class TotalDetailPagerFragment extends Fragment implements
 	@Override
 	public void onResume() {
 		super.onResume();
-		loadGraph();
+		if (!isCancelable()) {
+			loadGraph();
+		}
 	}
 
 	@Override
@@ -108,28 +110,28 @@ public class TotalDetailPagerFragment extends Fragment implements
 	class AppInfo {
 		private Drawable mIcon = null;
 		private String mName = null;
-	
+
 		public Drawable getIcon() {
 			return mIcon;
 		}
-	
+
 		public void setIcon(Drawable mIcon) {
 			this.mIcon = mIcon;
 		}
-	
+
 		public String getName() {
 			return mName;
 		}
-	
+
 		public void setName(String mName) {
 			this.mName = mName;
 		}
-	
+
 		public AppInfo(Drawable icon, String name) {
 			mIcon = icon;
 			mName = name;
 		}
-	
+
 	}
 
 	/**
@@ -138,7 +140,7 @@ public class TotalDetailPagerFragment extends Fragment implements
 	 *         async task for filling up info views
 	 */
 	class AsyncInfoLoader extends AsyncTask<Void, Void, AppInfo> {
-	
+
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -149,10 +151,10 @@ public class TotalDetailPagerFragment extends Fragment implements
 			for (View v : mSplitters) {
 				v.setVisibility(View.GONE);
 			}
-	
+
 			mLoader = this;
 		}
-	
+
 		@Override
 		protected AppInfo doInBackground(Void... arg0) {
 			try {
@@ -167,13 +169,13 @@ public class TotalDetailPagerFragment extends Fragment implements
 				return null;
 			}
 		}
-	
+
 		@Override
 		protected void onPostExecute(AppInfo result) {
 			super.onPostExecute(result);
 			onFinishLoading(result);
 		}
-	
+
 	}
 
 	private void loadGraph() {

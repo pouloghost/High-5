@@ -47,28 +47,32 @@ public class IgnoreListManageFragment extends Fragment {
 
 	private PackageManager mPackageManager = null;
 
+	private LoadDataTask mTask = null;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-	
+
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-	
+
 		View view = inflater.inflate(R.layout.ignore_list_layout, container,
 				false);
 		mIgnoreList = (ListView) view.findViewById(R.id.ignore_list);
-	
+
 		return view;
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-	
-		new LoadDataTask().execute();
+		if (null == mTask) {
+			mTask = new LoadDataTask();
+			mTask.execute();
+		}
 	}
 
 	/**
@@ -83,36 +87,37 @@ public class IgnoreListManageFragment extends Fragment {
 	 */
 	class LoadDataTask extends
 			AsyncTask<Void, Integer, ArrayList<HashMap<String, Object>>> {
-	
-		@Override
-		protected ArrayList<HashMap<String, Object>> doInBackground(
-				Void... params) {
-			return loadData();
-		}
-	
-		@Override
-		protected void onPostExecute(ArrayList<HashMap<String, Object>> result) {
-			super.onPostExecute(result);
-			mDialog.dismiss();
-			setData(result);
-		}
-	
+
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 			mDialog = new ProgressDialog(getActivity());
-	
+
 			mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-	
+
 				@Override
 				public void onCancel(DialogInterface dialog) {
 					LoadDataTask.this.cancel(true);
 				}
 			});
-	
+
 			mDialog.show();
-	
+
 			mPackageManager = getActivity().getPackageManager();
+		}
+
+		@Override
+		protected ArrayList<HashMap<String, Object>> doInBackground(
+				Void... params) {
+			return loadData();
+		}
+
+		@Override
+		protected void onPostExecute(ArrayList<HashMap<String, Object>> result) {
+			super.onPostExecute(result);
+			mDialog.dismiss();
+			setData(result);
+			mTask = null;
 		}
 	}
 
