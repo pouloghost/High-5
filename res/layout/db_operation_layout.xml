@@ -1,51 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="wrap_content" >
 
-    <Button
-        android:id="@+id/db_clean_button"
+    <RelativeLayout
+        android:id="@+id/db_preference_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/db_splitter_0"
-        android:layout_centerHorizontal="true"
-        android:background="@android:color/transparent"
-        android:text="@string/db_clean" />
+        android:layout_above="@+id/db_database_wrapper" >
 
-    <View
-        android:id="@+id/db_splitter_0"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_above="@+id/db_backup_button"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@android:color/darker_gray" />
+        <TextView
+            android:id="@+id/db_title_pref"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:text="@string/db_title_pref"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Button
-        android:id="@+id/db_backup_button"
+        <View
+            android:id="@+id/db_splitter_3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/db_title_pref"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/db_backup_pref_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/db_splitter_3"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            android:text="@string/db_backup" />
+
+        <View
+            android:id="@+id/db_splitter_4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/db_backup_pref_button"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/db_restore_pref_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/db_splitter_4"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            android:text="@string/db_restore" />
+
+        <View
+            android:id="@+id/db_splitter_5"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/db_restore_pref_button"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/darker_gray" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/db_database_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/db_splitter_1"
-        android:layout_centerHorizontal="true"
-        android:background="@android:color/transparent"
-        android:text="@string/db_backup" />
+        android:layout_alignParentBottom="true" >
 
-    <View
-        android:id="@+id/db_splitter_1"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_above="@+id/db_restore_button"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@android:color/darker_gray" />
+        <TextView
+            android:id="@+id/db_title_db"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:text="@string/db_title_db"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Button
-        android:id="@+id/db_restore_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@android:color/transparent"
-        android:text="@string/db_restore" />
+        <View
+            android:id="@+id/db_splitter_0"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/db_title_db"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/db_clean_db_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/db_splitter_0"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            android:text="@string/db_clean" />
+
+        <View
+            android:id="@+id/db_splitter_1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/db_clean_db_button"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/db_backup_db_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/db_splitter_1"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            android:text="@string/db_backup" />
+
+        <View
+            android:id="@+id/db_splitter_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/db_backup_db_button"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/db_restore_db_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/db_splitter_2"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            android:text="@string/db_restore" />
+    </RelativeLayout>
 
 </RelativeLayout>

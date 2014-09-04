@@ -3,12 +3,14 @@ package gt.high5.activity.fragment;
 import gt.high5.R;
 import gt.high5.core.provider.PackageProvider;
 import gt.high5.core.service.IgnoreSetService;
+import gt.high5.core.service.PreferenceService;
 import gt.high5.database.accessor.DatabaseAccessor;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +48,7 @@ public class DatabaseOperationFragment extends Fragment {
 
 	}
 
+	Handler mHandler = new Handler();
 	/**
 	 * db definition xml files, the R.xml.xx
 	 */
@@ -57,34 +60,51 @@ public class DatabaseOperationFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View root = inflater.inflate(R.layout.db_operation_layout, container,
 				false);
-		((Button) root.findViewById(R.id.db_backup_button))
+		((Button) root.findViewById(R.id.db_backup_db_button))
 				.setOnClickListener(new View.OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
-						backup(getActivity());
+						backupDB(getActivity());
 					}
 				});
-		((Button) root.findViewById(R.id.db_restore_button))
+		((Button) root.findViewById(R.id.db_restore_db_button))
 				.setOnClickListener(new View.OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
-						restore(getActivity());
+						restoreDB(getActivity());
 					}
 				});
-		((Button) root.findViewById(R.id.db_clean_button))
+		((Button) root.findViewById(R.id.db_clean_db_button))
 				.setOnClickListener(new View.OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
-						clean(getActivity());
+						cleanDB(getActivity());
+					}
+				});
+		((Button) root.findViewById(R.id.db_backup_pref_button))
+				.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						backupPref(getActivity());
+					}
+
+				});
+		((Button) root.findViewById(R.id.db_restore_pref_button))
+				.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						restorePref(getActivity());
 					}
 				});
 		return root;
 	}
 
-	private void backup(final Context context) {
+	private void backupDB(final Context context) {
 		new AsyncTaskWithProgress(context)
 				.execute(new Runnable[] { new Runnable() {
 
@@ -96,16 +116,23 @@ public class DatabaseOperationFragment extends Fragment {
 										.backup();
 							} catch (Exception e) {
 								e.printStackTrace();
-								Toast.makeText(context,
-										R.string.db_backup_failed,
-										Toast.LENGTH_SHORT).show();
+								mHandler.post(new Runnable() {
+
+									@Override
+									public void run() {
+										Toast.makeText(context,
+												R.string.db_backup_failed,
+												Toast.LENGTH_SHORT).show();
+									}
+								});
+
 							}
 						}
 					}
 				} });
 	}
 
-	private void clean(final Context context) {
+	private void cleanDB(final Context context) {
 		new AsyncTaskWithProgress(context)
 				.execute(new Runnable[] { new Runnable() {
 					@Override
@@ -116,9 +143,15 @@ public class DatabaseOperationFragment extends Fragment {
 										.clean(context);
 							} catch (Exception e) {
 								e.printStackTrace();
-								Toast.makeText(context,
-										R.string.db_clean_failed,
-										Toast.LENGTH_SHORT).show();
+								mHandler.post(new Runnable() {
+
+									@Override
+									public void run() {
+										Toast.makeText(context,
+												R.string.db_clean_failed,
+												Toast.LENGTH_SHORT).show();
+									}
+								});
 							}
 						}
 						IgnoreSetService.getIgnoreSetService(context)
@@ -128,7 +161,7 @@ public class DatabaseOperationFragment extends Fragment {
 				} });
 	}
 
-	private void restore(final Context context) {
+	private void restoreDB(final Context context) {
 		new AsyncTaskWithProgress(context)
 				.execute(new Runnable[] { new Runnable() {
 
@@ -140,10 +173,64 @@ public class DatabaseOperationFragment extends Fragment {
 										.restore();
 							} catch (Exception e) {
 								e.printStackTrace();
-								Toast.makeText(context,
-										R.string.db_restore_failed,
-										Toast.LENGTH_SHORT).show();
+								mHandler.post(new Runnable() {
+
+									@Override
+									public void run() {
+										Toast.makeText(context,
+												R.string.db_restore_failed,
+												Toast.LENGTH_SHORT).show();
+									}
+								});
 							}
+						}
+					}
+				} });
+	}
+
+	private void backupPref(final Context context) {
+		new AsyncTaskWithProgress(context)
+				.execute(new Runnable[] { new Runnable() {
+					@Override
+					public void run() {
+						try {
+							PreferenceService.getPreferenceReadService(context)
+									.backup(context);
+						} catch (Exception e) {
+							e.printStackTrace();
+							mHandler.post(new Runnable() {
+
+								@Override
+								public void run() {
+									Toast.makeText(context,
+											R.string.db_backup_failed,
+											Toast.LENGTH_SHORT).show();
+								}
+							});
+						}
+					}
+				} });
+	}
+
+	private void restorePref(final Context context) {
+		new AsyncTaskWithProgress(context)
+				.execute(new Runnable[] { new Runnable() {
+					@Override
+					public void run() {
+						try {
+							PreferenceService.getPreferenceReadService(context)
+									.restore(context);
+						} catch (Exception e) {
+							e.printStackTrace();
+							mHandler.post(new Runnable() {
+
+								@Override
+								public void run() {
+									Toast.makeText(context,
+											R.string.db_restore_failed,
+											Toast.LENGTH_SHORT).show();
+								}
+							});
 						}
 					}
 				} });

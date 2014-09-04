@@ -4,13 +4,15 @@
     <string name="app_name">High5</string>
     <string name="title_settings">Settings</string>
     <string name="title_ignore">Manage Ignore</string>
-    <string name="title_db">Database Backup</string>
+    <string name="title_db">Data Backup</string>
     <string name="title_graph">Data Graph</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
     <string name="unknown">Unknown</string>
     <!-- db operation -->
+    <string name="db_title_db">Database</string>
+    <string name="db_title_pref">Preference</string>
     <string name="db_backup">Backup</string>
     <string name="db_restore">Restore</string>
     <string name="db_clean">Clean</string>

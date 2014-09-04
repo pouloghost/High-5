@@ -212,27 +212,6 @@ public class DatabaseAccessor {
 		}
 	}
 
-	private void setValue(Cursor cursor, Table data, Field field)
-			throws IllegalAccessException {
-		Class<?> fClass = field.getType();
-		field.setAccessible(true);
-		if (int.class == fClass || Integer.class == fClass) {
-			int value = cursor.getInt(cursor.getColumnIndex(field.getName()));
-			field.set(data, value);
-		} else if (String.class == fClass) {
-			String value = cursor.getString(cursor.getColumnIndex(field
-					.getName()));
-			field.set(data, value);
-		} else if (double.class == fClass || Double.class == fClass) {
-			double value = cursor.getDouble(cursor.getColumnIndex(field
-					.getName()));
-			field.set(data, value);
-		} else if (long.class == fClass || Long.class == fClass) {
-			long value = cursor.getLong(cursor.getColumnIndex(field.getName()));
-			field.set(data, value);
-		}
-	}
-
 	public boolean U(Table select, Table table) {
 		String sql = table.U(select);
 		if (null == sql) {
@@ -414,5 +393,26 @@ public class DatabaseAccessor {
 
 	public void setTableParser(TableParser mTableParser) {
 		this.mTableParser = mTableParser;
+	}
+
+	private void setValue(Cursor cursor, Table data, Field field)
+			throws IllegalAccessException {
+		Class<?> fClass = field.getType();
+		field.setAccessible(true);
+		if (int.class == fClass || Integer.class == fClass) {
+			int value = cursor.getInt(cursor.getColumnIndex(field.getName()));
+			field.set(data, value);
+		} else if (String.class == fClass) {
+			String value = cursor.getString(cursor.getColumnIndex(field
+					.getName()));
+			field.set(data, value);
+		} else if (double.class == fClass || Double.class == fClass) {
+			double value = cursor.getDouble(cursor.getColumnIndex(field
+					.getName()));
+			field.set(data, value);
+		} else if (long.class == fClass || Long.class == fClass) {
+			long value = cursor.getLong(cursor.getColumnIndex(field.getName()));
+			field.set(data, value);
+		}
 	}
 }

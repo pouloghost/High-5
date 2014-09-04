@@ -1,7 +1,7 @@
 package gt.high5;
 
 import gt.high5.core.service.IgnoreSetService;
-import gt.high5.core.service.PreferenceReadService;
+import gt.high5.core.service.PreferenceService;
 import gt.high5.database.model.TableUtils;
 import gt.high5.database.table.Time;
 
@@ -64,9 +64,9 @@ public class High5Application extends Application {
 
 	private void initPreferences() {
 		// init static preferences
-		Time.setRegionLength(PreferenceReadService.getPreferenceReadService(
+		Time.setRegionLength(PreferenceService.getPreferenceReadService(
 				getApplicationContext()).getRegionLength());
-		TableUtils.setDebugging(PreferenceReadService.getPreferenceReadService(
+		TableUtils.setDebugging(PreferenceService.getPreferenceReadService(
 				getApplicationContext()).shouldLog(TableUtils.class));
 	}
 }

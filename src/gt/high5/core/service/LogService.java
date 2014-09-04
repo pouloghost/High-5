@@ -6,7 +6,7 @@ public class LogService {
 	public static final String LOG_TAG = "GT";
 
 	public static void d(Class<?> clazz, String msg, Context context) {
-		PreferenceReadService preference = PreferenceReadService
+		PreferenceService preference = PreferenceService
 				.getPreferenceReadService(context);
 		if (preference.shouldLog(clazz)) {
 			if (preference.shouldLogToFile()) {
@@ -20,7 +20,7 @@ public class LogService {
 	}
 
 	public static void e(Class<?> clazz, String msg, Context context) {
-		PreferenceReadService preference = PreferenceReadService
+		PreferenceService preference = PreferenceService
 				.getPreferenceReadService(context);
 		if (preference.shouldLog(clazz)) {
 			if (preference.shouldLogToFile()) {
@@ -34,7 +34,7 @@ public class LogService {
 	}
 
 	public static void i(Class<?> clazz, String msg, Context context) {
-		PreferenceReadService preference = PreferenceReadService
+		PreferenceService preference = PreferenceService
 				.getPreferenceReadService(context);
 		if (preference.shouldLog(clazz)) {
 			if (preference.shouldLogToFile()) {
@@ -48,7 +48,7 @@ public class LogService {
 	}
 
 	public static void v(Class<?> clazz, String msg, Context context) {
-		PreferenceReadService preference = PreferenceReadService
+		PreferenceService preference = PreferenceService
 				.getPreferenceReadService(context);
 		if (preference.shouldLog(clazz)) {
 			if (preference.shouldLogToFile()) {
@@ -62,7 +62,7 @@ public class LogService {
 	}
 
 	public static void w(Class<?> clazz, String msg, Context context) {
-		PreferenceReadService preference = PreferenceReadService
+		PreferenceService preference = PreferenceService
 				.getPreferenceReadService(context);
 		if (preference.shouldLog(clazz)) {
 			if (preference.shouldLogToFile()) {

@@ -2,7 +2,7 @@ package gt.high5.activity.widget;
 
 import gt.high5.R;
 import gt.high5.core.service.LogService;
-import gt.high5.core.service.PreferenceReadService;
+import gt.high5.core.service.PreferenceService;
 import gt.high5.core.service.RecordService;
 
 import java.io.IOException;
@@ -106,14 +106,14 @@ public class WidgetProvider extends AppWidgetProvider {
 		// start update interval
 		startInterval(
 				context,
-				PreferenceReadService.getPreferenceReadService(
+				PreferenceService.getPreferenceReadService(
 						context.getApplicationContext()).getUpdateInterval(),
 				getUpdateIntent(context, appWidgetIds));
 
 		LogService.d(
 				WidgetProvider.class,
 				"update "
-						+ PreferenceReadService.getPreferenceReadService(
+						+ PreferenceService.getPreferenceReadService(
 								context.getApplicationContext())
 								.getUpdateInterval(), context
 						.getApplicationContext());
@@ -129,12 +129,12 @@ public class WidgetProvider extends AppWidgetProvider {
 	public static void restartUpdateAndRecord(Context context) {
 		startInterval(
 				context,
-				PreferenceReadService.getPreferenceReadService(
+				PreferenceService.getPreferenceReadService(
 						context.getApplicationContext()).getUpdateInterval(),
 				getUpdateIntent(context, null));
 		startInterval(
 				context,
-				PreferenceReadService.getPreferenceReadService(
+				PreferenceService.getPreferenceReadService(
 						context.getApplicationContext()).getRecordInterval(),
 				getRecordIntent(context));
 	}
@@ -149,7 +149,7 @@ public class WidgetProvider extends AppWidgetProvider {
 				.cancel(getUpdateIntent(context, null));
 		startInterval(
 				context,
-				PreferenceReadService.getPreferenceReadService(
+				PreferenceService.getPreferenceReadService(
 						context.getApplicationContext()).getUpdateInterval(),
 				getUpdateIntent(context, null));
 	}
@@ -191,14 +191,14 @@ public class WidgetProvider extends AppWidgetProvider {
 		try {
 			RecordService.getRecordService(context).record(context);
 
-			startInterval(context, PreferenceReadService
+			startInterval(context, PreferenceService
 					.getPreferenceReadService(context.getApplicationContext())
 					.getRecordInterval(), getRecordIntent(context));
 
 			LogService.d(
 					WidgetProvider.class,
 					"record "
-							+ PreferenceReadService.getPreferenceReadService(
+							+ PreferenceService.getPreferenceReadService(
 									context.getApplicationContext())
 									.getRecordInterval(), context
 							.getApplicationContext());
