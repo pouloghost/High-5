@@ -36,6 +36,7 @@
     <!-- detail chart -->
     <string name="total_detail_count_hint">Count:</string>
     <string name="total_detail_delete">Delete</string>
+    <string name="total_detail_hide">Hide</string>
     <string name="total_detail_delete_failed">Delete failed</string>
     <string name="record_detail_spinner_pie">Pie</string>
     <string name="record_detail_spinner_bar">Bar</string>

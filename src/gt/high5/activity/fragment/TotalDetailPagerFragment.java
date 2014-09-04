@@ -3,8 +3,16 @@ package gt.high5.activity.fragment;
 import gt.high5.R;
 import gt.high5.activity.CancelableTask;
 import gt.high5.activity.fragment.RecordDetailFragment.BUNDLE_KEYS;
+import gt.high5.core.predictor.PredictContext;
 import gt.high5.core.service.RecordService;
+import gt.high5.database.accessor.DatabaseAccessor;
+import gt.high5.database.accessor.TableParser;
+import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
+
+import java.util.ArrayList;
+
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -19,26 +27,31 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 /**
  * @author GT
  * 
- *         fragment showing the overall infomation of a package
+ *         fragment showing the overall information of a package
  */
 public class TotalDetailPagerFragment extends Fragment implements
 		CancelableTask {
 
-	private static final int SPLITTER_SIZE = 2;
+	private static final int SPLITTER_SIZE = 3;
+	private static final int XML_ID = R.xml.tables;
 
 	private RelativeLayout mNameWrapper = null;
 	private RelativeLayout mCountWrapper = null;
 	private RelativeLayout mOperationWrapper = null;
+	private RelativeLayout mRecordWrapper = null;
 	private ImageView mAppIconImage = null;
 	private TextView mAppNameText = null;
 	private TextView mCountText = null;
 	private Button mDeleteButton = null;
+	private Button mRecordSwitchButton = null;
+	private TableLayout mRecordList = null;
 
 	private RelativeLayout[] mWrappers = null;
 	private View[] mSplitters = null;
@@ -67,6 +80,10 @@ public class TotalDetailPagerFragment extends Fragment implements
 		mCountText = (TextView) root.findViewById(R.id.total_detail_count);
 		mDeleteButton = (Button) root
 				.findViewById(R.id.total_detail_operation_delete);
+		mRecordSwitchButton = (Button) root
+				.findViewById(R.id.total_detail_records_switch);
+		mRecordList = (TableLayout) root
+				.findViewById(R.id.total_detail_records_list);
 		mLoadingBar = (ProgressBar) root
 				.findViewById(R.id.total_detail_view_load_progress_bar);
 		mErrorImage = (ImageView) root
@@ -77,8 +94,10 @@ public class TotalDetailPagerFragment extends Fragment implements
 				.findViewById(R.id.total_detail_count_wrapper);
 		mOperationWrapper = (RelativeLayout) root
 				.findViewById(R.id.total_detail_operation_wrapper);
+		mRecordWrapper = (RelativeLayout) root
+				.findViewById(R.id.total_detail_records_wrapper);
 		mWrappers = new RelativeLayout[] { mNameWrapper, mCountWrapper,
-				mOperationWrapper };
+				mOperationWrapper, mRecordWrapper };
 		// for more segments
 		mSplitters = new View[SPLITTER_SIZE];
 		String prefix = getResources().getResourcePackageName(
@@ -101,6 +120,21 @@ public class TotalDetailPagerFragment extends Fragment implements
 				}
 			}
 		});
+		mRecordSwitchButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				if (View.GONE == mRecordList.getVisibility()) {
+					mRecordSwitchButton.setText(R.string.total_detail_hide);
+					mRecordList.setVisibility(View.VISIBLE);
+				} else {
+					mRecordSwitchButton.setText("Possibility:"
+							+ mTotal.getPossibility());
+					mRecordList.setVisibility(View.GONE);
+				}
+			}
+		});
+		mRecordSwitchButton.setText("Possibility:" + mTotal.getPossibility());
 		return root;
 	}
 
@@ -133,6 +167,14 @@ public class TotalDetailPagerFragment extends Fragment implements
 	class AppInfo {
 		private Drawable mIcon = null;
 		private String mName = null;
+		private ArrayList<RecordTable> mRecords = null;
+
+		public AppInfo(Drawable icon, String name,
+				ArrayList<RecordTable> records) {
+			mIcon = icon;
+			mName = name;
+			mRecords = records;
+		}
 
 		public Drawable getIcon() {
 			return mIcon;
@@ -150,9 +192,12 @@ public class TotalDetailPagerFragment extends Fragment implements
 			this.mName = mName;
 		}
 
-		public AppInfo(Drawable icon, String name) {
-			mIcon = icon;
-			mName = name;
+		public ArrayList<RecordTable> getRecords() {
+			return mRecords;
+		}
+
+		public void setRecords(ArrayList<RecordTable> mRecords) {
+			this.mRecords = mRecords;
 		}
 
 	}
@@ -213,9 +258,15 @@ public class TotalDetailPagerFragment extends Fragment implements
 				PackageManager manager = getActivity().getPackageManager();
 				ApplicationInfo info = manager.getApplicationInfo(
 						mTotal.getName(), PackageManager.GET_META_DATA);
+				Context context = getActivity().getApplicationContext();
+				DatabaseAccessor accessor = DatabaseAccessor.getAccessor(
+						context, XML_ID);
 				return new AppInfo(
 						manager.getApplicationIcon(mTotal.getName()), manager
-								.getApplicationLabel(info).toString());
+								.getApplicationLabel(info).toString(), accessor
+								.getPredictor().getRelativeRecords(
+										new PredictContext(accessor, context),
+										mTotal));
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
 				return null;
@@ -262,9 +313,25 @@ public class TotalDetailPagerFragment extends Fragment implements
 			for (RelativeLayout l : mWrappers) {
 				l.setVisibility(View.VISIBLE);
 			}
-
+			fillRecordTable(result.getRecords());
 		} else {
 			mErrorImage.setVisibility(View.VISIBLE);
+		}
+	}
+
+	private void fillRecordTable(ArrayList<RecordTable> records) {
+		TableParser tableParser = DatabaseAccessor.getAccessor(
+				getActivity().getApplicationContext(), XML_ID).getTableParser();
+		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		for (RecordTable record : records) {
+			View row = inflater.inflate(
+					R.layout.total_detail_pager_record_list_item, mRecordList,
+					false);
+			((TextView) row.findViewById(R.id.total_detail_record_list_type))
+					.setText(tableParser.getTableTitle(record.getClass()));
+			((TextView) row.findViewById(R.id.total_detail_record_list_count))
+					.setText(":" + record.getCount());
+			mRecordList.addView(row);
 		}
 	}
 }
