@@ -4,11 +4,6 @@ import gt.high5.R;
 import gt.high5.core.service.LogService;
 import gt.high5.core.service.PreferenceService;
 import gt.high5.core.service.RecordService;
-
-import java.io.IOException;
-
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -17,8 +12,8 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
+import android.os.PowerManager;
 import android.widget.RemoteViews;
 
 /**
@@ -189,31 +184,25 @@ public class WidgetProvider extends AppWidgetProvider {
 
 	private void recordCurrentStatus(Context context) {
 		try {
-			RecordService.getRecordService(context).record(context);
+			if (((PowerManager) context.getSystemService(Context.POWER_SERVICE))
+					.isScreenOn()) {
+				RecordService.getRecordService(context).record(context);
+				LogService.d(
+						WidgetProvider.class,
+						"record "
+								+ PreferenceService.getPreferenceReadService(
+										context.getApplicationContext())
+										.getRecordInterval(), context
+								.getApplicationContext());
+			}
+			startInterval(
+					context,
+					PreferenceService.getPreferenceReadService(
+							context.getApplicationContext())
+							.getRecordInterval(), getRecordIntent(context));
 
-			startInterval(context, PreferenceService
-					.getPreferenceReadService(context.getApplicationContext())
-					.getRecordInterval(), getRecordIntent(context));
 
-			LogService.d(
-					WidgetProvider.class,
-					"record "
-							+ PreferenceService.getPreferenceReadService(
-									context.getApplicationContext())
-									.getRecordInterval(), context
-							.getApplicationContext());
-
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (NotFoundException e) {
-			e.printStackTrace();
-		} catch (XmlPullParserException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
