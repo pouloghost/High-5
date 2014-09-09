@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!--
     need to move to system/app to gain this permission  <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
-    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
     -->
     <application
         android:name=".High5Application"
@@ -53,7 +53,9 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_setting" />
         </receiver>
-        <receiver android:name="gt.high5.activity.SystemBroadcastReceiver" >
+        <receiver
+            android:name="gt.high5.activity.SystemBroadcastReceiver"
+            android:process=":system" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.PACKAGE_RESTARTED" />

@@ -1,5 +1,6 @@
 package gt.high5;
 
+import gt.high5.activity.SystemBroadcastReceiver;
 import gt.high5.core.service.IgnoreSetService;
 import gt.high5.core.service.PreferenceService;
 import gt.high5.database.model.TableUtils;
@@ -9,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 
 import android.app.Application;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -23,7 +26,15 @@ public class High5Application extends Application {
 		initPreferences();
 		initDefaultIgnore();
 		initLogFile();
+		registerScreenReciever();
+	}
 
+	private void registerScreenReciever() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_SCREEN_ON);
+		filter.addAction(Intent.ACTION_SCREEN_OFF);
+		getApplicationContext().registerReceiver(new SystemBroadcastReceiver(),
+				filter);
 	}
 
 	private void initDefaultIgnore() {

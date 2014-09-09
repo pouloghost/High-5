@@ -53,12 +53,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
 		LogService.d(WidgetProvider.class, "disable",
 				context.getApplicationContext());
-
-		// shut down all recording service
-		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
-				.cancel(getUpdateIntent(context, null));
-		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
-				.cancel(getRecordIntent(context));
+		stopUpdateAndRecord(context);
 	}
 
 	@Override
@@ -117,7 +112,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	}
 
 	/**
-	 * restart update and record when process is killed
+	 * restart update and record
 	 * 
 	 * @param context
 	 */
@@ -132,6 +127,19 @@ public class WidgetProvider extends AppWidgetProvider {
 				PreferenceService.getPreferenceReadService(
 						context.getApplicationContext()).getRecordInterval(),
 				getRecordIntent(context));
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param context
+	 */
+	public static void stopUpdateAndRecord(Context context) {
+		// shut down all recording service
+		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
+				.cancel(getUpdateIntent(context, null));
+		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
+				.cancel(getRecordIntent(context));
 	}
 
 	/**
@@ -200,7 +208,6 @@ public class WidgetProvider extends AppWidgetProvider {
 					PreferenceService.getPreferenceReadService(
 							context.getApplicationContext())
 							.getRecordInterval(), getRecordIntent(context));
-
 
 		} catch (Exception e) {
 			e.printStackTrace();

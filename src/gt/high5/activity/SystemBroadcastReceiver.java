@@ -21,9 +21,15 @@ public class SystemBroadcastReceiver extends BroadcastReceiver {
 				|| Intent.ACTION_PACKAGE_RESTARTED.equalsIgnoreCase(intent
 						.getAction())) {
 			// task manager killed broadcast.
+			// this is not working killing this won't receive broadcast see
+			// android doc
+			// http://developer.android.com/reference/android/content/Intent.html#ACTION_PACKAGE_RESTARTED
 			LogService.d(SystemBroadcastReceiver.class,
 					"killed in task manager", context.getApplicationContext());
-			WidgetProvider.restartUpdateAndRecord(context);
+			if (context.getApplicationContext().getApplicationInfo().uid == intent
+					.getIntExtra(Intent.EXTRA_UID, 0)) {
+				WidgetProvider.restartUpdateAndRecord(context);
+			}
 		} else if (Intent.ACTION_PACKAGE_REMOVED.equalsIgnoreCase(intent
 				.getAction())) {
 			if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
@@ -44,7 +50,14 @@ public class SystemBroadcastReceiver extends BroadcastReceiver {
 
 				WidgetProvider.forceRefresh(context);
 			}
+		} else if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
+			LogService.d(SystemBroadcastReceiver.class, "Screen On",
+					context.getApplicationContext());
+			WidgetProvider.restartUpdateAndRecord(context);
+		} else if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
+			LogService.d(SystemBroadcastReceiver.class, "Screen Off",
+					context.getApplicationContext());
+			WidgetProvider.stopUpdateAndRecord(context);
 		}
 	}
-
 }
