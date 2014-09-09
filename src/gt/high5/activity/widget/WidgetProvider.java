@@ -36,6 +36,8 @@ public class WidgetProvider extends AppWidgetProvider {
 	private static final int RECORD_REQ = 1;
 	private static final String RECORD_ACT = "gt.high5.record";
 
+	private static final int UPDATE_REQ = 2;
+
 	// public static final int RECORD_INTERVAL = 60 * 1000;
 	// public static final int RECORD_INTERVAL = UPDATE_INTERVAL / 15;
 
@@ -175,7 +177,7 @@ public class WidgetProvider extends AppWidgetProvider {
 		updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
 				appWidgetIds);
 		updateIntent.setData(Uri.parse("high5://widget/update/"));
-		return PendingIntent.getBroadcast(context, LAUNCH_REQ, updateIntent,
+		return PendingIntent.getBroadcast(context, UPDATE_REQ, updateIntent,
 				PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 
