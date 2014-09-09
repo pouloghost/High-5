@@ -7,6 +7,7 @@ import gt.high5.core.service.RecordService;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.PendingIntent.CanceledException;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -117,16 +118,12 @@ public class WidgetProvider extends AppWidgetProvider {
 	 * @param context
 	 */
 	public static void restartUpdateAndRecord(Context context) {
-		startInterval(
-				context,
-				PreferenceService.getPreferenceReadService(
-						context.getApplicationContext()).getUpdateInterval(),
-				getUpdateIntent(context, null));
-		startInterval(
-				context,
-				PreferenceService.getPreferenceReadService(
-						context.getApplicationContext()).getRecordInterval(),
-				getRecordIntent(context));
+		try {
+			getUpdateIntent(context, null).send();
+			getRecordIntent(context).send();
+		} catch (CanceledException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -203,14 +200,15 @@ public class WidgetProvider extends AppWidgetProvider {
 										.getRecordInterval(), context
 								.getApplicationContext());
 			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
 			startInterval(
 					context,
 					PreferenceService.getPreferenceReadService(
 							context.getApplicationContext())
 							.getRecordInterval(), getRecordIntent(context));
-
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 }

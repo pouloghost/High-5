@@ -4,7 +4,9 @@ import gt.high5.activity.widget.WidgetProvider;
 import gt.high5.core.service.IgnoreSetService;
 import gt.high5.core.service.LogService;
 import gt.high5.core.service.RecordService;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
@@ -58,6 +60,16 @@ public class SystemBroadcastReceiver extends BroadcastReceiver {
 			LogService.d(SystemBroadcastReceiver.class, "Screen Off",
 					context.getApplicationContext());
 			WidgetProvider.stopUpdateAndRecord(context);
+		} else if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
+			LogService.d(SystemBroadcastReceiver.class, "Boot completed",
+					context.getApplicationContext());
+			ComponentName provider = new ComponentName(context,
+					WidgetProvider.class);
+			int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(
+					provider);
+			if (null != ids && ids.length > 0) {
+				WidgetProvider.restartUpdateAndRecord(context);
+			}
 		}
 	}
 }
