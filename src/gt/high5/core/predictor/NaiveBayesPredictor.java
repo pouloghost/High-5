@@ -117,14 +117,14 @@ public class NaiveBayesPredictor implements Predictor {
 			RecordTable queryTable;
 			try {
 				queryTable = clazz.newInstance();
-				queryTable.queryForRead(new RecordContext(context.getContext(),
-						total));
-				ArrayList<Table> allTables = accessor.R(queryTable);
-				if (null != allTables) {
-					records.add((RecordTable) allTables.get(0));
-				} else {
-					records.add(queryTable);
+				if (queryTable.queryForRead(new RecordContext(context
+						.getContext(), total))) {
+					ArrayList<Table> allTables = accessor.R(queryTable);
+					if (null != allTables) {// available record
+						queryTable = (RecordTable) allTables.get(0);
+					}
 				}
+				records.add(queryTable);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
