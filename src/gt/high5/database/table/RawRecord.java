@@ -23,6 +23,7 @@ import android.net.wifi.WifiManager;
  *         raw record table
  */
 public class RawRecord {
+	// all available data types
 	public static String TYPE_DAY_OF_MONTH = "DayOfMonth";
 	public static String TYPE_LAST_PACKAGE = "LastPackage";
 	public static String TYPE_NETWORK = "Network";
