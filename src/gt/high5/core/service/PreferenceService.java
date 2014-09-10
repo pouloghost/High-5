@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
@@ -25,7 +26,7 @@ public class PreferenceService {
 		return mInstance;
 	}
 
-	private static final String PREFERENCE_PATH = "/data/data/gt.high5/shared_prefs/gt.high5_preferences.xml";
+	@SuppressLint("SdCardPath") private static final String PREFERENCE_PATH = "/data/data/gt.high5/shared_prefs/gt.high5_preferences.xml";
 	private static final String BACKUP_PATH = "high5";
 	private static final String BACKUP_FILE = "gt.high5_preferences.xml";
 
