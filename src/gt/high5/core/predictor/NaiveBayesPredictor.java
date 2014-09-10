@@ -30,15 +30,15 @@ public class NaiveBayesPredictor implements Predictor {
 
 	private static final HashMap<Class<? extends RecordTable>, Integer> WEIGHTS = new HashMap<Class<? extends RecordTable>, Integer>();
 	static {
-		WEIGHTS.put(Total.class, 9);
-		WEIGHTS.put(Time.class, 5);
-		WEIGHTS.put(WifiName.class, 7);
-		WEIGHTS.put(Network.class, 8);
-		WEIGHTS.put(LastPackage.class, 7);
-		WEIGHTS.put(WeekDay.class, 9);
-		WEIGHTS.put(DayOfMonth.class, 9);
-		WEIGHTS.put(RingVolumn.class, 8);
-		WEIGHTS.put(RingMode.class, 8);
+		WEIGHTS.put(Total.class, 1);
+		WEIGHTS.put(Time.class, 1);
+		WEIGHTS.put(WifiName.class, 3);
+		WEIGHTS.put(Network.class, 2);
+		WEIGHTS.put(LastPackage.class, 3);
+		WEIGHTS.put(WeekDay.class, 4);
+		WEIGHTS.put(DayOfMonth.class, 4);
+		WEIGHTS.put(RingVolumn.class, 2);
+		WEIGHTS.put(RingMode.class, 2);
 	}
 
 	@Override
