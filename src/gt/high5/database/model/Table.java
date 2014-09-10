@@ -20,7 +20,7 @@ public abstract class Table {
 	/*
 	 * for new instances
 	 */
-	public abstract RecordTable clone();
+	public abstract Table clone();
 
 	/*
 	 * id field and pid field

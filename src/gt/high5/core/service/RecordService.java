@@ -158,7 +158,6 @@ public class RecordService {
 							context.getApplicationContext());
 
 					if (table.initDefault(recordContext)) {
-						table.setPid(total.getId());
 						accessor.C(table);
 					}
 				} else {// existing condition just update
@@ -168,7 +167,7 @@ public class RecordService {
 							context.getApplicationContext());
 
 					table = (RecordTable) list.get(0);
-					RecordTable select = table.clone();
+					RecordTable select = (RecordTable) table.clone();
 					table.increaseCount(count);
 					accessor.U(select, table);
 				}

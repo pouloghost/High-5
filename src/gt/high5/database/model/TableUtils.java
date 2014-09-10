@@ -19,10 +19,12 @@ public class TableUtils {
 	static {
 		typeMap = new HashMap<Class<?>, String>();
 		typeMap.put(Integer.class, "INTEGER");
-		typeMap.put(Double.class, "DOUBLE");
-		typeMap.put(String.class, "TEXT");
 		typeMap.put(int.class, "INTEGER");
+		typeMap.put(Double.class, "DOUBLE");
 		typeMap.put(double.class, "DOUBLE");
+		typeMap.put(String.class, "TEXT");
+		typeMap.put(Long.class, "INTEGER");
+		typeMap.put(long.class, "DOUBLE");
 	}
 
 	public static <T> String buildCreator(Class<? extends T> clazz,
