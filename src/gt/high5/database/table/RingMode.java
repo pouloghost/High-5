@@ -5,7 +5,6 @@ import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.raw.RawRecord;
 import gt.high5.database.raw.RingModeRecordOperation;
-import android.content.Context;
 
 public class RingMode extends SimpleRecordTable {
 	private static RingModeRecordOperation recordOperation = new RingModeRecordOperation();
@@ -33,8 +32,8 @@ public class RingMode extends SimpleRecordTable {
 	}
 
 	@Override
-	public float getDefaultPossibility(Context context) {
-		return 0.3f;
+	public float getDefaultPossibility(RecordContext context) {
+		return 0.4f / context.getTotal().getCount();
 	}
 
 	public int getMode() {

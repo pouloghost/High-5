@@ -8,8 +8,6 @@ import gt.high5.database.raw.RawRecord;
 
 import java.util.List;
 
-import android.content.Context;
-
 /**
  * @author ayi.zty
  * 
@@ -71,16 +69,16 @@ public final class LastPackage extends SimpleRecordTable {
 		return false;
 	}
 
+	@Override
+	public float getDefaultPossibility(RecordContext context) {
+		return 0.7f / context.getTotal().getCount();
+	}
+
 	public String getLastPackage() {
 		return lastPackage;
 	}
 
 	public void setLastPackage(String lastPackage) {
 		this.lastPackage = lastPackage;
-	}
-
-	@Override
-	public float getDefaultPossibility(Context context) {
-		return 0.1f;
 	}
 }

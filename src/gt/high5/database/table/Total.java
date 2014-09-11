@@ -7,7 +7,6 @@ import gt.high5.database.model.Table;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.model.TableUtils;
 import gt.high5.database.raw.RawRecord;
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -28,6 +27,28 @@ public class Total extends RecordTable implements Parcelable {
 	private long timestamp = -1;
 	@TableAnnotation(defaultValue = "1", isTransient = true)
 	private float possibility = 1;
+
+	@Override
+	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
+		count = rawRecord.getCount();
+		return true;
+	}
+
+	@Override
+	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
+		this.name = context.getTotal().getName();
+		return true;
+	}
+
+	@Override
+	public boolean queryForRead(RecordContext context) {
+		return queryForRecord(context, null);
+	}
+
+	@Override
+	public float getDefaultPossibility(RecordContext context) {
+		return 0.01f;
+	}
 
 	@Override
 	public String getCreator() {
@@ -109,28 +130,6 @@ public class Total extends RecordTable implements Parcelable {
 	}
 
 	@Override
-	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
-		count = rawRecord.getCount();
-		return true;
-	}
-
-	@Override
-	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
-		this.name = context.getTotal().getName();
-		return true;
-	}
-
-	@Override
-	public boolean queryForRead(RecordContext context) {
-		return queryForRecord(context, null);
-	}
-
-	@Override
-	public float getDefaultPossibility(Context context) {
-		return 0.01f;
-	}
-
-	@Override
 	public int getId() {
 		return id;
 	}
@@ -170,6 +169,14 @@ public class Total extends RecordTable implements Parcelable {
 		this.possibility = possibility;
 	}
 
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
+	}
+
 	public static Creator<Total> CREATOR = new Creator<Total>() {
 
 		@Override
@@ -199,13 +206,5 @@ public class Total extends RecordTable implements Parcelable {
 		dest.writeString(name);
 		dest.writeInt(count);
 		dest.writeFloat(possibility);
-	}
-
-	public long getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
 	}
 }

@@ -5,7 +5,6 @@ import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.raw.RawRecord;
 import gt.high5.database.raw.TimeRecordOperation;
-import android.content.Context;
 
 /**
  * @author GT
@@ -17,14 +16,6 @@ public class Time extends SimpleRecordTable {
 	private static TimeRecordOperation recordOperation = new TimeRecordOperation();
 	@TableAnnotation(defaultValue = "-1")
 	private int region = -1;
-
-	public int getRegion() {
-		return region;
-	}
-
-	public void setRegion(int region) {
-		this.region = region;
-	}
 
 	@Override
 	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
@@ -46,16 +37,24 @@ public class Time extends SimpleRecordTable {
 				.queryForRecord(context));
 	}
 
+	@Override
+	public float getDefaultPossibility(RecordContext context) {
+		return 0.5f / context.getTotal().getCount();
+	}
+
+	public int getRegion() {
+		return region;
+	}
+
+	public void setRegion(int region) {
+		this.region = region;
+	}
+
 	private boolean checkAndSetRegion(Integer value) {
 		if (null != value) {
 			setRegion(value);
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public float getDefaultPossibility(Context context) {
-		return 0.0125f;
 	}
 }

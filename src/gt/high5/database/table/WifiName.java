@@ -5,7 +5,6 @@ import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.raw.RawRecord;
 import gt.high5.database.raw.WifiNameRecordOperation;
-import android.content.Context;
 
 /**
  * @author GT
@@ -18,19 +17,6 @@ public class WifiName extends SimpleRecordTable {
 	private static WifiNameRecordOperation recordOperation = new WifiNameRecordOperation();
 	@TableAnnotation(defaultValue = "")
 	private String bssid = "";
-
-	public String getBssid() {
-		return bssid;
-	}
-
-	public void setBssid(String bssid) {
-		this.bssid = bssid;
-	}
-
-	@Override
-	public float getDefaultPossibility(Context context) {
-		return 0.2f;
-	}
 
 	@Override
 	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
@@ -50,6 +36,19 @@ public class WifiName extends SimpleRecordTable {
 		setPid(context.getTotal().getId());
 		return checkAndSetConnection((String) recordOperation
 				.queryForRecord(context));
+	}
+
+	@Override
+	public float getDefaultPossibility(RecordContext context) {
+		return 0.4f / context.getTotal().getCount();
+	}
+
+	public String getBssid() {
+		return bssid;
+	}
+
+	public void setBssid(String bssid) {
+		this.bssid = bssid;
 	}
 
 	private boolean checkAndSetConnection(String value) {

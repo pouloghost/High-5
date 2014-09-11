@@ -2,7 +2,6 @@ package gt.high5.database.model;
 
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.raw.RawRecord;
-import android.content.Context;
 
 /**
  * @author GT
@@ -40,15 +39,15 @@ public abstract class RecordTable extends Table {
 
 	public abstract boolean queryForRead(RecordContext context);
 
-	public abstract int getCount();
-
 	/**
 	 * return a default possibility when there is no existing result
 	 * 
 	 * @param context
 	 * @return
 	 */
-	public abstract float getDefaultPossibility(Context context);
+	public abstract float getDefaultPossibility(RecordContext context);
+
+	public abstract int getCount();
 
 	public abstract String increase();
 

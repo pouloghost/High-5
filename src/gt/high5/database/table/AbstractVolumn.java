@@ -1,8 +1,8 @@
 package gt.high5.database.table;
 
+import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
-import android.content.Context;
 
 public abstract class AbstractVolumn extends SimpleRecordTable {
 
@@ -10,8 +10,8 @@ public abstract class AbstractVolumn extends SimpleRecordTable {
 	private int percent = -1;
 
 	@Override
-	public float getDefaultPossibility(Context context) {
-		return 0.2f;
+	public float getDefaultPossibility(RecordContext context) {
+		return 0.4f / context.getTotal().getCount();
 	}
 
 	public int getPercent() {

@@ -5,7 +5,6 @@ import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.raw.RawRecord;
 import gt.high5.database.raw.WeekDayRecordOperation;
-import android.content.Context;
 
 public class WeekDay extends SimpleRecordTable {
 
@@ -33,8 +32,8 @@ public class WeekDay extends SimpleRecordTable {
 	}
 
 	@Override
-	public float getDefaultPossibility(Context context) {
-		return 0.1f;
+	public float getDefaultPossibility(RecordContext context) {
+		return 0.4f / context.getTotal().getCount();
 	}
 
 	public int getDay() {

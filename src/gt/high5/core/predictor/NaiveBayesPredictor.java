@@ -82,8 +82,9 @@ public class NaiveBayesPredictor implements Predictor {
 		ArrayList<RecordTable> relates = getRelativeRecords(context, total);
 		for (RecordTable table : relates) {
 			if (RecordTable.DEFAULT_COUNT_INT == table.getCount()) {
-				float defaultPossibility = table.getDefaultPossibility(context
-						.getContext());
+				float defaultPossibility = table
+						.getDefaultPossibility(new RecordContext(context
+								.getContext(), total));
 				possibility *= defaultPossibility;
 				possibilityLog.append(table.getClass().getSimpleName());
 				possibilityLog.append(":");

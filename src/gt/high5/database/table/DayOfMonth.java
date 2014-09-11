@@ -5,7 +5,6 @@ import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.raw.DayOfMonthRecordOperation;
 import gt.high5.database.raw.RawRecord;
-import android.content.Context;
 
 public class DayOfMonth extends SimpleRecordTable {
 
@@ -35,8 +34,8 @@ public class DayOfMonth extends SimpleRecordTable {
 	}
 
 	@Override
-	public float getDefaultPossibility(Context context) {
-		return 0.03f;
+	public float getDefaultPossibility(RecordContext context) {
+		return 0.3f / context.getTotal().getCount();
 	}
 
 	public int getDay() {

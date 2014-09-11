@@ -39,4 +39,5 @@ public class RingVolumn extends AbstractVolumn {
 		}
 		return false;
 	}
+
 }
