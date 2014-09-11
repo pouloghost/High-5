@@ -67,6 +67,11 @@
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"
             android:title="PackageProvider" />
+        <CheckBoxPreference
+            android:key="RawRecord"
+            android:summaryOff="@string/settings_log_off"
+            android:summaryOn="@string/settings_log_on"
+            android:title="RawRecord" />
     </PreferenceCategory>
 
 </PreferenceScreen>

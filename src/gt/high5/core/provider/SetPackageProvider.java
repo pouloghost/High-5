@@ -57,10 +57,12 @@ public class SetPackageProvider extends PackageProvider {
 					break;
 				}
 			}
+			// all right to the first one
 			if (i == -1) {
 				i = 0;
 				RecentTaskInfo info = getRunningTask(context);
 				if (null != info
+						&& packages.size() > 0
 						&& info.baseIntent.getComponent().getPackageName()
 								.equals(packages.get(0))) {
 					// the newest recent is running

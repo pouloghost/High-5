@@ -27,6 +27,10 @@ public class TableUtils {
 		typeMap.put(long.class, "DOUBLE");
 	}
 
+	public static String getDataName(Class<?> clazz) {
+		return typeMap.get(clazz);
+	}
+
 	public static <T> String buildCreator(Class<? extends T> clazz,
 			Class<T> base) {
 		StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS "
@@ -42,7 +46,7 @@ public class TableUtils {
 					+ typeMap.get(field.getType()));
 		}
 		sql.append(")");
-	
+
 		String sqlString = sql.toString();
 		if (isDebugging()) {
 			Log.d(LogService.LOG_TAG, "creator " + clazz.getSimpleName() + " "
@@ -173,8 +177,8 @@ public class TableUtils {
 
 		String sqlString = "SELECT * FROM " + clazz.getSimpleName() + where;
 		if (isDebugging()) {
-			Log.d(LogService.LOG_TAG, "read " + table.getClass().getSimpleName()
-					+ " " + sqlString);
+			Log.d(LogService.LOG_TAG, "read "
+					+ table.getClass().getSimpleName() + " " + sqlString);
 		}
 		return sqlString;
 	}
@@ -270,12 +274,12 @@ public class TableUtils {
 		Field[] fields = ClassUtils.getAllFields(clazz, base);
 		boolean hasValue = false;
 		StringBuilder sql = new StringBuilder(" WHERE ");
-	
+
 		for (Field field : fields) {
 			if (shouldIgnoreField(field, false)) {
 				continue;
 			}
-	
+
 			Object def = ClassUtils.getDefaultValue(field);
 			if (null == def) {
 				continue;
@@ -293,7 +297,7 @@ public class TableUtils {
 		if (!hasValue) {
 			return null;
 		}
-	
+
 		String sqlString = sql.toString();
 		// Log.d(MainActivity.GT_TAG, "where " +
 		// table.getClass().getSimpleName()
@@ -329,7 +333,7 @@ public class TableUtils {
 					stepString = "" + s.doubleValue();
 				}
 			}
-	
+
 			return stepString;
 		} else {
 			return null;

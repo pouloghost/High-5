@@ -17,6 +17,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
+import android.database.Cursor;
 
 /**
  * @author ayi.zty
@@ -25,14 +26,23 @@ import android.content.res.Resources.NotFoundException;
  */
 public class RecordService {
 	private static int XML_ID = R.xml.tables;
+	private static int MAX_COUNT = 100;
 
 	private Context mContext = null;
+	private DatabaseAccessor mAccessor = null;
+	private int mRawRecordCount = 0;
 
 	// singleton
 	private static RecordService mInstance = null;
 
 	private RecordService(Context context) {
 		mContext = context;
+		mAccessor = DatabaseAccessor.getAccessor(mContext, XML_ID);
+		Cursor cursor = mAccessor.query(RawRecord.RCount());
+		if (cursor.moveToFirst()) {
+			mRawRecordCount = cursor.getInt(0);
+		}
+		cursor.close();
 	}
 
 	public static RecordService getRecordService(Context context)
@@ -61,6 +71,7 @@ public class RecordService {
 		for (LaunchInfo info : packages) {
 			recordPackage(context, info.getPackage(), info.getLaunchCount());
 		}
+		trimDB();
 	}
 
 	/**
@@ -70,25 +81,32 @@ public class RecordService {
 	 *            package name
 	 */
 	public void removeRecords(String name) {
-		DatabaseAccessor accessor = DatabaseAccessor.getAccessor(mContext,
-				XML_ID);
 		Total total = new Total();
 		total.setName(name);
-		List<Table> list = accessor.R(total);
+		List<Table> list = mAccessor.R(total);
 		if (null != list) {
 			total = (Total) list.get(0);
-			accessor.D(total);
-			Class<? extends RecordTable>[] clazzes = accessor.getTables();
+			mAccessor.D(total);
+			Class<? extends RecordTable>[] clazzes = mAccessor.getTables();
 			for (Class<? extends RecordTable> clazz : clazzes) {
 				RecordTable table;
 				try {
 					table = clazz.newInstance();
 					table.setPid(total.getId());
-					accessor.D(table);
+					mAccessor.D(table);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
+		}
+	}
+
+	private void trimDB() {
+		int count = mRawRecordCount - MAX_COUNT;
+		if (count > 0) {
+			String sql = RawRecord.D(count);
+			mAccessor.excute(sql);
+			mRawRecordCount = MAX_COUNT;
 		}
 	}
 
@@ -104,24 +122,21 @@ public class RecordService {
 	 */
 	private void recordPackage(Context context, String packageName, int count) {
 		if (null != packageName) {
-			DatabaseAccessor accessor = DatabaseAccessor.getAccessor(mContext,
-					XML_ID);
 			LogService.d(RecordService.class, "current package " + packageName,
 					context.getApplicationContext());
-
-			RecordContext recordContext = new RecordContext(context, null);
-
-			RawRecord rawRecord = new RawRecord();
-			rawRecord.record(recordContext, count);
-
 			// read total with current package name
 			Total total = new Total();
 			total.setName(packageName);
-			List<Table> list = accessor.R(total);
+			RecordContext recordContext = new RecordContext(context, total);
+			// record all
+			RawRecord rawRecord = new RawRecord();
+			rawRecord.setCount(count);
+			// create if no total exists
+			List<Table> list = mAccessor.R(total);
 			if (null == list) {// create a new one for new package
 				if (total.initDefault(recordContext, rawRecord)) {
-					accessor.C(total);
-					list = accessor.R(total);
+					mAccessor.C(total);
+					list = mAccessor.R(total);
 				}
 			}
 			// record
@@ -132,10 +147,16 @@ public class RecordService {
 						context.getApplicationContext());
 
 				recordContext.setTotal(total);
+				// record context
+				rawRecord.record(recordContext, count);
+				mAccessor.C(rawRecord);
+				++mRawRecordCount;
 				// each type of record
-				Class<? extends RecordTable>[] clazzes = accessor.getTables();
+				Class<? extends RecordTable>[] clazzes = mAccessor.getTables();
 				for (Class<? extends RecordTable> clazz : clazzes) {
-					recordTable(context, recordContext, rawRecord, clazz);
+					if (Total.class != clazz) {
+						recordTable(context, recordContext, rawRecord, clazz);
+					}
 				}
 			}
 		}
@@ -146,13 +167,11 @@ public class RecordService {
 		List<Table> list;
 
 		try {
-			DatabaseAccessor accessor = DatabaseAccessor.getAccessor(mContext,
-					XML_ID);
 			// read an existing record with the current pid and
 			// status
 			RecordTable table = clazz.newInstance();
 			if (table.queryForRecord(recordContext, rawRecord)) {
-				list = accessor.R(table);
+				list = mAccessor.R(table);
 
 				if (null == list) {// non-existing condition for
 									// this
@@ -162,7 +181,7 @@ public class RecordService {
 							context.getApplicationContext());
 
 					if (table.initDefault(recordContext, rawRecord)) {
-						accessor.C(table);
+						mAccessor.C(table);
 					}
 				} else {// existing condition just update
 
@@ -173,7 +192,7 @@ public class RecordService {
 					table = (RecordTable) list.get(0);
 					RecordTable select = (RecordTable) table.clone();
 					table.increaseCount(rawRecord.getCount());
-					accessor.U(select, table);
+					mAccessor.U(select, table);
 				}
 			}
 		} catch (Exception e) {

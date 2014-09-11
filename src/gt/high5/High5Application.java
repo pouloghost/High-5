@@ -4,6 +4,7 @@ import gt.high5.activity.SystemBroadcastReceiver;
 import gt.high5.core.service.IgnoreSetService;
 import gt.high5.core.service.PreferenceService;
 import gt.high5.database.model.TableUtils;
+import gt.high5.database.raw.RawRecord;
 import gt.high5.database.raw.TimeRecordOperation;
 
 import java.io.File;
@@ -80,5 +81,7 @@ public class High5Application extends Application {
 				.getRegionLength());
 		TableUtils.setDebugging(PreferenceService.getPreferenceReadService(
 				getApplicationContext()).shouldLog(TableUtils.class));
+		RawRecord.setDebugging(PreferenceService.getPreferenceReadService(
+				getApplicationContext()).shouldLog(RawRecord.class));
 	}
 }

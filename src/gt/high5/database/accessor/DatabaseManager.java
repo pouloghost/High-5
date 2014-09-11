@@ -2,12 +2,12 @@ package gt.high5.database.accessor;
 
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
+import gt.high5.database.raw.RawRecord;
 import gt.high5.database.table.Ignore;
 
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -31,14 +31,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
 			tablesToInit.add(table);
 		}
 		tablesToInit.add(Ignore.class);
+		tablesToInit.add(RawRecord.class);
 		for (Class<? extends Table> clazz : tablesToInit) {
 			try {
 				db.execSQL(clazz.newInstance().getCreator());
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

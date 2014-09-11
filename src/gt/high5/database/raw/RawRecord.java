@@ -1,18 +1,21 @@
 package gt.high5.database.raw;
 
+import gt.high5.core.service.LogService;
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.Table;
+import gt.high5.database.model.TableUtils;
 
 import java.util.HashMap;
 
 import android.database.Cursor;
+import android.util.Log;
 
 /**
  * @author GT
  * 
  *         raw record table
  */
-public class RawRecord {
+public class RawRecord extends Table {
 	// all available data types
 	public static String TYPE_DAY_OF_MONTH = "DayOfMonth";
 	public static String TYPE_LAST_PACKAGE = "LastPackage";
@@ -23,9 +26,6 @@ public class RawRecord {
 	public static String TYPE_TOTAL = "Total";
 	public static String TYPE_WEEK_DAY = "WeekDay";
 	public static String TYPE_WIFI_NAME = "WifiName";
-
-	private int id = -1;
-	private int count = 0;
 	/**
 	 * mapping type name to operation
 	 */
@@ -52,6 +52,11 @@ public class RawRecord {
 		recordOperations.put(TYPE_WIFI_NAME, new WifiNameRecordOperation());
 
 	}
+
+	private static boolean isDebugging = false;
+
+	private int id = -1;
+	private int count = 0;
 
 	// store values in hashmap
 	private HashMap<String, Object> mValues = new HashMap<String, Object>();
@@ -87,9 +92,14 @@ public class RawRecord {
 		StringBuilder sql = new StringBuilder(
 				"CREATE TABLE IF NOT EXISTS RawRecord (id INTEGER PRIMARY KEY AUTOINCREMENT, count INTEGER");
 		for (String key : recordOperations.keySet()) {
-			sql.append(", " + key + " " + recordOperations.get(key).getType());
+			sql.append(", "
+					+ key
+					+ " "
+					+ TableUtils.getDataName(recordOperations.get(key)
+							.getType()));
 		}
 		sql.append(")");
+		Log.d(LogService.LOG_TAG, sql.toString());
 		return sql.toString();
 	}
 
@@ -99,13 +109,13 @@ public class RawRecord {
 		StringBuilder cols = new StringBuilder(" (");
 		StringBuilder vals = new StringBuilder(" VALUES(");
 		for (String key : recordOperations.keySet()) {
-			if (hasValue) {
-				cols.append(" ,");
-				vals.append(" ,");
-			}
-
 			Object value = mValues.get(key);
 			if (null != value) {
+				if (hasValue) {
+					cols.append(" ,");
+					vals.append(" ,");
+				}
+
 				cols.append(key);
 				vals.append(getValueString(mValues.get(key)));
 
@@ -122,6 +132,7 @@ public class RawRecord {
 		sql.append(cols);
 		sql.append(vals);
 
+		Log.d(LogService.LOG_TAG, sql.toString());
 		return sql.toString();
 	}
 
@@ -135,6 +146,15 @@ public class RawRecord {
 
 	public String D() {
 		return null;
+	}
+
+	public static String RCount() {
+		return "SELECT COUNT(*) FROM RawRecord";
+	}
+
+	public static String D(int count) {
+		return "DELETE FROM RawRecord WHERE id IN(SELECT id FROM RawRecord ORDER BY id LIMIT "
+				+ count + " OFFSET 0)";
 	}
 
 	public void record(RecordContext context, int count) {
@@ -168,6 +188,14 @@ public class RawRecord {
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	public static boolean isDebugging() {
+		return isDebugging;
+	}
+
+	public static void setDebugging(boolean isDebugging) {
+		RawRecord.isDebugging = isDebugging;
 	}
 
 	private String getValueString(Object value) {

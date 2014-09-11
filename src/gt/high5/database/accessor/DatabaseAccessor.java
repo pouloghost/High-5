@@ -288,7 +288,18 @@ public class DatabaseAccessor {
 			return null;
 		}
 	}
-
+	
+	public void beginTransaction(){
+		mDatabase.beginTransaction();
+	}
+	
+	public void setTransactionSuccessful(){
+		mDatabase.setTransactionSuccessful();
+	}
+	public void endTransaction(){
+		mDatabase.endTransaction();
+	}
+	
 	/**
 	 * backup database associated with this accessor
 	 * 
