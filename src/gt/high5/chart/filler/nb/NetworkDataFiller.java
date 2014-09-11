@@ -1,8 +1,8 @@
-package gt.high5.chart.filler;
+package gt.high5.chart.filler.nb;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
-import gt.high5.database.table.Network;
+import gt.high5.database.table.nb.Network;
 
 public class NetworkDataFiller extends SimpleDataFiller<Network> {
 

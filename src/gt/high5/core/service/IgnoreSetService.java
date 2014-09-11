@@ -1,6 +1,7 @@
 package gt.high5.core.service;
 
 import gt.high5.R;
+import gt.high5.core.predictor.Predictor;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.accessor.FilterParser;
 import gt.high5.database.filter.Filter;
@@ -23,7 +24,6 @@ import android.content.pm.PackageManager;
  */
 public class IgnoreSetService {
 
-	private static int XML_ID = R.xml.tables;
 	// cached data
 	private HashSet<String> mIgnoreSet = null;
 
@@ -52,8 +52,8 @@ public class IgnoreSetService {
 	 * @return ignore set
 	 */
 	public HashSet<String> getIgnoreSet() {
-		DatabaseAccessor accessor = DatabaseAccessor.getAccessor(mContext,
-				XML_ID);
+		DatabaseAccessor accessor = Predictor.getPredictor().getAccessor(
+				mContext);
 		if (null == accessor) {
 			return null;
 		}
@@ -89,8 +89,8 @@ public class IgnoreSetService {
 	 * @return updated ignore set
 	 */
 	public HashSet<String> update(String name, boolean ignored) {
-		DatabaseAccessor accessor = DatabaseAccessor.getAccessor(mContext,
-				XML_ID);
+		DatabaseAccessor accessor = Predictor.getPredictor().getAccessor(
+				mContext);
 		if (null == accessor) {
 			new HashSet<String>();
 		}

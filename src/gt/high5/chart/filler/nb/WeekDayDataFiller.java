@@ -1,8 +1,8 @@
-package gt.high5.chart.filler;
+package gt.high5.chart.filler.nb;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
-import gt.high5.database.table.WeekDay;
+import gt.high5.database.table.nb.WeekDay;
 
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;

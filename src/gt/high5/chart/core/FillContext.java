@@ -1,7 +1,7 @@
 package gt.high5.chart.core;
 
 import gt.high5.database.model.RecordTable;
-import gt.high5.database.table.Total;
+import gt.high5.database.table.nb.Total;
 import android.content.Context;
 
 public class FillContext {

@@ -1,17 +1,15 @@
-package gt.high5.database.table;
+package gt.high5.database.table.nb;
 
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
-import gt.high5.database.raw.DayOfMonthRecordOperation;
 import gt.high5.database.raw.RawRecord;
+import gt.high5.database.raw.RingModeRecordOperation;
 
-public class DayOfMonth extends SimpleRecordTable {
-
-	private static DayOfMonthRecordOperation recordOperation = new DayOfMonthRecordOperation();
-
+public class RingMode extends SimpleRecordTable {
+	private static RingModeRecordOperation recordOperation = new RingModeRecordOperation();
 	@TableAnnotation(defaultValue = "-1")
-	private int day = -1;
+	private int mode = -1;
 
 	@Override
 	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
@@ -22,33 +20,33 @@ public class DayOfMonth extends SimpleRecordTable {
 	@Override
 	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
 		setPid(context.getTotal().getId());
-		Integer value = (Integer) rawRecord
-				.getValue(RawRecord.TYPE_DAY_OF_MONTH);
-		return checkAndSetDay(value);
+		Integer value = (Integer) rawRecord.getValue(RawRecord.TYPE_RING_MODE);
+		return checkAndSetMode(value);
 	}
 
 	@Override
 	public boolean queryForRead(RecordContext context) {
 		setPid(context.getTotal().getId());
-		return checkAndSetDay((Integer) recordOperation.queryForRecord(context));
+		return checkAndSetMode((Integer) recordOperation
+				.queryForRecord(context));
 	}
 
 	@Override
 	public float getDefaultPossibility(RecordContext context) {
-		return 0.3f / context.getTotal().getCount();
+		return 0.4f / context.getTotal().getCount();
 	}
 
-	public int getDay() {
-		return day;
+	public int getMode() {
+		return mode;
 	}
 
-	public void setDay(int day) {
-		this.day = day;
+	public void setMode(int mode) {
+		this.mode = mode;
 	}
 
-	private boolean checkAndSetDay(Integer value) {
+	private boolean checkAndSetMode(Integer value) {
 		if (null != value) {
-			setDay(value.intValue());
+			setMode(value.intValue());
 			return true;
 		}
 		return false;

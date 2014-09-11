@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tables
     file="statics.db"
-    filler_pack="gt.high5.chart.filler"
-    model_pack="gt.high5.database.table"
-    predictor="gt.high5.core.predictor.NaiveBayesPredictor"
+    filler_pack="gt.high5.chart.filler.nb"
+    model_pack="gt.high5.database.table.nb"
     version="1" >
 
     <table
@@ -12,34 +11,42 @@
     <table
         clazz="Time"
         filler="TimeDataFiller"
-        title="Time" />
+        title="Time"
+        weight="1" />
     <table
         clazz="WifiName"
         filler="WifiNameDataFiller"
-        title="Wifi Name" />
+        title="Wifi Name"
+        weight="3" />
     <table
         clazz="Network"
         filler="NetworkDataFiller"
-        title="Network Type" />
+        title="Network Type"
+        weight="2" />
     <table
         clazz="LastPackage"
         filler="LastPackageDataFiller"
-        title="Last App" />
+        title="Last App"
+        weight="3" />
     <table
         clazz="WeekDay"
         filler="WeekDayDataFiller"
-        title="Day Of Week" />
+        title="Day Of Week"
+        weight="4" />
     <table
         clazz="DayOfMonth"
         filler="DayOfMonthDataFiller"
-        title="Day Of Month" />
+        title="Day Of Month"
+        weight="4" />
     <table
         clazz="RingVolumn"
         filler="VolumnDataFiller"
-        title="Ring Volumn" />
+        title="Ring Volumn"
+        weight="2" />
     <table
         clazz="RingMode"
         filler="RingModeDataFiller"
-        title="Ring Mode" />
+        title="Ring Mode"
+        weight="2" />
 
 </tables>

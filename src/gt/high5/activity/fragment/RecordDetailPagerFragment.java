@@ -4,11 +4,11 @@ import gt.high5.R;
 import gt.high5.activity.CancelableTask;
 import gt.high5.activity.fragment.RecordDetailFragment.BUNDLE_KEYS;
 import gt.high5.chart.core.DataFiller;
-import gt.high5.chart.core.FillContext;
 import gt.high5.chart.core.DataFiller.ViewFiller;
-import gt.high5.database.accessor.DatabaseAccessor;
+import gt.high5.chart.core.FillContext;
+import gt.high5.core.predictor.Predictor;
 import gt.high5.database.model.RecordTable;
-import gt.high5.database.table.Total;
+import gt.high5.database.table.nb.Total;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -89,8 +89,8 @@ public class RecordDetailPagerFragment extends Fragment implements
 				});
 
 		try {
-			mFiller = DatabaseAccessor.getAccessor(
-					getActivity().getApplicationContext(), R.xml.tables)
+			mFiller = Predictor.getPredictor()
+					.getAccessor(getActivity().getApplicationContext())
 					.getDataFiller(mRecordType);
 		} catch (Exception e) {
 			e.printStackTrace();

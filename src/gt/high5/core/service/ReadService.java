@@ -1,10 +1,10 @@
 package gt.high5.core.service;
 
-import gt.high5.R;
 import gt.high5.core.predictor.PredictContext;
+import gt.high5.core.predictor.Predictor;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.Table;
-import gt.high5.database.table.Total;
+import gt.high5.database.table.nb.Total;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +19,6 @@ import android.content.Context;
  *         service for read records without specified type
  */
 public class ReadService {
-	private static int XML_ID = R.xml.tables;
 
 	private static float MIN_POSSIBILITY = 1E-10f;
 	// singleton
@@ -57,13 +56,12 @@ public class ReadService {
 	 */
 	public ArrayList<String> getHigh5(ArrayList<String> last)
 			throws InstantiationException, IllegalAccessException {
-		DatabaseAccessor accessor = DatabaseAccessor.getAccessor(mContext,
-				XML_ID);
+		DatabaseAccessor accessor = Predictor.getPredictor().getAccessor(
+				mContext);
 		if (null != accessor) {
 			last.clear();
-			PredictContext predictContext = new PredictContext(accessor,
-					mContext);
-			ArrayList<Table> allTotals = accessor.getPredictor()
+			PredictContext predictContext = new PredictContext(mContext);
+			ArrayList<Table> allTotals = Predictor.getPredictor()
 					.predictPossibility(predictContext);
 			if (null != allTotals) {
 				Collections.sort(allTotals, new Comparator<Table>() {

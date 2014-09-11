@@ -1,23 +1,23 @@
-package gt.high5.chart.filler;
+package gt.high5.chart.filler.nb;
 
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
-import gt.high5.database.table.AbstractVolumn;
+import gt.high5.database.table.nb.RingMode;
 
-public class VolumnDataFiller extends SimpleDataFiller<AbstractVolumn> {
+public class RingModeDataFiller extends SimpleDataFiller<RingMode> {
 
-	private static int LENGTH = 10;
+	private static String[] MODE2NAME = { "Silent", "Vibrate", "Normal" };
 
 	@Override
-	protected String getName(AbstractVolumn record) {
-		return record.getPercent() + "0%";
+	protected String getName(RingMode record) {
+		return MODE2NAME[record.getMode()];
 	}
 
 	@Override
-	protected int getCount(AbstractVolumn record) {
+	protected int getCount(RingMode record) {
 		return record.getCount();
 	}
 
@@ -31,12 +31,12 @@ public class VolumnDataFiller extends SimpleDataFiller<AbstractVolumn> {
 		loadData();
 		XYSeries dataset = new XYSeries(title);
 		int i, j;
-		AbstractVolumn record = null;
-		for (i = 0, j = 0; i < LENGTH; ++i) {
+		RingMode record = null;
+		for (i = 0, j = 0; i < MODE2NAME.length; ++i) {
 			if (j < mData.size()) {
-				record = (AbstractVolumn) mData.get(j);
+				record = (RingMode) mData.get(j);
 			}
-			if (i == record.getPercent()) {
+			if (i == record.getMode()) {
 				dataset.add(i, record.getCount());
 				++j;
 			} else {
@@ -51,13 +51,13 @@ public class VolumnDataFiller extends SimpleDataFiller<AbstractVolumn> {
 		renderer.clearXTextLabels();
 		int last = -skip - 1;
 		int i, j;
-		AbstractVolumn record = null;
-		for (i = 0, j = 0; i < LENGTH; ++i) {
+		RingMode record = null;
+		for (i = 0, j = 0; i < MODE2NAME.length; ++i) {
 			if (j < mData.size()) {
-				record = (AbstractVolumn) mData.get(j);
+				record = (RingMode) mData.get(j);
 			}
 			String title = empty;
-			if (i == record.getPercent()) {
+			if (i == record.getMode()) {
 				if (i - last > skip) {
 					title = getName(record);
 					last = i;

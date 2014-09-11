@@ -1,15 +1,22 @@
-package gt.high5.database.table;
+package gt.high5.database.table.nb;
 
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.raw.RawRecord;
-import gt.high5.database.raw.RingModeRecordOperation;
+import gt.high5.database.raw.WifiNameRecordOperation;
 
-public class RingMode extends SimpleRecordTable {
-	private static RingModeRecordOperation recordOperation = new RingModeRecordOperation();
-	@TableAnnotation(defaultValue = "-1")
-	private int mode = -1;
+/**
+ * @author GT
+ * 
+ *         wifi bssid record
+ * 
+ *         indicating which ap is connected
+ */
+public class WifiName extends SimpleRecordTable {
+	private static WifiNameRecordOperation recordOperation = new WifiNameRecordOperation();
+	@TableAnnotation(defaultValue = "")
+	private String bssid = "";
 
 	@Override
 	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
@@ -20,14 +27,14 @@ public class RingMode extends SimpleRecordTable {
 	@Override
 	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
 		setPid(context.getTotal().getId());
-		Integer value = (Integer) rawRecord.getValue(RawRecord.TYPE_RING_MODE);
-		return checkAndSetMode(value);
+		return checkAndSetConnection((String) rawRecord
+				.getValue(RawRecord.TYPE_WIFI_NAME));
 	}
 
 	@Override
 	public boolean queryForRead(RecordContext context) {
 		setPid(context.getTotal().getId());
-		return checkAndSetMode((Integer) recordOperation
+		return checkAndSetConnection((String) recordOperation
 				.queryForRecord(context));
 	}
 
@@ -36,20 +43,19 @@ public class RingMode extends SimpleRecordTable {
 		return 0.4f / context.getTotal().getCount();
 	}
 
-	public int getMode() {
-		return mode;
+	public String getBssid() {
+		return bssid;
 	}
 
-	public void setMode(int mode) {
-		this.mode = mode;
+	public void setBssid(String bssid) {
+		this.bssid = bssid;
 	}
 
-	private boolean checkAndSetMode(Integer value) {
+	private boolean checkAndSetConnection(String value) {
 		if (null != value) {
-			setMode(value.intValue());
+			setBssid(value);
 			return true;
 		}
 		return false;
 	}
-
 }

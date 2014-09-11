@@ -1,13 +1,13 @@
 package gt.high5.core.service;
 
-import gt.high5.R;
+import gt.high5.core.predictor.Predictor;
 import gt.high5.core.provider.LaunchInfo;
 import gt.high5.core.provider.PackageProvider;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.raw.RawRecord;
-import gt.high5.database.table.Total;
+import gt.high5.database.table.nb.Total;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -25,7 +25,6 @@ import android.database.Cursor;
  *         service for record current state
  */
 public class RecordService {
-	private static int XML_ID = R.xml.tables;
 	private static int MAX_COUNT = 100;
 
 	private Context mContext = null;
@@ -37,7 +36,7 @@ public class RecordService {
 
 	private RecordService(Context context) {
 		mContext = context;
-		mAccessor = DatabaseAccessor.getAccessor(mContext, XML_ID);
+		mAccessor = Predictor.getPredictor().getAccessor(mContext);
 		Cursor cursor = mAccessor.query(RawRecord.RCount());
 		if (cursor.moveToFirst()) {
 			mRawRecordCount = cursor.getInt(0);

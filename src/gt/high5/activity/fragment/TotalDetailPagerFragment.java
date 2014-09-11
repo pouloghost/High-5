@@ -4,11 +4,11 @@ import gt.high5.R;
 import gt.high5.activity.CancelableTask;
 import gt.high5.activity.fragment.RecordDetailFragment.BUNDLE_KEYS;
 import gt.high5.core.predictor.PredictContext;
+import gt.high5.core.predictor.Predictor;
 import gt.high5.core.service.RecordService;
-import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.RecordTable;
-import gt.high5.database.table.Total;
+import gt.high5.database.table.nb.Total;
 
 import java.util.ArrayList;
 
@@ -40,7 +40,6 @@ public class TotalDetailPagerFragment extends Fragment implements
 		CancelableTask {
 
 	private static final int SPLITTER_SIZE = 3;
-	private static final int XML_ID = R.xml.tables;
 
 	private RelativeLayout mNameWrapper = null;
 	private RelativeLayout mCountWrapper = null;
@@ -259,14 +258,12 @@ public class TotalDetailPagerFragment extends Fragment implements
 				ApplicationInfo info = manager.getApplicationInfo(
 						mTotal.getName(), PackageManager.GET_META_DATA);
 				Context context = getActivity().getApplicationContext();
-				DatabaseAccessor accessor = DatabaseAccessor.getAccessor(
-						context, XML_ID);
+				Predictor predictor = Predictor.getPredictor();
 				return new AppInfo(
 						manager.getApplicationIcon(mTotal.getName()), manager
-								.getApplicationLabel(info).toString(), accessor
-								.getPredictor().getRelativeRecords(
-										new PredictContext(accessor, context),
-										mTotal));
+								.getApplicationLabel(info).toString(),
+						predictor.getRelativeRecords(
+								new PredictContext(context), mTotal));
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
 				return null;
@@ -320,8 +317,9 @@ public class TotalDetailPagerFragment extends Fragment implements
 	}
 
 	private void fillRecordTable(ArrayList<RecordTable> records) {
-		TableParser tableParser = DatabaseAccessor.getAccessor(
-				getActivity().getApplicationContext(), XML_ID).getTableParser();
+		TableParser tableParser = Predictor.getPredictor()
+				.getAccessor(getActivity().getApplicationContext())
+				.getTableParser();
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
 		for (RecordTable record : records) {
 			View row = inflater.inflate(

@@ -1,7 +1,6 @@
 package gt.high5.database.accessor;
 
 import gt.high5.chart.core.DataFiller;
-import gt.high5.core.predictor.Predictor;
 import gt.high5.database.model.ClassUtils;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
@@ -139,15 +138,6 @@ public class DatabaseAccessor {
 	}
 
 	/**
-	 * get predictor defined in xml
-	 * 
-	 * @return
-	 */
-	public Predictor getPredictor() {
-		return getTableParser().getPredictor();
-	}
-
-	/**
 	 * proxy accessor for title in pager, a factory
 	 * 
 	 * @param clazz
@@ -156,6 +146,10 @@ public class DatabaseAccessor {
 	 */
 	public String getTableTitle(Class<? extends RecordTable> clazz) {
 		return getTableParser().getInfo(clazz).getTitle();
+	}
+
+	public int getTableWeight(Class<? extends RecordTable> clazz) {
+		return getTableParser().getInfo(clazz).getWeight();
 	}
 
 	// ---------------------CRUD--------------------------
@@ -288,18 +282,19 @@ public class DatabaseAccessor {
 			return null;
 		}
 	}
-	
-	public void beginTransaction(){
+
+	public void beginTransaction() {
 		mDatabase.beginTransaction();
 	}
-	
-	public void setTransactionSuccessful(){
+
+	public void setTransactionSuccessful() {
 		mDatabase.setTransactionSuccessful();
 	}
-	public void endTransaction(){
+
+	public void endTransaction() {
 		mDatabase.endTransaction();
 	}
-	
+
 	/**
 	 * backup database associated with this accessor
 	 * 

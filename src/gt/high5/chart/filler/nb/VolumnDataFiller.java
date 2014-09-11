@@ -1,23 +1,23 @@
-package gt.high5.chart.filler;
+package gt.high5.chart.filler.nb;
 
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
-import gt.high5.database.table.RingMode;
+import gt.high5.database.table.nb.AbstractVolumn;
 
-public class RingModeDataFiller extends SimpleDataFiller<RingMode> {
+public class VolumnDataFiller extends SimpleDataFiller<AbstractVolumn> {
 
-	private static String[] MODE2NAME = { "Silent", "Vibrate", "Normal" };
+	private static int LENGTH = 10;
 
 	@Override
-	protected String getName(RingMode record) {
-		return MODE2NAME[record.getMode()];
+	protected String getName(AbstractVolumn record) {
+		return record.getPercent() + "0%";
 	}
 
 	@Override
-	protected int getCount(RingMode record) {
+	protected int getCount(AbstractVolumn record) {
 		return record.getCount();
 	}
 
@@ -31,12 +31,12 @@ public class RingModeDataFiller extends SimpleDataFiller<RingMode> {
 		loadData();
 		XYSeries dataset = new XYSeries(title);
 		int i, j;
-		RingMode record = null;
-		for (i = 0, j = 0; i < MODE2NAME.length; ++i) {
+		AbstractVolumn record = null;
+		for (i = 0, j = 0; i < LENGTH; ++i) {
 			if (j < mData.size()) {
-				record = (RingMode) mData.get(j);
+				record = (AbstractVolumn) mData.get(j);
 			}
-			if (i == record.getMode()) {
+			if (i == record.getPercent()) {
 				dataset.add(i, record.getCount());
 				++j;
 			} else {
@@ -51,13 +51,13 @@ public class RingModeDataFiller extends SimpleDataFiller<RingMode> {
 		renderer.clearXTextLabels();
 		int last = -skip - 1;
 		int i, j;
-		RingMode record = null;
-		for (i = 0, j = 0; i < MODE2NAME.length; ++i) {
+		AbstractVolumn record = null;
+		for (i = 0, j = 0; i < LENGTH; ++i) {
 			if (j < mData.size()) {
-				record = (RingMode) mData.get(j);
+				record = (AbstractVolumn) mData.get(j);
 			}
 			String title = empty;
-			if (i == record.getMode()) {
+			if (i == record.getPercent()) {
 				if (i - last > skip) {
 					title = getName(record);
 					last = i;

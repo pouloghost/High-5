@@ -8,6 +8,7 @@ package gt.high5.database.model;
 public class TableInfo {
 	private String mTitle = null;
 	private Class<?> mFiller = null;
+	private int mWeight = 1;
 
 	public String getTitle() {
 		return mTitle;
@@ -23,6 +24,14 @@ public class TableInfo {
 
 	public void setFiller(Class<?> filler) {
 		this.mFiller = filler;
+	}
+
+	public int getWeight() {
+		return mWeight;
+	}
+
+	public void setWeight(int mWeight) {
+		this.mWeight = mWeight;
 	}
 
 }

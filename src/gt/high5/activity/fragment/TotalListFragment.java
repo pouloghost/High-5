@@ -3,9 +3,9 @@ package gt.high5.activity.fragment;
 import gt.high5.R;
 import gt.high5.activity.AsyncImageTask;
 import gt.high5.core.predictor.PredictContext;
-import gt.high5.database.accessor.DatabaseAccessor;
+import gt.high5.core.predictor.Predictor;
 import gt.high5.database.model.Table;
-import gt.high5.database.table.Total;
+import gt.high5.database.table.nb.Total;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,8 +37,6 @@ public class TotalListFragment extends Fragment {
 	private static enum KEYS {
 		ICON, POSSIBILITY, NAME, _ID
 	}
-
-	private static int XML_ID = R.xml.tables;
 
 	private ListView mTotalList = null;
 	private SimpleAdapter mAdapter = null;
@@ -216,11 +214,9 @@ public class TotalListFragment extends Fragment {
 	 */
 	private ArrayList<HashMap<String, Object>> loadData() {
 		// load all records
-		DatabaseAccessor accessor = DatabaseAccessor.getAccessor(getActivity()
-				.getApplicationContext(), XML_ID);
 		Context context = getActivity().getApplicationContext();
-		PredictContext predictContext = new PredictContext(accessor, context);
-		ArrayList<Table> totals = accessor.getPredictor().predictPossibility(
+		PredictContext predictContext = new PredictContext(context);
+		ArrayList<Table> totals = Predictor.getPredictor().predictPossibility(
 				predictContext);
 
 		mDataList = new ArrayList<HashMap<String, Object>>();

@@ -1,22 +1,17 @@
-package gt.high5.database.table;
+package gt.high5.database.table.nb;
 
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
+import gt.high5.database.raw.NetworkRecordOperation;
 import gt.high5.database.raw.RawRecord;
-import gt.high5.database.raw.WifiNameRecordOperation;
 
-/**
- * @author GT
- * 
- *         wifi bssid record
- * 
- *         indicating which ap is connected
- */
-public class WifiName extends SimpleRecordTable {
-	private static WifiNameRecordOperation recordOperation = new WifiNameRecordOperation();
+public class Network extends SimpleRecordTable {
+
+	private static NetworkRecordOperation recordOperation = new NetworkRecordOperation();
+
 	@TableAnnotation(defaultValue = "")
-	private String bssid = "";
+	private String connection = "";
 
 	@Override
 	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
@@ -27,33 +22,33 @@ public class WifiName extends SimpleRecordTable {
 	@Override
 	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
 		setPid(context.getTotal().getId());
-		return checkAndSetConnection((String) rawRecord
-				.getValue(RawRecord.TYPE_WIFI_NAME));
+		String value = (String) rawRecord.getValue(RawRecord.TYPE_NETWORK);
+		return checkAndSetConnection(value);
 	}
 
 	@Override
 	public boolean queryForRead(RecordContext context) {
 		setPid(context.getTotal().getId());
-		return checkAndSetConnection((String) recordOperation
-				.queryForRecord(context));
+		String value = (String) recordOperation.queryForRecord(context);
+		return checkAndSetConnection(value);
 	}
 
 	@Override
 	public float getDefaultPossibility(RecordContext context) {
-		return 0.4f / context.getTotal().getCount();
+		return 0.5f / context.getTotal().getCount();
 	}
 
-	public String getBssid() {
-		return bssid;
+	public String getConnection() {
+		return connection;
 	}
 
-	public void setBssid(String bssid) {
-		this.bssid = bssid;
+	public void setConnection(String connection) {
+		this.connection = connection;
 	}
 
 	private boolean checkAndSetConnection(String value) {
 		if (null != value) {
-			setBssid(value);
+			setConnection(value);
 			return true;
 		}
 		return false;

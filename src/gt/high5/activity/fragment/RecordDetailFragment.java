@@ -2,10 +2,11 @@ package gt.high5.activity.fragment;
 
 import gt.high5.R;
 import gt.high5.activity.CancelableTask;
+import gt.high5.core.predictor.Predictor;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.RecordTable;
-import gt.high5.database.table.Total;
+import gt.high5.database.table.nb.Total;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -71,8 +72,8 @@ public class RecordDetailFragment extends Fragment implements CancelableTask {
 		public ChartFragmentAdapter(FragmentManager fm) {
 			super(fm);
 
-			DatabaseAccessor accessor = DatabaseAccessor.getAccessor(
-					getActivity().getApplicationContext(), R.xml.tables);
+			DatabaseAccessor accessor = Predictor.getPredictor().getAccessor(
+					getActivity().getApplicationContext());
 			mParser = accessor.getTableParser();
 			Class<? extends RecordTable>[] tables = accessor.getTables();
 			mRecords = new Class[tables.length];

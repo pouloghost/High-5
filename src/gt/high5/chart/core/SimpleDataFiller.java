@@ -1,10 +1,11 @@
 package gt.high5.chart.core;
 
 import gt.high5.R;
+import gt.high5.core.predictor.Predictor;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
-import gt.high5.database.table.Total;
+import gt.high5.database.table.nb.Total;
 
 import java.text.FieldPosition;
 import java.text.NumberFormat;
@@ -199,7 +200,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 
 	public DatabaseAccessor getAccessor() {
 		if (null != mContext) {
-			return DatabaseAccessor.getAccessor(mContext.getContext(), XML_ID);
+			return Predictor.getPredictor().getAccessor(mContext.getContext());
 		}
 		return null;
 	}

@@ -1,6 +1,5 @@
 package gt.high5.database.accessor;
 
-import gt.high5.core.predictor.Predictor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.TableInfo;
 
@@ -27,7 +26,7 @@ public class TableParser {
 	 * @author GT Attributes allowed in xml
 	 */
 	private static enum ATTR {
-		file, version, model_pack, filler_pack, clazz, title, filler, predictor
+		file, version, model_pack, filler_pack, clazz, title, filler, weight
 	}
 
 	private int mVersion = 1;
@@ -36,8 +35,6 @@ public class TableParser {
 	private String mModelPackage = null;
 	// parser for filling up data for graphs
 	private String mParserPackage = null;
-	// predictor used for predict possibilities
-	private Predictor mPredictor = null;
 	/**
 	 * table types in xml
 	 */
@@ -91,10 +88,6 @@ public class TableParser {
 							mVersion = Integer.parseInt(parser
 									.getAttributeValue(i));
 							break;
-						case predictor:
-							setPredictor((Predictor) Class.forName(
-									parser.getAttributeValue(i)).newInstance());
-							break;
 						default:
 							break;
 						}
@@ -117,6 +110,10 @@ public class TableParser {
 						case filler:
 							info.setFiller(Class.forName(mParserPackage + "."
 									+ parser.getAttributeValue(i)));
+							break;
+						case weight:
+							info.setWeight(Integer.valueOf(parser
+									.getAttributeValue(i)));
 							break;
 						default:
 							break;
@@ -205,14 +202,6 @@ public class TableParser {
 	private void setTables(
 			HashMap<Class<? extends RecordTable>, TableInfo> tables) {
 		mTables = tables;
-	}
-
-	public Predictor getPredictor() {
-		return mPredictor;
-	}
-
-	public void setPredictor(Predictor mPredictor) {
-		this.mPredictor = mPredictor;
 	}
 
 }
