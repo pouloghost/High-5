@@ -1,7 +1,7 @@
 package gt.high5.activity.fragment;
 
 import gt.high5.R;
-import gt.high5.database.table.Time;
+import gt.high5.database.raw.TimeRecordOperation;
 
 import java.util.Set;
 
@@ -33,8 +33,9 @@ public class SettingsFragment extends PreferenceFragment {
 							public void onSharedPreferenceChanged(
 									SharedPreferences prefs, String key) {
 								if ("region_length".equalsIgnoreCase(key)) {
-									Time.setRegionLength(Integer.parseInt(prefs
-											.getString(key, "15")));
+									TimeRecordOperation.setRegionLength(Integer
+											.parseInt(prefs
+													.getString(key, "15")));
 								}
 								Preference pref = null;
 								if ((pref = findPreference(key)) instanceof ListPreference) {

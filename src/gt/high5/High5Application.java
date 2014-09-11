@@ -4,7 +4,7 @@ import gt.high5.activity.SystemBroadcastReceiver;
 import gt.high5.core.service.IgnoreSetService;
 import gt.high5.core.service.PreferenceService;
 import gt.high5.database.model.TableUtils;
-import gt.high5.database.table.Time;
+import gt.high5.database.raw.TimeRecordOperation;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,8 +75,9 @@ public class High5Application extends Application {
 
 	private void initPreferences() {
 		// init static preferences
-		Time.setRegionLength(PreferenceService.getPreferenceReadService(
-				getApplicationContext()).getRegionLength());
+		TimeRecordOperation.setRegionLength(PreferenceService
+				.getPreferenceReadService(getApplicationContext())
+				.getRegionLength());
 		TableUtils.setDebugging(PreferenceService.getPreferenceReadService(
 				getApplicationContext()).shouldLog(TableUtils.class));
 	}
