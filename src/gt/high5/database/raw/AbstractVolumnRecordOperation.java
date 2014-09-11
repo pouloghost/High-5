@@ -4,7 +4,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import gt.high5.core.service.RecordContext;
 
-public abstract class AbstractVolumn implements RecordOperation {
+public abstract class AbstractVolumnRecordOperation implements RecordOperation {
 
 	protected abstract int getVolumnType();
 

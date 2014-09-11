@@ -2,7 +2,7 @@ package gt.high5.database.raw;
 
 import android.media.AudioManager;
 
-public class RingVolumnRecordOperation extends AbstractVolumn {
+public class RingVolumnRecordOperation extends AbstractVolumnRecordOperation {
 
 	@Override
 	protected int getVolumnType() {
