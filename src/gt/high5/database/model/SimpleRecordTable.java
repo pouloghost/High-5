@@ -1,7 +1,5 @@
 package gt.high5.database.model;
 
-import gt.high5.core.service.RecordContext;
-
 /*
  * representing a simple table with field pid id and count
  * */
@@ -89,9 +87,6 @@ public abstract class SimpleRecordTable extends RecordTable {
 		}
 		return result;
 	}
-
-	@Override
-	public abstract boolean initDefault(RecordContext context);
 
 	@Override
 	public int getId() {

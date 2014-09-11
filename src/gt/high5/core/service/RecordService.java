@@ -6,6 +6,7 @@ import gt.high5.core.provider.PackageProvider;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
+import gt.high5.database.raw.RawRecord;
 import gt.high5.database.table.Total;
 
 import java.io.IOException;
@@ -109,12 +110,16 @@ public class RecordService {
 					context.getApplicationContext());
 
 			RecordContext recordContext = new RecordContext(context, null);
+
+			RawRecord rawRecord = new RawRecord();
+			rawRecord.record(recordContext, count);
+
 			// read total with current package name
 			Total total = new Total();
 			total.setName(packageName);
 			List<Table> list = accessor.R(total);
 			if (null == list) {// create a new one for new package
-				if (total.initDefault(recordContext)) {
+				if (total.initDefault(recordContext, rawRecord)) {
 					accessor.C(total);
 					list = accessor.R(total);
 				}
@@ -130,15 +135,14 @@ public class RecordService {
 				// each type of record
 				Class<? extends RecordTable>[] clazzes = accessor.getTables();
 				for (Class<? extends RecordTable> clazz : clazzes) {
-					recordTable(context, count, recordContext, total, clazz);
+					recordTable(context, recordContext, rawRecord, clazz);
 				}
 			}
 		}
 	}
 
-	private void recordTable(Context context, int count,
-			RecordContext recordContext, Total total,
-			Class<? extends RecordTable> clazz) {
+	private void recordTable(Context context, RecordContext recordContext,
+			RawRecord rawRecord, Class<? extends RecordTable> clazz) {
 		List<Table> list;
 
 		try {
@@ -147,7 +151,7 @@ public class RecordService {
 			// read an existing record with the current pid and
 			// status
 			RecordTable table = clazz.newInstance();
-			if (table.queryForRecord(recordContext)) {
+			if (table.queryForRecord(recordContext, rawRecord)) {
 				list = accessor.R(table);
 
 				if (null == list) {// non-existing condition for
@@ -157,7 +161,7 @@ public class RecordService {
 							+ table.getClass().getSimpleName(),
 							context.getApplicationContext());
 
-					if (table.initDefault(recordContext)) {
+					if (table.initDefault(recordContext, rawRecord)) {
 						accessor.C(table);
 					}
 				} else {// existing condition just update
@@ -168,7 +172,7 @@ public class RecordService {
 
 					table = (RecordTable) list.get(0);
 					RecordTable select = (RecordTable) table.clone();
-					table.increaseCount(count);
+					table.increaseCount(rawRecord.getCount());
 					accessor.U(select, table);
 				}
 			}

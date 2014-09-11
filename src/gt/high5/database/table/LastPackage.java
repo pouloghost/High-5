@@ -4,6 +4,7 @@ import gt.high5.core.provider.PackageProvider;
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
+import gt.high5.database.raw.RawRecord;
 
 import java.util.List;
 
@@ -29,27 +30,18 @@ public final class LastPackage extends SimpleRecordTable {
 	 * set package as the package next to total.package
 	 */
 	@Override
-	public boolean initDefault(RecordContext context) {
-		count = 1;
-		return queryForRecord(context);
+	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
+		count = rawRecord.getCount();
+		return queryForRecord(context, rawRecord);
 	}
 
 	@Override
-	public boolean queryForRecord(RecordContext context) {
-		PackageProvider provider = null;
-		List<String> order = null;
-		if (null != (provider = PackageProvider.getPackageProvider(context
-				.getContext()))
-				&& null != (order = provider.getLastPackageOrder(context
-						.getContext()))) {
-			Total total = context.getTotal();
-			int index = order.indexOf(total.getName());
-			// exists and not last one
-			if (-1 != index && order.size() - 1 != index) {
-				lastPackage = order.get(index + 1);
-				setPid(context.getTotal().getId());
-				return true;
-			}
+	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
+		setPid(context.getTotal().getId());
+		String value = (String) rawRecord.getValue(RawRecord.TYPE_LAST_PACKAGE);
+		if (null != value) {
+			setLastPackage(value);
+			return true;
 		}
 		return false;
 	}
@@ -63,6 +55,7 @@ public final class LastPackage extends SimpleRecordTable {
 	 */
 	@Override
 	public boolean queryForRead(RecordContext context) {
+		setPid(context.getTotal().getId());
 		PackageProvider provider = null;
 		List<String> order = null;
 		if (null != (provider = PackageProvider.getPackageProvider(context

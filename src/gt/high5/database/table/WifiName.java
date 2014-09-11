@@ -3,9 +3,9 @@ package gt.high5.database.table;
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
+import gt.high5.database.raw.RawRecord;
+import gt.high5.database.raw.WifiNameRecordOperation;
 import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 
 /**
  * @author GT
@@ -15,7 +15,7 @@ import android.net.wifi.WifiManager;
  *         indicating which ap is connected
  */
 public class WifiName extends SimpleRecordTable {
-
+	private static WifiNameRecordOperation recordOperation = new WifiNameRecordOperation();
 	@TableAnnotation(defaultValue = "")
 	private String bssid = "";
 
@@ -33,35 +33,30 @@ public class WifiName extends SimpleRecordTable {
 	}
 
 	@Override
-	public boolean queryForRecord(RecordContext context) {
-		WifiManager manager = (WifiManager) context.getContext()
-				.getSystemService(Context.WIFI_SERVICE);
-		if (null != manager) {
-			WifiInfo info = manager.getConnectionInfo();
-			String bssid = info.getBSSID();
-			if (null == bssid) {
-				if (manager.isWifiEnabled()) {
-					bssid = "ON";
-				} else {
-					bssid = "OFF";
-				}
-			}
-			setBssid(bssid);
-			setPid(context.getTotal().getId());
-			return true;
-		} else {
-			return false;
-		}
+	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
+		count = rawRecord.getCount();
+		return queryForRecord(context, rawRecord);
+	}
+
+	@Override
+	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
+		setPid(context.getTotal().getId());
+		return checkAndSetConnection((String) rawRecord
+				.getValue(RawRecord.TYPE_WIFI_NAME));
 	}
 
 	@Override
 	public boolean queryForRead(RecordContext context) {
-		return queryForRecord(context);
+		setPid(context.getTotal().getId());
+		return checkAndSetConnection((String) recordOperation
+				.queryForRecord(context));
 	}
 
-	@Override
-	public boolean initDefault(RecordContext context) {
-		count = 1;
-		return queryForRecord(context);
+	private boolean checkAndSetConnection(String value) {
+		if (null != value) {
+			setBssid(value);
+			return true;
+		}
+		return false;
 	}
 }

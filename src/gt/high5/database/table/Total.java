@@ -6,6 +6,7 @@ import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.model.TableUtils;
+import gt.high5.database.raw.RawRecord;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -31,12 +32,6 @@ public class Total extends RecordTable implements Parcelable {
 	@Override
 	public String getCreator() {
 		return TableUtils.buildCreator(this.getClass(), Table.class);
-	}
-
-	@Override
-	public boolean initDefault(RecordContext context) {
-		count = 0;
-		return true;
 	}
 
 	@Override
@@ -114,14 +109,20 @@ public class Total extends RecordTable implements Parcelable {
 	}
 
 	@Override
-	public boolean queryForRecord(RecordContext context) {
+	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
+		count = rawRecord.getCount();
+		return true;
+	}
+
+	@Override
+	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
 		this.name = context.getTotal().getName();
 		return true;
 	}
 
 	@Override
 	public boolean queryForRead(RecordContext context) {
-		return queryForRecord(context);
+		return queryForRecord(context, null);
 	}
 
 	@Override

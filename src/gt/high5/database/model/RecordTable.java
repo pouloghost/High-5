@@ -1,6 +1,7 @@
 package gt.high5.database.model;
 
 import gt.high5.core.service.RecordContext;
+import gt.high5.database.raw.RawRecord;
 import android.content.Context;
 
 /**
@@ -16,13 +17,26 @@ public abstract class RecordTable extends Table {
 	public static final String DEFAULT_COUNT_STRING = "-1";
 
 	/**
+	 * initializing default data for a newly created table
+	 * 
+	 * all field should be inited except pid
+	 * 
+	 * @param context
+	 * 
+	 * @return whether init is successful
+	 */
+	public abstract boolean initDefault(RecordContext context,
+			RawRecord rawRecord);
+
+	/**
 	 * for query table using current status
 	 * 
 	 * @param context
 	 * 
 	 * @return whether init is successful
 	 */
-	public abstract boolean queryForRecord(RecordContext context);
+	public abstract boolean queryForRecord(RecordContext context,
+			RawRecord rawRecord);
 
 	public abstract boolean queryForRead(RecordContext context);
 
@@ -39,17 +53,6 @@ public abstract class RecordTable extends Table {
 	public abstract String increase();
 
 	public abstract void increaseCount(int add);
-
-	/**
-	 * initializing default data for a newly created table
-	 * 
-	 * all field should be inited except pid
-	 * 
-	 * @param context
-	 * 
-	 * @return whether init is successful
-	 */
-	public abstract boolean initDefault(RecordContext context);
 
 	/**
 	 * recording table must have a pid for package id

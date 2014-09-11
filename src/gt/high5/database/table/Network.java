@@ -3,42 +3,35 @@ package gt.high5.database.table;
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
+import gt.high5.database.raw.NetworkRecordOperation;
+import gt.high5.database.raw.RawRecord;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 public class Network extends SimpleRecordTable {
+
+	private static NetworkRecordOperation recordOperation = new NetworkRecordOperation();
 
 	@TableAnnotation(defaultValue = "")
 	private String connection = "";
 
 	@Override
-	public boolean queryForRecord(RecordContext context) {
-		ConnectivityManager manager = (ConnectivityManager) context
-				.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-		if (null != manager) {
-			NetworkInfo info = manager.getActiveNetworkInfo();
-			if (null == info || (!info.isConnectedOrConnecting())) {
-				setConnection("NONE");
-			} else {
-				setConnection(info.getTypeName() + "_" + info.getSubtypeName());
-			}
-			setPid(context.getTotal().getId());
-			return true;
-		} else {
-			return false;
-		}
+	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
+		count = rawRecord.getCount();
+		return queryForRecord(context, rawRecord);
+	}
+
+	@Override
+	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
+		setPid(context.getTotal().getId());
+		String value = (String) rawRecord.getValue(RawRecord.TYPE_NETWORK);
+		return checkAndSetConnection(value);
 	}
 
 	@Override
 	public boolean queryForRead(RecordContext context) {
-		return queryForRecord(context);
-	}
-
-	@Override
-	public boolean initDefault(RecordContext context) {
-		count = 1;
-		return queryForRecord(context);
+		setPid(context.getTotal().getId());
+		String value = (String) recordOperation.queryForRecord(context);
+		return checkAndSetConnection(value);
 	}
 
 	@Override
@@ -52,5 +45,13 @@ public class Network extends SimpleRecordTable {
 
 	public void setConnection(String connection) {
 		this.connection = connection;
+	}
+
+	private boolean checkAndSetConnection(String value) {
+		if (null != value) {
+			setConnection(value);
+			return true;
+		}
+		return false;
 	}
 }

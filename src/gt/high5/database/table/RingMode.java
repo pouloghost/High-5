@@ -1,34 +1,35 @@
 package gt.high5.database.table;
 
-import android.content.Context;
-import android.media.AudioManager;
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
+import gt.high5.database.raw.RawRecord;
+import gt.high5.database.raw.RingModeRecordOperation;
+import android.content.Context;
 
 public class RingMode extends SimpleRecordTable {
-
+	private static RingModeRecordOperation recordOperation = new RingModeRecordOperation();
 	@TableAnnotation(defaultValue = "-1")
 	private int mode = -1;
 
 	@Override
-	public boolean initDefault(RecordContext context) {
-		count = 1;
-		return queryForRecord(context);
+	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
+		count = rawRecord.getCount();
+		return queryForRecord(context, rawRecord);
 	}
 
 	@Override
-	public boolean queryForRecord(RecordContext context) {
-		AudioManager manager = (AudioManager) context.getContext()
-				.getSystemService(Context.AUDIO_SERVICE);
-		setMode(manager.getMode());
+	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
 		setPid(context.getTotal().getId());
-		return true;
+		Integer value = (Integer) rawRecord.getValue(RawRecord.TYPE_RING_MODE);
+		return checkAndSetMode(value);
 	}
 
 	@Override
 	public boolean queryForRead(RecordContext context) {
-		return queryForRecord(context);
+		setPid(context.getTotal().getId());
+		return checkAndSetMode((Integer) recordOperation
+				.queryForRecord(context));
 	}
 
 	@Override
@@ -42,6 +43,14 @@ public class RingMode extends SimpleRecordTable {
 
 	public void setMode(int mode) {
 		this.mode = mode;
+	}
+
+	private boolean checkAndSetMode(Integer value) {
+		if (null != value) {
+			setMode(value.intValue());
+			return true;
+		}
+		return false;
 	}
 
 }

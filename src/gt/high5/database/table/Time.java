@@ -3,9 +3,8 @@ package gt.high5.database.table;
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
-
-import java.util.Calendar;
-
+import gt.high5.database.raw.RawRecord;
+import gt.high5.database.raw.TimeRecordOperation;
 import android.content.Context;
 
 /**
@@ -15,15 +14,9 @@ import android.content.Context;
  */
 public class Time extends SimpleRecordTable {
 
-	// time region length in minutes
-	private static int regionLength = 15;
-
+	private static TimeRecordOperation recordOperation = new TimeRecordOperation();
 	@TableAnnotation(defaultValue = "-1")
 	private int region = -1;
-
-	public static void setRegionLength(int length) {
-		Time.regionLength = length;
-	}
 
 	public int getRegion() {
 		return region;
@@ -34,24 +27,31 @@ public class Time extends SimpleRecordTable {
 	}
 
 	@Override
-	public boolean queryForRecord(RecordContext context) {
-		Calendar calendar = Calendar.getInstance();
-		int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60
-				+ calendar.get(Calendar.MINUTE);
-		region = minutes / regionLength;
+	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
+		count = rawRecord.getCount();
+		return queryForRecord(context, rawRecord);
+	}
+
+	@Override
+	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
 		setPid(context.getTotal().getId());
-		return true;
+		return checkAndSetRegion((Integer) rawRecord
+				.getValue(RawRecord.TYPE_TIME));
 	}
 
 	@Override
 	public boolean queryForRead(RecordContext context) {
-		return queryForRecord(context);
+		setPid(context.getTotal().getId());
+		return checkAndSetRegion((Integer) recordOperation
+				.queryForRecord(context));
 	}
 
-	@Override
-	public boolean initDefault(RecordContext context) {
-		count = 1;
-		return queryForRecord(context);
+	private boolean checkAndSetRegion(Integer value) {
+		if (null != value) {
+			setRegion(value);
+			return true;
+		}
+		return false;
 	}
 
 	@Override

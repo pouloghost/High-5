@@ -137,14 +137,14 @@ public class RawRecord {
 		return null;
 	}
 
-	public void record(RecordContext context) {
+	public void record(RecordContext context, int count) {
 		for (String key : recordOperations.keySet()) {
 			Object value = recordOperations.get(key).queryForRecord(context);
 			if (null != value) {
 				mValues.put(key, value);
 			}
 		}
-		setCount(context.getCount());
+		setCount(count);
 	}
 
 	@SuppressWarnings("unchecked")
