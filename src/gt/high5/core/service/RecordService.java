@@ -126,14 +126,12 @@ public class RecordService {
 			// read total with current package name
 			Total total = new Total();
 			total.setName(packageName);
-			RecordContext recordContext = new RecordContext(context, total);
-			// record all
-			RawRecord rawRecord = new RawRecord();
-			rawRecord.setCount(count);
+			RecordContext recordContext = new RecordContext(context, null);
+
 			// create if no total exists
 			List<Table> list = mAccessor.R(total);
 			if (null == list) {// create a new one for new package
-				if (total.initDefault(recordContext, rawRecord)) {
+				if (total.initDefault(recordContext, null)) {
 					mAccessor.C(total);
 					list = mAccessor.R(total);
 				}
@@ -146,6 +144,8 @@ public class RecordService {
 						context.getApplicationContext());
 
 				recordContext.setTotal(total);
+				// record all
+				RawRecord rawRecord = new RawRecord();
 				// record context
 				rawRecord.record(recordContext, count);
 				mAccessor.C(rawRecord);
@@ -153,9 +153,7 @@ public class RecordService {
 				// each type of record
 				Class<? extends RecordTable>[] clazzes = mAccessor.getTables();
 				for (Class<? extends RecordTable> clazz : clazzes) {
-					if (Total.class != clazz) {
-						recordTable(context, recordContext, rawRecord, clazz);
-					}
+					recordTable(context, recordContext, rawRecord, clazz);
 				}
 			}
 		}

@@ -30,7 +30,7 @@ public class Total extends RecordTable implements Parcelable {
 
 	@Override
 	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
-		count = rawRecord.getCount();
+		count = 0;
 		return true;
 	}
 
