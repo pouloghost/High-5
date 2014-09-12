@@ -10,8 +10,6 @@ import com.github.curioustechizen.xlog.Log;
 
 public class TableUtils {
 
-	private static boolean isDebugging = false;
-
 	/**
 	 * type from class to sql type
 	 */
@@ -48,10 +46,8 @@ public class TableUtils {
 		sql.append(")");
 
 		String sqlString = sql.toString();
-		if (isDebugging()) {
-			Log.d(LogService.LOG_TAG, "creator " + clazz.getSimpleName() + " "
-					+ sqlString);
-		}
+		LogService.d(TableUtils.class, "creator " + clazz.getSimpleName() + " "
+				+ sqlString);
 		return sqlString;
 	}
 
@@ -94,10 +90,8 @@ public class TableUtils {
 		sql.append(vals);
 
 		String sqlString = sql.toString();
-		if (isDebugging()) {
-			Log.d(LogService.LOG_TAG, "create "
-					+ table.getClass().getSimpleName() + " " + sqlString);
-		}
+		LogService.d(TableUtils.class, "create "
+				+ table.getClass().getSimpleName() + " " + sqlString);
 		return sqlString;
 	}
 
@@ -111,10 +105,8 @@ public class TableUtils {
 		}
 
 		String sqlString = "DELETE FROM " + clazz.getSimpleName() + where;
-		if (isDebugging()) {
-			Log.d(LogService.LOG_TAG, "delete "
-					+ table.getClass().getSimpleName() + " " + sqlString);
-		}
+		LogService.d(TableUtils.class, "delete "
+				+ table.getClass().getSimpleName() + " " + sqlString);
 		return sqlString;
 	}
 
@@ -159,10 +151,8 @@ public class TableUtils {
 		sql.append(where);
 
 		String sqlString = sql.toString();
-		if (isDebugging()) {
-			Log.d(LogService.LOG_TAG, "update "
-					+ table.getClass().getSimpleName() + " " + sqlString);
-		}
+		LogService.d(TableUtils.class, "update "
+				+ table.getClass().getSimpleName() + " " + sqlString);
 		return sqlString;
 	}
 
@@ -176,10 +166,8 @@ public class TableUtils {
 		}
 
 		String sqlString = "SELECT * FROM " + clazz.getSimpleName() + where;
-		if (isDebugging()) {
-			Log.d(LogService.LOG_TAG, "read "
-					+ table.getClass().getSimpleName() + " " + sqlString);
-		}
+		LogService.d(TableUtils.class, "read "
+				+ table.getClass().getSimpleName() + " " + sqlString);
 		return sqlString;
 	}
 
@@ -256,14 +244,6 @@ public class TableUtils {
 			return true;
 		}
 		return false;
-	}
-
-	public static boolean isDebugging() {
-		return isDebugging;
-	}
-
-	public static void setDebugging(boolean isDebugging) {
-		TableUtils.isDebugging = isDebugging;
 	}
 
 	private static <T> String getWhereClause(T table, Class<T> base)

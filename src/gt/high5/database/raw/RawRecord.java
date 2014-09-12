@@ -8,7 +8,6 @@ import gt.high5.database.model.TableUtils;
 import java.util.HashMap;
 
 import android.database.Cursor;
-import android.util.Log;
 
 /**
  * @author GT
@@ -52,8 +51,6 @@ public class RawRecord extends Table {
 		recordOperations.put(TYPE_WIFI_NAME, new WifiNameRecordOperation());
 
 	}
-
-	private static boolean isDebugging = false;
 
 	private int id = -1;
 	private int count = 0;
@@ -99,8 +96,9 @@ public class RawRecord extends Table {
 							.getType()));
 		}
 		sql.append(")");
-		Log.d(LogService.LOG_TAG, sql.toString());
-		return sql.toString();
+		String sqlString = sql.toString();
+		LogService.d(RawRecord.class, sqlString);
+		return sqlString;
 	}
 
 	public String C() {
@@ -132,8 +130,9 @@ public class RawRecord extends Table {
 		sql.append(cols);
 		sql.append(vals);
 
-		Log.d(LogService.LOG_TAG, sql.toString());
-		return sql.toString();
+		String sqlString = sql.toString();
+		LogService.d(RawRecord.class, sqlString);
+		return sqlString;
 	}
 
 	public String R() {
@@ -149,12 +148,16 @@ public class RawRecord extends Table {
 	}
 
 	public static String RCount() {
-		return "SELECT COUNT(*) FROM RawRecord";
+		String sqlString = "SELECT COUNT(*) FROM RawRecord";
+		LogService.d(RawRecord.class, sqlString);
+		return sqlString;
 	}
 
 	public static String D(int count) {
-		return "DELETE FROM RawRecord WHERE id IN(SELECT id FROM RawRecord ORDER BY id LIMIT "
+		String sqlString = "DELETE FROM RawRecord WHERE id IN(SELECT id FROM RawRecord ORDER BY id LIMIT "
 				+ count + " OFFSET 0)";
+		LogService.d(RawRecord.class, sqlString);
+		return sqlString;
 	}
 
 	public void record(RecordContext context, int count) {
@@ -188,14 +191,6 @@ public class RawRecord extends Table {
 
 	public void setCount(int count) {
 		this.count = count;
-	}
-
-	public static boolean isDebugging() {
-		return isDebugging;
-	}
-
-	public static void setDebugging(boolean isDebugging) {
-		RawRecord.isDebugging = isDebugging;
 	}
 
 	private String getValueString(Object value) {

@@ -8,6 +8,7 @@ import java.nio.channels.FileChannel;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
@@ -26,7 +27,8 @@ public class PreferenceService {
 		return mInstance;
 	}
 
-	@SuppressLint("SdCardPath") private static final String PREFERENCE_PATH = "/data/data/gt.high5/shared_prefs/gt.high5_preferences.xml";
+	@SuppressLint("SdCardPath")
+	private static final String PREFERENCE_PATH = "/data/data/gt.high5/shared_prefs/gt.high5_preferences.xml";
 	private static final String BACKUP_PATH = "high5";
 	private static final String BACKUP_FILE = "gt.high5_preferences.xml";
 
@@ -34,6 +36,16 @@ public class PreferenceService {
 
 	private PreferenceService(Context context) {
 		mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+	}
+
+	public void registerOnSharedPreferenceChangeListener(
+			OnSharedPreferenceChangeListener listener) {
+		mPreferences.registerOnSharedPreferenceChangeListener(listener);
+	}
+
+	public void unregisterOnSharedPreferenceChangeListener(
+			OnSharedPreferenceChangeListener listener) {
+		mPreferences.unregisterOnSharedPreferenceChangeListener(listener);
 	}
 
 	public int getUpdateInterval() {
