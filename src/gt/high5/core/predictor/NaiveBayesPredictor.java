@@ -60,6 +60,8 @@ public class NaiveBayesPredictor extends Predictor {
 
 		float totalCount = total.getCount();
 		float possibility = (float) totalCount / (float) all;
+		//punish records that appears quite occasionally
+		possibility = (float) Math.pow(possibility, 5.0f);
 		ArrayList<RecordTable> relates = getRelativeRecords(context, total);
 		for (RecordTable table : relates) {
 			if (RecordTable.DEFAULT_COUNT_INT == table.getCount()) {

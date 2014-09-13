@@ -20,7 +20,7 @@ import android.content.Context;
  */
 public class ReadService {
 
-	private static float MIN_POSSIBILITY = 1E-10f;
+	private static float MIN_POSSIBILITY = 1E-20f;
 	// singleton
 	private static ReadService mInstance = null;
 
