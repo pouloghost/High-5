@@ -1,6 +1,7 @@
 package gt.high5;
 
 import gt.high5.activity.SystemBroadcastReceiver;
+import gt.high5.activity.widget.WidgetProvider;
 import gt.high5.core.service.IgnoreSetService;
 import gt.high5.core.service.LogService;
 import gt.high5.core.service.PreferenceService;
@@ -8,6 +9,7 @@ import gt.high5.database.raw.TimeRecordOperation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 import android.app.Application;
 import android.content.Intent;
@@ -19,6 +21,8 @@ import android.preference.PreferenceManager;
 import com.github.curioustechizen.xlog.Log;
 
 public class High5Application extends Application {
+
+	private static HashMap<String, SharedPreferences.OnSharedPreferenceChangeListener> preferenceListeners = new HashMap<String, SharedPreferences.OnSharedPreferenceChangeListener>();
 
 	@Override
 	public void onCreate() {
@@ -77,8 +81,53 @@ public class High5Application extends Application {
 
 	private void initPreferences() {
 		// init static preferences
-		TimeRecordOperation.setRegionLength(PreferenceService
-				.getPreferenceReadService(getApplicationContext())
-				.getRegionLength());
+		final PreferenceService preferenceService = PreferenceService
+				.getPreferenceReadService(getApplicationContext());
+		TimeRecordOperation
+				.setRegionLength(preferenceService.getRegionLength());
+		// preference change listener
+		// / TODO shared preference change listener not called
+		preferenceListeners.put("update_interval",
+				new SharedPreferences.OnSharedPreferenceChangeListener() {
+
+					@Override
+					public void onSharedPreferenceChanged(
+							SharedPreferences preferences, String key) {
+						WidgetProvider.forceRefresh(getApplicationContext());
+						android.util.Log.d(LogService.LOG_TAG, "changed");
+					}
+				});
+		preferenceListeners.put("record_interval",
+				new SharedPreferences.OnSharedPreferenceChangeListener() {
+
+					@Override
+					public void onSharedPreferenceChanged(
+							SharedPreferences preferences, String key) {
+						WidgetProvider.forceRecord(getApplicationContext());
+					}
+				});
+		preferenceListeners.put("region_length",
+				new SharedPreferences.OnSharedPreferenceChangeListener() {
+
+					@Override
+					public void onSharedPreferenceChanged(
+							SharedPreferences preferences, String key) {
+						TimeRecordOperation.setRegionLength(preferenceService
+								.getRegionLength());
+					}
+				});
+		preferenceService
+				.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+
+					@Override
+					public void onSharedPreferenceChanged(
+							SharedPreferences preferences, String key) {
+						SharedPreferences.OnSharedPreferenceChangeListener listener = preferenceListeners
+								.get(key);
+						if (null != listener) {
+							listener.onSharedPreferenceChanged(preferences, key);
+						}
+					}
+				});
 	}
 }

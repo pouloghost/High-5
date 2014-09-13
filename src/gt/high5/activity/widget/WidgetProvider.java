@@ -14,7 +14,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.PowerManager;
 import android.widget.RemoteViews;
 
 /**
@@ -149,11 +148,21 @@ public class WidgetProvider extends AppWidgetProvider {
 	public static void forceRefresh(Context context) {
 		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
 				.cancel(getUpdateIntent(context, null));
-		startInterval(
-				context,
-				PreferenceService.getPreferenceReadService(
-						context.getApplicationContext()).getUpdateInterval(),
-				getUpdateIntent(context, null));
+		try {
+			getUpdateIntent(context, null).send();
+		} catch (CanceledException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void forceRecord(Context context) {
+		((AlarmManager) context.getSystemService(Context.ALARM_SERVICE))
+				.cancel(getRecordIntent(context));
+		try {
+			getRecordIntent(context).send();
+		} catch (CanceledException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static void startInterval(Context context, int interval,
@@ -191,17 +200,14 @@ public class WidgetProvider extends AppWidgetProvider {
 
 	private void recordCurrentStatus(Context context) {
 		try {
-			if (((PowerManager) context.getSystemService(Context.POWER_SERVICE))
-					.isScreenOn()) {
-				RecordService.getRecordService(context).record(context);
-				LogService.d(
-						WidgetProvider.class,
-						"record "
-								+ PreferenceService.getPreferenceReadService(
-										context.getApplicationContext())
-										.getRecordInterval(), context
-								.getApplicationContext());
-			}
+			RecordService.getRecordService(context).record(context);
+			LogService.d(
+					WidgetProvider.class,
+					"record "
+							+ PreferenceService.getPreferenceReadService(
+									context.getApplicationContext())
+									.getRecordInterval(), context
+							.getApplicationContext());
 
 		} catch (Exception e) {
 			e.printStackTrace();

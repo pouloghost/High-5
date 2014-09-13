@@ -1,8 +1,8 @@
 package gt.high5.activity.fragment;
 
 import gt.high5.R;
-import gt.high5.database.raw.TimeRecordOperation;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import android.content.Context;
@@ -18,34 +18,28 @@ import android.view.ViewGroup;
 
 public class SettingsFragment extends PreferenceFragment {
 
+	private static HashSet<String> NEED_UPDATE_SUMMARY = new HashSet<String>();
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.settings);
 		getPreferenceManager().setSharedPreferencesMode(
 				Context.MODE_MULTI_PROCESS);
-		getPreferenceManager()
-				.getSharedPreferences()
+
+		PreferenceManager
+				.getDefaultSharedPreferences(getActivity())
 				.registerOnSharedPreferenceChangeListener(
 						new SharedPreferences.OnSharedPreferenceChangeListener() {
 
 							@Override
 							public void onSharedPreferenceChanged(
-									SharedPreferences prefs, String key) {
-								if ("region_length".equalsIgnoreCase(key)) {
-									TimeRecordOperation.setRegionLength(Integer
-											.parseInt(prefs
-													.getString(key, "15")));
-								}
-								Preference pref = null;
-								if ((pref = findPreference(key)) instanceof ListPreference) {
-									pref.setSummary(((ListPreference) pref)
-											.getEntry());
-									try {
-										getListView().invalidateViews();
-									} catch (Exception e) {
-										e.printStackTrace();
-									}
+									SharedPreferences preferences, String key) {
+								if (NEED_UPDATE_SUMMARY.contains(key)) {
+									Preference preference = findPreference(key);
+									preference
+											.setSummary(((ListPreference) preference)
+													.getEntry());
 								}
 							}
 						});
@@ -60,6 +54,7 @@ public class SettingsFragment extends PreferenceFragment {
 			Preference preference = findPreference(key);
 			if (preference instanceof ListPreference) {
 				preference.setSummary(((ListPreference) preference).getEntry());
+				NEED_UPDATE_SUMMARY.add(key);
 			}
 		}
 		return super.onCreateView(inflater, container, savedInstanceState);
