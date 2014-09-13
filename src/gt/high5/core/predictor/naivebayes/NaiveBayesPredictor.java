@@ -40,7 +40,6 @@ public class NaiveBayesPredictor extends Predictor {
 		int all = cursor.getInt(cursor.getColumnIndex(column));
 
 		try {
-
 			if (null != allTotals) {
 				for (Table total : allTotals) {
 					context.setTotal((Total) total);

@@ -13,7 +13,7 @@ public class TableInfo {
 	private Class<?> mFiller = null;
 	private int mWeight = 1;
 	private NaiveBayesData mNaiveBayesData = null;
-	private SimilarityComparator<?, ?> mSimilarityComparator = null;
+	private SimilarityComparator<?> mSimilarityComparator = null;
 
 	public String getTitle() {
 		return mTitle;
@@ -47,12 +47,12 @@ public class TableInfo {
 		this.mNaiveBayesData = mNaiveBayesData;
 	}
 
-	public SimilarityComparator<?, ?> getSimilarityComparator() {
+	public SimilarityComparator<?> getSimilarityComparator() {
 		return mSimilarityComparator;
 	}
 
 	public void setSimilarityComparator(
-			SimilarityComparator<?, ?> mSimilarityComparator) {
+			SimilarityComparator<?> mSimilarityComparator) {
 		this.mSimilarityComparator = mSimilarityComparator;
 	}
 

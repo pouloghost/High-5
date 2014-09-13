@@ -1,6 +1,6 @@
 package gt.high5.core.predictor;
 
-import gt.high5.core.predictor.naivebayes.NaiveBayesPredictor;
+import gt.high5.core.predictor.collaborativefilter.CollaborativeFilterPredictor;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
@@ -18,7 +18,7 @@ import android.content.Context;
  */
 public abstract class Predictor {
 
-	private static Predictor instance = new NaiveBayesPredictor();
+	private static Predictor instance = new CollaborativeFilterPredictor();
 
 	public static Predictor getPredictor() {
 		return instance;

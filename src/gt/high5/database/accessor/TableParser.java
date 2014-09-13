@@ -136,7 +136,7 @@ public class TableParser {
 									.newInstance());
 							break;
 						case comparator:
-							info.setSimilarityComparator((SimilarityComparator<?, ?>) Class
+							info.setSimilarityComparator((SimilarityComparator<?>) Class
 									.forName(
 											mSimilarityPackage
 													+ "."
