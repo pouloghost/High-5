@@ -3,7 +3,7 @@
     file="statics.db"
     filler_pack="gt.high5.chart.filler"
     model_pack="gt.high5.database.table"
-    naive_data_pack="gt.high5.core.predictor.naivebayes.data"
+    sim_pack="gt.high5.core.predictor.collaborativefilter.comparator"
     version="1" >
 
     <table
@@ -11,50 +11,50 @@
         title="Total" />
     <table
         clazz="Time"
+        comparator="TimeComparator"
         filler="TimeDataFiller"
-        naive_data="TimeData"
         title="Time"
         weight="1" />
     <table
         clazz="WifiName"
+        comparator="WifiNameComparator"
         filler="WifiNameDataFiller"
-        naive_data="WifiNameData"
         title="Wifi Name"
         weight="3" />
     <table
         clazz="Network"
+        comparator="NetworkComparator"
         filler="NetworkDataFiller"
-        naive_data="NetworkData"
         title="Network Type"
         weight="2" />
     <table
         clazz="LastPackage"
+        comparator="LastPackageComparator"
         filler="LastPackageDataFiller"
-        naive_data="LastPackageData"
         title="Last App"
         weight="3" />
     <table
         clazz="WeekDay"
+        comparator="WeekDayComparator"
         filler="WeekDayDataFiller"
-        naive_data="WeekDayData"
         title="Day Of Week"
         weight="4" />
     <table
         clazz="DayOfMonth"
+        comparator="DayOfMonthComparator"
         filler="DayOfMonthDataFiller"
-        naive_data="DayOfMonthData"
         title="Day Of Month"
         weight="4" />
     <table
         clazz="RingVolumn"
+        comparator="VolumnComparator"
         filler="VolumnDataFiller"
-        naive_data="VolumnData"
         title="Ring Volumn"
         weight="2" />
     <table
         clazz="RingMode"
+        comparator="RingModeComparator"
         filler="RingModeDataFiller"
-        naive_data="RingModeData"
         title="Ring Mode"
         weight="2" />
 

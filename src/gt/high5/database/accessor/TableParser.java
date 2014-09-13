@@ -1,5 +1,6 @@
 package gt.high5.database.accessor;
 
+import gt.high5.core.predictor.collaborativefilter.SimilarityComparator;
 import gt.high5.core.predictor.naivebayes.NaiveBayesData;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.TableInfo;
@@ -27,7 +28,7 @@ public class TableParser {
 	 * @author GT Attributes allowed in xml
 	 */
 	private static enum ATTR {
-		file, version, model_pack, filler_pack, naive_data_pack, clazz, title, filler, weight, naive_data
+		file, version, model_pack, filler_pack, naive_data_pack, sim_pack, clazz, title, filler, weight, naive_data, comparator
 	}
 
 	private int mVersion = 1;
@@ -38,6 +39,8 @@ public class TableParser {
 	private String mParserPackage = null;
 	// naive data package
 	private String mNaiveDataPackage = null;
+	// collaborative filter similarity comparator package
+	private String mSimilarityPackage = null;
 	/**
 	 * table types in xml
 	 */
@@ -90,6 +93,9 @@ public class TableParser {
 						case naive_data_pack:
 							mNaiveDataPackage = parser.getAttributeValue(i);
 							break;
+						case sim_pack:
+							mSimilarityPackage = parser.getAttributeValue(i);
+							break;
 						case version:
 							mVersion = Integer.parseInt(parser
 									.getAttributeValue(i));
@@ -129,6 +135,13 @@ public class TableParser {
 													+ parser.getAttributeValue(i))
 									.newInstance());
 							break;
+						case comparator:
+							info.setSimilarityComparator((SimilarityComparator<?, ?>) Class
+									.forName(
+											mSimilarityPackage
+													+ "."
+													+ parser.getAttributeValue(i))
+									.newInstance());
 						default:
 							break;
 						}

@@ -1,5 +1,6 @@
 package gt.high5.database.model;
 
+import gt.high5.core.predictor.collaborativefilter.SimilarityComparator;
 import gt.high5.core.predictor.naivebayes.NaiveBayesData;
 
 /**
@@ -12,6 +13,7 @@ public class TableInfo {
 	private Class<?> mFiller = null;
 	private int mWeight = 1;
 	private NaiveBayesData mNaiveBayesData = null;
+	private SimilarityComparator<?, ?> mSimilarityComparator = null;
 
 	public String getTitle() {
 		return mTitle;
@@ -43,6 +45,15 @@ public class TableInfo {
 
 	public void setNaiveBayesData(NaiveBayesData mNaiveBayesData) {
 		this.mNaiveBayesData = mNaiveBayesData;
+	}
+
+	public SimilarityComparator<?, ?> getSimilarityComparator() {
+		return mSimilarityComparator;
+	}
+
+	public void setSimilarityComparator(
+			SimilarityComparator<?, ?> mSimilarityComparator) {
+		this.mSimilarityComparator = mSimilarityComparator;
 	}
 
 }
