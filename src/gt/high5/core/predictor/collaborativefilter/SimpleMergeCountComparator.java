@@ -1,24 +1,24 @@
 package gt.high5.core.predictor.collaborativefilter;
 
 import gt.high5.database.model.RecordTable;
+import gt.high5.database.model.Table;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 
 public abstract class SimpleMergeCountComparator<T> implements
-		SimilarityComparator<RecordTable, T> {
+		SimilarityComparator<T> {
 	@Override
-	public float getSimilarity(ArrayList<RecordTable> a,
-			ArrayList<RecordTable> b) {
+	public float getSimilarity(ArrayList<Table> a, ArrayList<Table> b) {
 		int total = 0;
 		int same = 0;
-		Comparator<T> comparator = getSorter();
 
 		// merge two lists
-		Iterator<RecordTable> aIterator = a.iterator();
-		Iterator<RecordTable> bIterator = b.iterator();
+		Iterator<Table> aIterator = a.iterator();
+		Iterator<Table> bIterator = b.iterator();
 		RecordTable ac = getNext(aIterator), bc = getNext(bIterator);
+		Comparator<T> comparator = getSorter();
 
 		while (null != ac && null != bc) {
 			@SuppressWarnings("unchecked")
@@ -57,9 +57,9 @@ public abstract class SimpleMergeCountComparator<T> implements
 		return (float) same / (float) total;
 	}
 
-	private RecordTable getNext(Iterator<RecordTable> iterator) {
+	private RecordTable getNext(Iterator<Table> iterator) {
 		if (iterator.hasNext()) {
-			return iterator.next();
+			return (RecordTable) iterator.next();
 		}
 		return null;
 	}

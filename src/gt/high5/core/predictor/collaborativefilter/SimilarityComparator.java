@@ -1,5 +1,7 @@
 package gt.high5.core.predictor.collaborativefilter;
 
+import gt.high5.database.model.Table;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -8,7 +10,7 @@ import java.util.Comparator;
  * 
  * @param <T>
  */
-public interface SimilarityComparator<TM, TC> {
+public interface SimilarityComparator<T> {
 	/**
 	 * calculate the similarity of set a and set b, who contains same type of
 	 * record
@@ -17,11 +19,11 @@ public interface SimilarityComparator<TM, TC> {
 	 * @param b
 	 * @return
 	 */
-	public float getSimilarity(ArrayList<TM> a, ArrayList<TM> b);
+	public float getSimilarity(ArrayList<Table> a, ArrayList<Table> b);
 
 	/**
 	 * @return a comparator to sort list of T to prepare for similarity
 	 *         calculation
 	 */
-	public Comparator<TC> getSorter();
+	public Comparator<T> getSorter();
 }
