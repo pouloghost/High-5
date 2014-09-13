@@ -1,6 +1,8 @@
-package gt.high5.core.predictor;
+package gt.high5.core.predictor.naivebayes;
 
 import gt.high5.R;
+import gt.high5.core.predictor.PredictContext;
+import gt.high5.core.predictor.Predictor;
 import gt.high5.core.service.LogService;
 import gt.high5.core.service.ReadService;
 import gt.high5.core.service.RecordContext;
@@ -50,6 +52,36 @@ public class NaiveBayesPredictor extends Predictor {
 		return allTotals;
 	}
 
+	@Override
+	public ArrayList<RecordTable> getRelativeRecords(PredictContext context,
+			Total total) {
+		ArrayList<RecordTable> records = new ArrayList<RecordTable>();
+		DatabaseAccessor accessor = getAccessor(context.getContext());
+		Class<? extends RecordTable>[] tables = accessor.getTables();
+		for (Class<? extends RecordTable> clazz : tables) {
+			RecordTable queryTable;
+			try {
+				queryTable = clazz.newInstance();
+				if (queryTable.queryForRead(new RecordContext(context
+						.getContext(), total))) {
+					ArrayList<Table> allTables = accessor.R(queryTable);
+					if (null != allTables) {// available record
+						queryTable = (RecordTable) allTables.get(0);
+					}
+				}
+				records.add(queryTable);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return records;
+	}
+
+	@Override
+	public DatabaseAccessor getAccessor(Context context) {
+		return DatabaseAccessor.getAccessor(context, XML_ID);
+	}
+
 	private void updatePossibility(PredictContext context, int all, Total total)
 			throws InstantiationException, IllegalAccessException {
 		StringBuilder possibilityLog = new StringBuilder("Possible ");
@@ -57,7 +89,7 @@ public class NaiveBayesPredictor extends Predictor {
 		possibilityLog.append(" all:");
 		possibilityLog.append(all);
 		possibilityLog.append(".");
-
+	
 		float totalCount = total.getCount();
 		float possibility = (float) totalCount / (float) all;
 		//punish records that appears quite occasionally
@@ -90,35 +122,5 @@ public class NaiveBayesPredictor extends Predictor {
 		possibilityLog.append(total.getPossibility());
 		LogService.d(ReadService.class, possibilityLog.toString(), context
 				.getContext().getApplicationContext());
-	}
-
-	@Override
-	public ArrayList<RecordTable> getRelativeRecords(PredictContext context,
-			Total total) {
-		ArrayList<RecordTable> records = new ArrayList<RecordTable>();
-		DatabaseAccessor accessor = getAccessor(context.getContext());
-		Class<? extends RecordTable>[] tables = accessor.getTables();
-		for (Class<? extends RecordTable> clazz : tables) {
-			RecordTable queryTable;
-			try {
-				queryTable = clazz.newInstance();
-				if (queryTable.queryForRead(new RecordContext(context
-						.getContext(), total))) {
-					ArrayList<Table> allTables = accessor.R(queryTable);
-					if (null != allTables) {// available record
-						queryTable = (RecordTable) allTables.get(0);
-					}
-				}
-				records.add(queryTable);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return records;
-	}
-
-	@Override
-	public DatabaseAccessor getAccessor(Context context) {
-		return DatabaseAccessor.getAccessor(context, XML_ID);
 	}
 }

@@ -1,5 +1,6 @@
 package gt.high5.core.predictor;
 
+import gt.high5.core.predictor.naivebayes.NaiveBayesPredictor;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
