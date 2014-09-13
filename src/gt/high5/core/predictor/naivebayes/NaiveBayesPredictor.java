@@ -12,6 +12,7 @@ import gt.high5.database.model.Table;
 import gt.high5.database.table.Total;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -23,7 +24,7 @@ import android.database.Cursor;
  */
 public class NaiveBayesPredictor extends Predictor {
 
-	private static int XML_ID = R.xml.tables;
+	private static int XML_ID = R.xml.nb_tables;
 
 	@Override
 	public ArrayList<Table> predictPossibility(PredictContext context) {
@@ -54,7 +55,7 @@ public class NaiveBayesPredictor extends Predictor {
 	}
 
 	@Override
-	public ArrayList<RecordTable> getRelativeRecords(PredictContext context,
+	public Collection<RecordTable> getRelativeRecords(PredictContext context,
 			Total total) {
 		ArrayList<RecordTable> records = new ArrayList<RecordTable>();
 		DatabaseAccessor accessor = getAccessor(context.getContext());
@@ -96,7 +97,7 @@ public class NaiveBayesPredictor extends Predictor {
 		float possibility = (float) totalCount / (float) all;
 		// punish records that appears quite occasionally
 		possibility = (float) Math.pow(possibility, 5.0f);
-		ArrayList<RecordTable> relates = getRelativeRecords(context, total);
+		Collection<RecordTable> relates = getRelativeRecords(context, total);
 		for (RecordTable table : relates) {
 			if (RecordTable.DEFAULT_COUNT_INT == table.getCount()) {
 				float defaultPossibility = getAccessor(context.getContext())

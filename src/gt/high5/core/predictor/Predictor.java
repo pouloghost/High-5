@@ -7,6 +7,7 @@ import gt.high5.database.model.Table;
 import gt.high5.database.table.Total;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import android.content.Context;
 
@@ -40,7 +41,7 @@ public abstract class Predictor {
 	 * @param total
 	 * @return
 	 */
-	public abstract ArrayList<RecordTable> getRelativeRecords(
+	public abstract Collection<RecordTable> getRelativeRecords(
 			PredictContext context, Total total);
 
 	public abstract DatabaseAccessor getAccessor(Context context);

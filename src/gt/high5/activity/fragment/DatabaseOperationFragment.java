@@ -52,7 +52,7 @@ public class DatabaseOperationFragment extends Fragment {
 	/**
 	 * db definition xml files, the R.xml.xx
 	 */
-	private static final int[] dbs = new int[] { R.xml.tables };
+	private static final int[] dbs = new int[] { R.xml.nb_tables };
 
 	@SuppressLint("InflateParams")
 	@Override

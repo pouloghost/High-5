@@ -11,6 +11,7 @@ import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -166,13 +167,13 @@ public class TotalDetailPagerFragment extends Fragment implements
 	class AppInfo {
 		private Drawable mIcon = null;
 		private String mName = null;
-		private ArrayList<RecordTable> mRecords = null;
+		private Collection<RecordTable> mRecords = null;
 
 		public AppInfo(Drawable icon, String name,
-				ArrayList<RecordTable> records) {
+				Collection<RecordTable> collection) {
 			mIcon = icon;
 			mName = name;
-			mRecords = records;
+			mRecords = collection;
 		}
 
 		public Drawable getIcon() {
@@ -191,7 +192,7 @@ public class TotalDetailPagerFragment extends Fragment implements
 			this.mName = mName;
 		}
 
-		public ArrayList<RecordTable> getRecords() {
+		public Collection<RecordTable> getRecords() {
 			return mRecords;
 		}
 
@@ -316,7 +317,7 @@ public class TotalDetailPagerFragment extends Fragment implements
 		}
 	}
 
-	private void fillRecordTable(ArrayList<RecordTable> records) {
+	private void fillRecordTable(Collection<RecordTable> records) {
 		TableParser tableParser = Predictor.getPredictor()
 				.getAccessor(getActivity().getApplicationContext())
 				.getTableParser();
