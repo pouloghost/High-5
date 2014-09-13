@@ -1,17 +1,22 @@
-package gt.high5.database.table.nb;
+package gt.high5.database.table;
 
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
-import gt.high5.database.raw.NetworkRecordOperation;
 import gt.high5.database.raw.RawRecord;
+import gt.high5.database.raw.WifiNameRecordOperation;
 
-public class Network extends SimpleRecordTable {
-
-	private static NetworkRecordOperation recordOperation = new NetworkRecordOperation();
-
+/**
+ * @author GT
+ * 
+ *         wifi bssid record
+ * 
+ *         indicating which ap is connected
+ */
+public class WifiName extends SimpleRecordTable {
+	private static WifiNameRecordOperation recordOperation = new WifiNameRecordOperation();
 	@TableAnnotation(defaultValue = "")
-	private String connection = "";
+	private String bssid = "";
 
 	@Override
 	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
@@ -22,33 +27,33 @@ public class Network extends SimpleRecordTable {
 	@Override
 	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
 		setPid(context.getTotal().getId());
-		String value = (String) rawRecord.getValue(RawRecord.TYPE_NETWORK);
-		return checkAndSetConnection(value);
+		return checkAndSetConnection((String) rawRecord
+				.getValue(RawRecord.TYPE_WIFI_NAME));
 	}
 
 	@Override
 	public boolean queryForRead(RecordContext context) {
 		setPid(context.getTotal().getId());
-		String value = (String) recordOperation.queryForRecord(context);
-		return checkAndSetConnection(value);
+		return checkAndSetConnection((String) recordOperation
+				.queryForRecord(context));
 	}
 
 	@Override
 	public float getDefaultPossibility(RecordContext context) {
-		return 0.5f / context.getTotal().getCount();
+		return 0.4f / context.getTotal().getCount();
 	}
 
-	public String getConnection() {
-		return connection;
+	public String getBssid() {
+		return bssid;
 	}
 
-	public void setConnection(String connection) {
-		this.connection = connection;
+	public void setBssid(String bssid) {
+		this.bssid = bssid;
 	}
 
 	private boolean checkAndSetConnection(String value) {
 		if (null != value) {
-			setConnection(value);
+			setBssid(value);
 			return true;
 		}
 		return false;

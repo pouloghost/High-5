@@ -1,15 +1,14 @@
-package gt.high5.database.table.nb;
+package gt.high5.database.table;
 
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.SimpleRecordTable;
 import gt.high5.database.model.TableAnnotation;
-import gt.high5.database.raw.DayOfMonthRecordOperation;
 import gt.high5.database.raw.RawRecord;
+import gt.high5.database.raw.WeekDayRecordOperation;
 
-public class DayOfMonth extends SimpleRecordTable {
+public class WeekDay extends SimpleRecordTable {
 
-	private static DayOfMonthRecordOperation recordOperation = new DayOfMonthRecordOperation();
-
+	private static WeekDayRecordOperation recordOperation = new WeekDayRecordOperation();
 	@TableAnnotation(defaultValue = "-1")
 	private int day = -1;
 
@@ -22,9 +21,8 @@ public class DayOfMonth extends SimpleRecordTable {
 	@Override
 	public boolean queryForRecord(RecordContext context, RawRecord rawRecord) {
 		setPid(context.getTotal().getId());
-		Integer value = (Integer) rawRecord
-				.getValue(RawRecord.TYPE_DAY_OF_MONTH);
-		return checkAndSetDay(value);
+		return checkAndSetDay((Integer) rawRecord
+				.getValue(RawRecord.TYPE_WEEK_DAY));
 	}
 
 	@Override
@@ -35,7 +33,7 @@ public class DayOfMonth extends SimpleRecordTable {
 
 	@Override
 	public float getDefaultPossibility(RecordContext context) {
-		return 0.3f / context.getTotal().getCount();
+		return 0.4f / context.getTotal().getCount();
 	}
 
 	public int getDay() {
@@ -53,5 +51,4 @@ public class DayOfMonth extends SimpleRecordTable {
 		}
 		return false;
 	}
-
 }

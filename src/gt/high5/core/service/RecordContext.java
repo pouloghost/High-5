@@ -1,6 +1,6 @@
 package gt.high5.core.service;
 
-import gt.high5.database.table.nb.Total;
+import gt.high5.database.table.Total;
 import android.content.Context;
 
 /**

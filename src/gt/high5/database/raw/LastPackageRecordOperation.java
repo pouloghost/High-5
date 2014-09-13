@@ -2,7 +2,7 @@ package gt.high5.database.raw;
 
 import gt.high5.core.provider.PackageProvider;
 import gt.high5.core.service.RecordContext;
-import gt.high5.database.table.nb.Total;
+import gt.high5.database.table.Total;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package gt.high5.chart.filler.nb;
+package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.DataFiller;
@@ -6,8 +6,8 @@ import gt.high5.chart.core.RendererFactory;
 import gt.high5.core.predictor.Predictor;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.Table;
-import gt.high5.database.table.nb.Time;
-import gt.high5.database.table.nb.Total;
+import gt.high5.database.table.Time;
+import gt.high5.database.table.Total;
 
 import java.util.ArrayList;
 import java.util.Collections;

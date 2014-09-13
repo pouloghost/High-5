@@ -1,11 +1,11 @@
-package gt.high5.chart.filler.nb;
+package gt.high5.chart.filler;
 
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
-import gt.high5.database.table.nb.RingMode;
+import gt.high5.database.table.RingMode;
 
 public class RingModeDataFiller extends SimpleDataFiller<RingMode> {
 

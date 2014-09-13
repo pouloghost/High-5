@@ -1,8 +1,8 @@
-package gt.high5.chart.filler.nb;
+package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
-import gt.high5.database.table.nb.LastPackage;
+import gt.high5.database.table.LastPackage;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;

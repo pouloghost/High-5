@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tables
     file="statics.db"
-    filler_pack="gt.high5.chart.filler.nb"
-    model_pack="gt.high5.database.table.nb"
+    filler_pack="gt.high5.chart.filler"
+    model_pack="gt.high5.database.table"
     version="1" >
 
     <table

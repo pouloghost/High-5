@@ -1,24 +1,24 @@
-package gt.high5.chart.filler.nb;
+package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
-import gt.high5.database.table.nb.DayOfMonth;
+import gt.high5.database.table.WeekDay;
 
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
-public class DayOfMonthDataFiller extends SimpleDataFiller<DayOfMonth> {
+public class WeekDayDataFiller extends SimpleDataFiller<WeekDay> {
 
-	private final static String[] SUFFIXES = { "st", "nd", "rd", "th" };
-	private final static int DAYS_OF_A_MONTH = 31;
+	private final static String[] DAY2TITLE = { "Sunday", "Monday", "Tuesday",
+			"Wednesday", "Thursday", "Friday", "Saturday" };
 
 	@Override
-	protected String getName(DayOfMonth record) {
-		return getNameOFDay(record.getDay());
+	protected String getName(WeekDay record) {
+		return DAY2TITLE[record.getDay()];
 	}
 
 	@Override
-	protected int getCount(DayOfMonth record) {
+	protected int getCount(WeekDay record) {
 		return record.getCount();
 	}
 
@@ -33,10 +33,10 @@ public class DayOfMonthDataFiller extends SimpleDataFiller<DayOfMonth> {
 		loadData();
 		XYSeries dataset = new XYSeries(title);
 		int i, j;
-		DayOfMonth record = null;
-		for (i = 0, j = 0; i < DAYS_OF_A_MONTH; ++i) {
+		WeekDay record = null;
+		for (i = 0, j = 0; i < DAY2TITLE.length; ++i) {
 			if (j < mData.size()) {
-				record = (DayOfMonth) mData.get(j);
+				record = (WeekDay) mData.get(j);
 			}
 			if (i == record.getDay()) {
 				dataset.add(i, record.getCount());
@@ -53,10 +53,10 @@ public class DayOfMonthDataFiller extends SimpleDataFiller<DayOfMonth> {
 		renderer.clearXTextLabels();
 		int last = -skip - 1;
 		int i, j;
-		DayOfMonth record = null;
-		for (i = 0, j = 0; i < DAYS_OF_A_MONTH; ++i) {
+		WeekDay record = null;
+		for (i = 0, j = 0; i < DAY2TITLE.length; ++i) {
 			if (j < mData.size()) {
-				record = (DayOfMonth) mData.get(j);
+				record = (WeekDay) mData.get(j);
 			}
 			String title = empty;
 			if (i == record.getDay()) {
@@ -70,11 +70,4 @@ public class DayOfMonthDataFiller extends SimpleDataFiller<DayOfMonth> {
 		}
 	}
 
-	private String getNameOFDay(int day) {
-		int digit = day % 10;// single digit
-		int suffixIndex = digit >= SUFFIXES.length ? SUFFIXES.length - 1
-				: digit - 1;// above 0
-		suffixIndex = suffixIndex < 0 ? SUFFIXES.length - 1 : suffixIndex;// 0
-		return day + SUFFIXES[suffixIndex];
-	}
 }

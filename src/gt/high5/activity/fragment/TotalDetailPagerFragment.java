@@ -8,7 +8,7 @@ import gt.high5.core.predictor.Predictor;
 import gt.high5.core.service.RecordService;
 import gt.high5.database.accessor.TableParser;
 import gt.high5.database.model.RecordTable;
-import gt.high5.database.table.nb.Total;
+import gt.high5.database.table.Total;
 
 import java.util.ArrayList;
 

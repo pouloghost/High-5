@@ -1,8 +1,8 @@
-package gt.high5.chart.filler.nb;
+package gt.high5.chart.filler;
 
 import gt.high5.R;
 import gt.high5.chart.core.SimpleDataFiller;
-import gt.high5.database.table.nb.WifiName;
+import gt.high5.database.table.WifiName;
 
 public class WifiNameDataFiller extends SimpleDataFiller<WifiName> {
 

@@ -1,4 +1,4 @@
-package gt.high5.database.table.nb;
+package gt.high5.database.table;
 
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.TableAnnotation;
