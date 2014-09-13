@@ -14,7 +14,7 @@ public class RingVolumn extends AbstractVolumn {
 	@Override
 	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
 		count = rawRecord.getCount();
-		return false;
+		return true;
 	}
 
 	@Override
