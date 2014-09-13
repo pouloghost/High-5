@@ -33,11 +33,6 @@ public class Network extends SimpleRecordTable {
 		return checkAndSetConnection(value);
 	}
 
-	@Override
-	public float getDefaultPossibility(RecordContext context) {
-		return 0.5f / context.getTotal().getCount();
-	}
-
 	public String getConnection() {
 		return connection;
 	}

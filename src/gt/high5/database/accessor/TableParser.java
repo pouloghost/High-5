@@ -1,5 +1,6 @@
 package gt.high5.database.accessor;
 
+import gt.high5.core.predictor.naivebayes.NaiveBayesData;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.TableInfo;
 
@@ -26,7 +27,7 @@ public class TableParser {
 	 * @author GT Attributes allowed in xml
 	 */
 	private static enum ATTR {
-		file, version, model_pack, filler_pack, clazz, title, filler, weight
+		file, version, model_pack, filler_pack, naive_data_pack, clazz, title, filler, weight, naive_data
 	}
 
 	private int mVersion = 1;
@@ -35,6 +36,8 @@ public class TableParser {
 	private String mModelPackage = null;
 	// parser for filling up data for graphs
 	private String mParserPackage = null;
+	// naive data package
+	private String mNaiveDataPackage = null;
 	/**
 	 * table types in xml
 	 */
@@ -84,6 +87,9 @@ public class TableParser {
 						case filler_pack:
 							mParserPackage = parser.getAttributeValue(i);
 							break;
+						case naive_data_pack:
+							mNaiveDataPackage = parser.getAttributeValue(i);
+							break;
 						case version:
 							mVersion = Integer.parseInt(parser
 									.getAttributeValue(i));
@@ -114,6 +120,14 @@ public class TableParser {
 						case weight:
 							info.setWeight(Integer.valueOf(parser
 									.getAttributeValue(i)));
+							break;
+						case naive_data:
+							info.setNaiveBayesData((NaiveBayesData) Class
+									.forName(
+											mNaiveDataPackage
+													+ "."
+													+ parser.getAttributeValue(i))
+									.newInstance());
 							break;
 						default:
 							break;

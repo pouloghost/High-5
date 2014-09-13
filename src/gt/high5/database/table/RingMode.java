@@ -31,11 +31,6 @@ public class RingMode extends SimpleRecordTable {
 				.queryForRecord(context));
 	}
 
-	@Override
-	public float getDefaultPossibility(RecordContext context) {
-		return 0.4f / context.getTotal().getCount();
-	}
-
 	public int getMode() {
 		return mode;
 	}

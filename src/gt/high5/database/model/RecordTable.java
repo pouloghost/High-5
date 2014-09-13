@@ -45,7 +45,6 @@ public abstract class RecordTable extends Table {
 	 * @param context
 	 * @return
 	 */
-	public abstract float getDefaultPossibility(RecordContext context);
 
 	public abstract int getCount();
 

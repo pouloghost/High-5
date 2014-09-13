@@ -69,11 +69,6 @@ public final class LastPackage extends SimpleRecordTable {
 		return false;
 	}
 
-	@Override
-	public float getDefaultPossibility(RecordContext context) {
-		return 0.7f / context.getTotal().getCount();
-	}
-
 	public String getLastPackage() {
 		return lastPackage;
 	}

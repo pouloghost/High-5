@@ -42,7 +42,8 @@ public class NaiveBayesPredictor extends Predictor {
 
 			if (null != allTotals) {
 				for (Table total : allTotals) {
-					updatePossibility(context, all, (Total) total);
+					context.setTotal((Total) total);
+					updatePossibility(context, all);
 				}
 			}
 		} catch (Exception e) {
@@ -82,24 +83,27 @@ public class NaiveBayesPredictor extends Predictor {
 		return DatabaseAccessor.getAccessor(context, XML_ID);
 	}
 
-	private void updatePossibility(PredictContext context, int all, Total total)
+	private void updatePossibility(PredictContext context, int all)
 			throws InstantiationException, IllegalAccessException {
+		Total total = context.getTotal();
 		StringBuilder possibilityLog = new StringBuilder("Possible ");
 		possibilityLog.append(total.getName());
 		possibilityLog.append(" all:");
 		possibilityLog.append(all);
 		possibilityLog.append(".");
-	
+
 		float totalCount = total.getCount();
 		float possibility = (float) totalCount / (float) all;
-		//punish records that appears quite occasionally
+		// punish records that appears quite occasionally
 		possibility = (float) Math.pow(possibility, 5.0f);
 		ArrayList<RecordTable> relates = getRelativeRecords(context, total);
 		for (RecordTable table : relates) {
 			if (RecordTable.DEFAULT_COUNT_INT == table.getCount()) {
-				float defaultPossibility = table
-						.getDefaultPossibility(new RecordContext(context
-								.getContext(), total));
+				float defaultPossibility = getAccessor(context.getContext())
+						.getTableInfo(table.getClass())
+						.getNaiveBayesData()
+						.getDefaultPossibility(
+								new PredictContext(context.getContext(), total));
 				possibility *= defaultPossibility;
 				possibilityLog.append(table.getClass().getSimpleName());
 				possibilityLog.append(":");

@@ -38,11 +38,6 @@ public class WifiName extends SimpleRecordTable {
 				.queryForRecord(context));
 	}
 
-	@Override
-	public float getDefaultPossibility(RecordContext context) {
-		return 0.4f / context.getTotal().getCount();
-	}
-
 	public String getBssid() {
 		return bssid;
 	}

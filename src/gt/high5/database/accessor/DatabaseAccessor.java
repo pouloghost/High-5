@@ -4,6 +4,7 @@ import gt.high5.chart.core.DataFiller;
 import gt.high5.database.model.ClassUtils;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
+import gt.high5.database.model.TableInfo;
 import gt.high5.database.model.TableUtils;
 
 import java.io.File;
@@ -150,6 +151,10 @@ public class DatabaseAccessor {
 
 	public int getTableWeight(Class<? extends RecordTable> clazz) {
 		return getTableParser().getInfo(clazz).getWeight();
+	}
+
+	public TableInfo getTableInfo(Class<? extends RecordTable> clazz) {
+		return getTableParser().getInfo(clazz);
 	}
 
 	// ---------------------CRUD--------------------------

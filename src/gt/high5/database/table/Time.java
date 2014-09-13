@@ -37,11 +37,6 @@ public class Time extends SimpleRecordTable {
 				.queryForRecord(context));
 	}
 
-	@Override
-	public float getDefaultPossibility(RecordContext context) {
-		return 0.5f / context.getTotal().getCount();
-	}
-
 	public int getRegion() {
 		return region;
 	}

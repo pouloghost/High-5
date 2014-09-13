@@ -1,5 +1,7 @@
 package gt.high5.database.model;
 
+import gt.high5.core.predictor.naivebayes.NaiveBayesData;
+
 /**
  * @author GT
  * 
@@ -9,6 +11,7 @@ public class TableInfo {
 	private String mTitle = null;
 	private Class<?> mFiller = null;
 	private int mWeight = 1;
+	private NaiveBayesData mNaiveBayesData = null;
 
 	public String getTitle() {
 		return mTitle;
@@ -32,6 +35,14 @@ public class TableInfo {
 
 	public void setWeight(int mWeight) {
 		this.mWeight = mWeight;
+	}
+
+	public NaiveBayesData getNaiveBayesData() {
+		return mNaiveBayesData;
+	}
+
+	public void setNaiveBayesData(NaiveBayesData mNaiveBayesData) {
+		this.mNaiveBayesData = mNaiveBayesData;
 	}
 
 }

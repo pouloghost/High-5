@@ -33,11 +33,6 @@ public class DayOfMonth extends SimpleRecordTable {
 		return checkAndSetDay((Integer) recordOperation.queryForRecord(context));
 	}
 
-	@Override
-	public float getDefaultPossibility(RecordContext context) {
-		return 0.3f / context.getTotal().getCount();
-	}
-
 	public int getDay() {
 		return day;
 	}

@@ -46,11 +46,6 @@ public class Total extends RecordTable implements Parcelable {
 	}
 
 	@Override
-	public float getDefaultPossibility(RecordContext context) {
-		return 0.01f;
-	}
-
-	@Override
 	public String getCreator() {
 		return TableUtils.buildCreator(this.getClass(), Table.class);
 	}

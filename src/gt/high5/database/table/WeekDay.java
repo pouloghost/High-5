@@ -31,11 +31,6 @@ public class WeekDay extends SimpleRecordTable {
 		return checkAndSetDay((Integer) recordOperation.queryForRecord(context));
 	}
 
-	@Override
-	public float getDefaultPossibility(RecordContext context) {
-		return 0.4f / context.getTotal().getCount();
-	}
-
 	public int getDay() {
 		return day;
 	}
