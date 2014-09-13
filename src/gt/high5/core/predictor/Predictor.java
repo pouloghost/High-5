@@ -44,5 +44,10 @@ public abstract class Predictor {
 	public abstract Collection<RecordTable> getRelativeRecords(
 			PredictContext context, Total total);
 
+	/**
+	 * @return the threshold indicating the nearly impossible status
+	 */
+	public abstract float getMinThreshold();
+
 	public abstract DatabaseAccessor getAccessor(Context context);
 }

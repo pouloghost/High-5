@@ -84,6 +84,11 @@ public class NaiveBayesPredictor extends Predictor {
 		return DatabaseAccessor.getAccessor(context, XML_ID);
 	}
 
+	@Override
+	public float getMinThreshold() {
+		return 1E-20f;
+	}
+
 	private void updatePossibility(PredictContext context, int all)
 			throws InstantiationException, IllegalAccessException {
 		Total total = context.getTotal();

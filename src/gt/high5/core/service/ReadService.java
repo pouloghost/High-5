@@ -20,7 +20,6 @@ import android.content.Context;
  */
 public class ReadService {
 
-	private static float MIN_POSSIBILITY = 1E-20f;
 	// singleton
 	private static ReadService mInstance = null;
 
@@ -58,6 +57,7 @@ public class ReadService {
 			throws InstantiationException, IllegalAccessException {
 		DatabaseAccessor accessor = Predictor.getPredictor().getAccessor(
 				mContext);
+		float minThreshold = Predictor.getPredictor().getMinThreshold();
 		if (null != accessor) {
 			last.clear();
 			PredictContext predictContext = new PredictContext(mContext);
@@ -89,7 +89,7 @@ public class ReadService {
 				int listSize = allTotals.size();
 				int size = Math.min(5, listSize);
 				for (int i = 0, j = 0; j < size && i < listSize; ++i) {
-					if (MIN_POSSIBILITY > ((Total) allTotals.get(i))
+					if (minThreshold > ((Total) allTotals.get(i))
 							.getPossibility()) {// nearly impossible
 						break;
 					}
