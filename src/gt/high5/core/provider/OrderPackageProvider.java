@@ -96,6 +96,15 @@ public class OrderPackageProvider extends PackageProvider {
 		return mRecentPackage;
 	}
 
+	@Override
+	public List<String> getNoneCalculateZone(Context context) {
+		List<String> last = getLastPackageOrder(context);
+		if (last.size() > 5) {
+			last = last.subList(0, 5);
+		}
+		return last;
+	}
+
 	/**
 	 * get recent packages up to MEMORY_SIZE
 	 * 
