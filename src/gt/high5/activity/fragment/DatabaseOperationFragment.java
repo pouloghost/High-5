@@ -2,9 +2,9 @@ package gt.high5.activity.fragment;
 
 import gt.high5.R;
 import gt.high5.core.provider.PackageProvider;
+import gt.high5.core.service.DBService;
 import gt.high5.core.service.IgnoreSetService;
 import gt.high5.core.service.PreferenceService;
-import gt.high5.database.accessor.DatabaseAccessor;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -49,10 +49,6 @@ public class DatabaseOperationFragment extends Fragment {
 	}
 
 	Handler mHandler = new Handler();
-	/**
-	 * db definition xml files, the R.xml.xx
-	 */
-	private static final int[] dbs = new int[] { R.xml.nb_tables };
 
 	@SuppressLint("InflateParams")
 	@Override
@@ -110,24 +106,28 @@ public class DatabaseOperationFragment extends Fragment {
 
 					@Override
 					public void run() {
-						for (int id : dbs) {
-							try {
-								DatabaseAccessor.getAccessor(context, id)
-										.backup();
-							} catch (Exception e) {
-								e.printStackTrace();
-								mHandler.post(new Runnable() {
+						DBService.getDBService(context).backupDB(context,
+								new DBService.Callbacks() {
 
 									@Override
-									public void run() {
-										Toast.makeText(context,
-												R.string.db_backup_failed,
-												Toast.LENGTH_SHORT).show();
+									public void success() {
+									}
+
+									@Override
+									public void failed(int id) {
+										mHandler.post(new Runnable() {
+
+											@Override
+											public void run() {
+												Toast.makeText(
+														context,
+														R.string.db_backup_failed,
+														Toast.LENGTH_SHORT)
+														.show();
+											}
+										});
 									}
 								});
-
-							}
-						}
 					}
 				} });
 	}
@@ -135,28 +135,32 @@ public class DatabaseOperationFragment extends Fragment {
 	private void cleanDB(final Context context) {
 		new AsyncTaskWithProgress(context)
 				.execute(new Runnable[] { new Runnable() {
-					@Override
 					public void run() {
-						for (int id : dbs) {
-							try {
-								DatabaseAccessor.getAccessor(context, id)
-										.clean(context);
-							} catch (Exception e) {
-								e.printStackTrace();
-								mHandler.post(new Runnable() {
+						DBService.getDBService(context).cleanDB(context,
+								new DBService.Callbacks() {
 
 									@Override
-									public void run() {
-										Toast.makeText(context,
-												R.string.db_clean_failed,
-												Toast.LENGTH_SHORT).show();
+									public void success() {
+										IgnoreSetService.getIgnoreSetService(
+												context).initDefault();
+										PackageProvider.resetProvider(context);
+									}
+
+									@Override
+									public void failed(int id) {
+										mHandler.post(new Runnable() {
+
+											@Override
+											public void run() {
+												Toast.makeText(
+														context,
+														R.string.db_clean_failed,
+														Toast.LENGTH_SHORT)
+														.show();
+											}
+										});
 									}
 								});
-							}
-						}
-						IgnoreSetService.getIgnoreSetService(context)
-								.initDefault();
-						PackageProvider.resetProvider(context);
 					}
 				} });
 	}
@@ -167,23 +171,28 @@ public class DatabaseOperationFragment extends Fragment {
 
 					@Override
 					public void run() {
-						for (int id : dbs) {
-							try {
-								DatabaseAccessor.getAccessor(context, id)
-										.restore();
-							} catch (Exception e) {
-								e.printStackTrace();
-								mHandler.post(new Runnable() {
+						DBService.getDBService(context).backupDB(context,
+								new DBService.Callbacks() {
 
 									@Override
-									public void run() {
-										Toast.makeText(context,
-												R.string.db_restore_failed,
-												Toast.LENGTH_SHORT).show();
+									public void success() {
+									}
+
+									@Override
+									public void failed(int id) {
+										mHandler.post(new Runnable() {
+
+											@Override
+											public void run() {
+												Toast.makeText(
+														context,
+														R.string.db_restore_failed,
+														Toast.LENGTH_SHORT)
+														.show();
+											}
+										});
 									}
 								});
-							}
-						}
 					}
 				} });
 	}
