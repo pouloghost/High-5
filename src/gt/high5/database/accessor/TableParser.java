@@ -7,6 +7,7 @@ import gt.high5.database.model.TableInfo;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -49,11 +50,11 @@ public class TableParser {
 	public TableParser(XmlPullParser parser) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException,
 			XmlPullParserException, IOException {
-		setTables(loadTables(parser));
+		setTables((HashMap<Class<? extends RecordTable>, TableInfo>) loadTables(parser));
 	}
 
 	@SuppressWarnings("unchecked")
-	public HashMap<Class<? extends RecordTable>, TableInfo> loadTables(
+	public Map<Class<? extends RecordTable>, TableInfo> loadTables(
 			XmlPullParser parser) throws XmlPullParserException, IOException,
 			ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
