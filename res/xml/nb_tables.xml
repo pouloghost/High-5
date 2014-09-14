@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tables
-    file="statics.db"
+    file="nb_statics.db"
     filler_pack="gt.high5.chart.filler"
     model_pack="gt.high5.database.table"
     naive_data_pack="gt.high5.core.predictor.naivebayes.data"
