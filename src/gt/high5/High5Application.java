@@ -9,7 +9,6 @@ import gt.high5.database.raw.TimeRecordOperation;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 import android.app.Application;
 import android.content.Intent;
@@ -17,12 +16,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.util.ArrayMap;
 
 import com.github.curioustechizen.xlog.Log;
 
 public class High5Application extends Application {
 
-	private static HashMap<String, SharedPreferences.OnSharedPreferenceChangeListener> preferenceListeners = new HashMap<String, SharedPreferences.OnSharedPreferenceChangeListener>();
+	private static ArrayMap<String, SharedPreferences.OnSharedPreferenceChangeListener> preferenceListeners = new ArrayMap<String, SharedPreferences.OnSharedPreferenceChangeListener>();
 
 	@Override
 	public void onCreate() {

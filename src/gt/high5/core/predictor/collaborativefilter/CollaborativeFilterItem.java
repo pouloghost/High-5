@@ -8,9 +8,10 @@ import gt.high5.database.table.Total;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
+import android.support.v4.util.ArrayMap;
 
 /**
  * @author GT
@@ -19,7 +20,7 @@ import java.util.Set;
  * 
  */
 public class CollaborativeFilterItem {
-	HashMap<Class<? extends RecordTable>, List<Table>> mRecords = new HashMap<Class<? extends RecordTable>, List<Table>>();
+	ArrayMap<Class<? extends RecordTable>, List<Table>> mRecords = new ArrayMap<Class<? extends RecordTable>, List<Table>>();
 
 	public float similarityWith(CollaborativeFilterItem item,
 			DatabaseAccessor accessor) {
@@ -42,7 +43,7 @@ public class CollaborativeFilterItem {
 	}
 
 	public void setRecords(
-			HashMap<Class<? extends RecordTable>, List<Table>> records) {
+			ArrayMap<Class<? extends RecordTable>, List<Table>> records) {
 		mRecords = records;
 	}
 

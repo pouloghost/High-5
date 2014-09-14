@@ -8,6 +8,7 @@ import gt.high5.database.model.TableUtils;
 import java.util.HashMap;
 
 import android.database.Cursor;
+import android.support.v4.util.ArrayMap;
 
 /**
  * @author GT
@@ -28,7 +29,7 @@ public class RawRecord extends Table {
 	/**
 	 * mapping type name to operation
 	 */
-	private static HashMap<String, RecordOperation> recordOperations = new HashMap<String, RecordOperation>();
+	private static ArrayMap<String, RecordOperation> recordOperations = new ArrayMap<String, RecordOperation>();
 	static {
 		recordOperations
 				.put(TYPE_DAY_OF_MONTH, new DayOfMonthRecordOperation());

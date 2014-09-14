@@ -4,7 +4,8 @@ import gt.high5.core.service.LogService;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
+
+import android.support.v4.util.ArrayMap;
 
 import com.github.curioustechizen.xlog.Log;
 
@@ -13,9 +14,9 @@ public class TableUtils {
 	/**
 	 * type from class to sql type
 	 */
-	private static HashMap<Class<?>, String> typeMap = null;
+	private static ArrayMap<Class<?>, String> typeMap = null;
 	static {
-		typeMap = new HashMap<Class<?>, String>();
+		typeMap = new ArrayMap<Class<?>, String>();
 		typeMap.put(Integer.class, "INTEGER");
 		typeMap.put(int.class, "INTEGER");
 		typeMap.put(Double.class, "DOUBLE");
