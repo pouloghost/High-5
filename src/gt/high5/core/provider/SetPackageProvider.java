@@ -89,6 +89,9 @@ public class SetPackageProvider extends PackageProvider {
 
 	@Override
 	public List<String> getLastPackageOrder(Context context) {
+		if (null == mRecentPackage) {
+			mRecentPackage = getRecentPackages(context);
+		}
 		return mRecentPackage;
 	}
 
