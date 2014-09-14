@@ -301,7 +301,7 @@ public class TotalDetailPagerFragment extends Fragment implements
 		mLoader = null;
 		// if view not filled properly the reference in fillContext will be
 		// set to be null
-		if (null != result) {
+		if (null != result && null != result.getRecords()) {
 			mAppIconImage.setImageDrawable(result.getIcon());
 			mAppNameText.setText(result.getName());
 			mCountText.setText(mTotal.getCount() + "");
