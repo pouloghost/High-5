@@ -9,9 +9,9 @@ import gt.high5.database.model.Table;
 import gt.high5.database.table.Time;
 import gt.high5.database.table.Total;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.chart.BarChart.Type;
@@ -49,7 +49,7 @@ public class TimeDataFiller extends DataFiller {
 			"21:15-21:30", "21:30-21:45", "21:45-22:00", "22:00-22:15",
 			"22:15-22:30", "22:30-22:45", "22:45-23:00", "23:00-23:15",
 			"23:15-23:30", "23:30-23:45", "23:45-24:00", };
-	private ArrayList<Table> mData = null;
+	private List<Table> mData = null;
 
 	@Override
 	protected void addFillers() {

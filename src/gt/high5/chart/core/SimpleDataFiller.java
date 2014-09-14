@@ -10,7 +10,7 @@ import gt.high5.database.table.Total;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.chart.BarChart.Type;
@@ -25,7 +25,7 @@ import android.view.View;
 
 public abstract class SimpleDataFiller<T> extends DataFiller {
 	// protected DatabaseAccessor mAccessor = null;
-	protected ArrayList<Table> mData = null;
+	protected List<Table> mData = null;
 
 	protected NumberFormat mTitleFormat = new NumberFormat() {
 		/**

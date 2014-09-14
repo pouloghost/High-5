@@ -69,7 +69,7 @@ public class IgnoreSetService {
 		if (null == mIgnoreSet) {
 			mIgnoreSet = new HashSet<String>();
 			Ignore ignoreQuery = new Ignore();
-			ArrayList<Table> ignores = accessor.R(ignoreQuery);
+			List<Table> ignores = accessor.R(ignoreQuery);
 			if (null != ignores) {
 				for (Table ignore : ignores) {
 					mIgnoreSet.add(((Ignore) ignore).getName());

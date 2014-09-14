@@ -6,8 +6,8 @@ import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.table.Total;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import android.content.Context;
 
@@ -31,7 +31,7 @@ public abstract class Predictor {
 	 * @param context
 	 * @return totals with predicted possibility
 	 */
-	public abstract ArrayList<Table> predictPossibility(PredictContext context);
+	public abstract List<Table> predictPossibility(PredictContext context);
 
 	/**
 	 * get all records needed to calculate the possibility of total under

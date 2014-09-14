@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -216,7 +217,7 @@ public class TotalListFragment extends Fragment {
 		// load all records
 		Context context = getActivity().getApplicationContext();
 		PredictContext predictContext = new PredictContext(context);
-		ArrayList<Table> totals = Predictor.getPredictor().predictPossibility(
+		List<Table> totals = Predictor.getPredictor().predictPossibility(
 				predictContext);
 
 		mDataList = new ArrayList<HashMap<String, Object>>();

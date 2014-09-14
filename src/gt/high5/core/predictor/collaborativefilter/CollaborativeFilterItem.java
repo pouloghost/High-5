@@ -9,6 +9,7 @@ import gt.high5.database.table.Total;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,7 +19,7 @@ import java.util.Set;
  * 
  */
 public class CollaborativeFilterItem {
-	HashMap<Class<? extends RecordTable>, ArrayList<Table>> mRecords = new HashMap<Class<? extends RecordTable>, ArrayList<Table>>();
+	HashMap<Class<? extends RecordTable>, List<Table>> mRecords = new HashMap<Class<? extends RecordTable>, List<Table>>();
 
 	public float similarityWith(CollaborativeFilterItem item,
 			DatabaseAccessor accessor) {
@@ -36,17 +37,17 @@ public class CollaborativeFilterItem {
 		return similarity;
 	}
 
-	public void put(Class<? extends RecordTable> key, ArrayList<Table> value) {
+	public void put(Class<? extends RecordTable> key, List<Table> value) {
 		mRecords.put(key, value);
 	}
 
 	public void setRecords(
-			HashMap<Class<? extends RecordTable>, ArrayList<Table>> records) {
+			HashMap<Class<? extends RecordTable>, List<Table>> records) {
 		mRecords = records;
 	}
 
 	public Collection<Table> getRelativeTables() {
-		ArrayList<Table> result = new ArrayList<Table>();
+		List<Table> result = new ArrayList<Table>();
 		for (Class<? extends RecordTable> key : mRecords.keySet()) {
 			result.addAll(mRecords.get(key));
 		}

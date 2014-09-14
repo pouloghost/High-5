@@ -5,7 +5,7 @@ import gt.high5.database.model.Table;
 import gt.high5.database.raw.RawRecord;
 import gt.high5.database.table.Ignore;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -25,7 +25,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		ArrayList<Class<? extends Table>> tablesToInit = new ArrayList<Class<? extends Table>>();
+		LinkedList<Class<? extends Table>> tablesToInit = new LinkedList<Class<? extends Table>>();
 		Class<? extends RecordTable>[] tables = parser.getTables();
 		for (Class<? extends RecordTable> table : tables) {
 			tablesToInit.add(table);

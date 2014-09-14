@@ -29,11 +29,11 @@ public class NaiveBayesPredictor extends Predictor {
 	private static int XML_ID = R.xml.nb_tables;
 
 	@Override
-	public ArrayList<Table> predictPossibility(PredictContext context) {
+	public List<Table> predictPossibility(PredictContext context) {
 		DatabaseAccessor accessor = getAccessor(context.getContext());
 		// read all packages
 		Total queryTotal = new Total();
-		ArrayList<Table> allTotals = accessor.R(queryTotal);
+		List<Table> allTotals = accessor.R(queryTotal);
 		// read all counts in total
 		String column = "SUM(count)";
 		Cursor cursor = accessor.query("SELECT " + column + " FROM "
@@ -73,7 +73,7 @@ public class NaiveBayesPredictor extends Predictor {
 				queryTable = clazz.newInstance();
 				if (queryTable.queryForRead(new RecordContext(context
 						.getContext(), total))) {
-					ArrayList<Table> allTables = accessor.R(queryTable);
+					List<Table> allTables = accessor.R(queryTable);
 					if (null != allTables) {// available record
 						queryTable = (RecordTable) allTables.get(0);
 					}

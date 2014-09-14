@@ -2,8 +2,8 @@ package gt.high5.core.predictor.collaborativefilter;
 
 import gt.high5.database.model.Table;
 
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * @author GT
@@ -19,7 +19,7 @@ public interface SimilarityComparator<T> {
 	 * @param b
 	 * @return
 	 */
-	public float getSimilarity(ArrayList<Table> a, ArrayList<Table> b);
+	public float getSimilarity(List<Table> a, List<Table> b);
 
 	/**
 	 * @return a comparator to sort list of T to prepare for similarity

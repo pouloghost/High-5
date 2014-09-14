@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -172,7 +173,7 @@ public class DatabaseAccessor {
 		}
 	}
 
-	public ArrayList<Table> R(Table table) {
+	public List<Table> R(Table table) {
 		String sql = table.R();
 		if (null == sql) {
 			return null;
@@ -180,7 +181,7 @@ public class DatabaseAccessor {
 		Cursor cursor = null;
 		try {
 			cursor = mDatabase.rawQuery(sql, null);
-			ArrayList<Table> result = new ArrayList<Table>();
+			List<Table> result = new ArrayList<Table>();
 			if (cursor.getCount() > 0) {
 				cursor.moveToFirst();
 				Class<? extends Table> clazz = table.getClass();
@@ -260,7 +261,7 @@ public class DatabaseAccessor {
 	}
 
 	public boolean exists(Table table) {
-		ArrayList<Table> query = R(table);
+		List<Table> query = R(table);
 		return null == query || 0 == query.size();
 	}
 

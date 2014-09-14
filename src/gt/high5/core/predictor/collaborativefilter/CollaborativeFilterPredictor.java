@@ -9,7 +9,6 @@ import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.table.Total;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class CollaborativeFilterPredictor extends Predictor {
 	private static int XML_ID = R.xml.cf_tables;
 
 	@Override
-	public ArrayList<Table> predictPossibility(PredictContext context) {
+	public List<Table> predictPossibility(PredictContext context) {
 		// read five recent packages
 		PackageProvider provider = PackageProvider.getPackageProvider(context
 				.getContext());
@@ -36,7 +35,7 @@ public class CollaborativeFilterPredictor extends Predictor {
 		List<CollaborativeFilterItem> lastItems = new LinkedList<CollaborativeFilterItem>();
 		for (String name : lastApps) {
 			queryTotal.setName(name);
-			ArrayList<Table> totalList = accessor.R(queryTotal);
+			List<Table> totalList = accessor.R(queryTotal);
 			if (null != totalList) {
 				queryTotal = (Total) totalList.get(0);
 			}
@@ -47,7 +46,7 @@ public class CollaborativeFilterPredictor extends Predictor {
 		}
 		// item-cf all the packages recorded
 		queryTotal = new Total();
-		ArrayList<Table> allTotals = accessor.R(queryTotal);
+		List<Table> allTotals = accessor.R(queryTotal);
 		if (null != allTotals) {
 			for (Table total : allTotals) {
 				if (!lastApps.contains(((Total) total).getName())) {// avoid
@@ -91,7 +90,7 @@ public class CollaborativeFilterPredictor extends Predictor {
 				try {
 					queryTable = clazz.newInstance();
 					queryTable.setPid(queryTotal.getId());
-					ArrayList<Table> tableList = accessor.R(queryTable);
+					List<Table> tableList = accessor.R(queryTable);
 					if (null != tableList) {
 						item.put(clazz, tableList);
 					}

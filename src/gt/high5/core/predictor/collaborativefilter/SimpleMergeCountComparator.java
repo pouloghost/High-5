@@ -3,14 +3,14 @@ package gt.high5.core.predictor.collaborativefilter;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
 public abstract class SimpleMergeCountComparator<T> implements
 		SimilarityComparator<T> {
 	@Override
-	public float getSimilarity(ArrayList<Table> a, ArrayList<Table> b) {
+	public float getSimilarity(List<Table> a, List<Table> b) {
 		int total = 0;
 		int same = 0;
 

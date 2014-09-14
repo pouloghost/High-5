@@ -10,13 +10,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 
 import android.content.Context;
 
 /**
  * @author ayi.zty
  * 
- *         service for read records without specified type from current predictor's database
+ *         service for read records without specified type from current
+ *         predictor's database
  */
 public class ReadService {
 
@@ -61,7 +63,7 @@ public class ReadService {
 		if (null != accessor) {
 			last.clear();
 			PredictContext predictContext = new PredictContext(mContext);
-			ArrayList<Table> allTotals = Predictor.getPredictor()
+			List<Table> allTotals = Predictor.getPredictor()
 					.predictPossibility(predictContext);
 			if (null != allTotals) {
 				Collections.sort(allTotals, new Comparator<Table>() {
