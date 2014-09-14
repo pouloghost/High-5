@@ -2,6 +2,7 @@ package gt.high5.database.accessor;
 
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
+import gt.high5.database.parser.TableParser;
 import gt.high5.database.raw.RawRecord;
 import gt.high5.database.table.Ignore;
 

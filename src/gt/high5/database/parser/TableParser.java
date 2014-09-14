@@ -1,4 +1,4 @@
-package gt.high5.database.accessor;
+package gt.high5.database.parser;
 
 import gt.high5.core.predictor.collaborativefilter.SimilarityComparator;
 import gt.high5.core.predictor.naivebayes.NaiveBayesData;
@@ -113,15 +113,16 @@ public class TableParser {
 						switch (attr) {
 						case clazz:
 							clazz = (Class<RecordTable>) Class
-									.forName(mModelPackage + "."
-											+ parser.getAttributeValue(i));
+									.forName(getFullClassName(
+											parser.getAttributeValue(i),
+											mModelPackage));
 							break;
 						case title:
 							info.setTitle(parser.getAttributeValue(i));
 							break;
 						case filler:
-							info.setFiller(Class.forName(mParserPackage + "."
-									+ parser.getAttributeValue(i)));
+							info.setFiller(Class.forName(getFullClassName(
+									parser.getAttributeValue(i), mParserPackage)));
 							break;
 						case weight:
 							info.setWeight(Integer.valueOf(parser
@@ -130,17 +131,17 @@ public class TableParser {
 						case naive_data:
 							info.setNaiveBayesData((NaiveBayesData) Class
 									.forName(
-											mNaiveDataPackage
-													+ "."
-													+ parser.getAttributeValue(i))
+											getFullClassName(
+													parser.getAttributeValue(i),
+													mNaiveDataPackage))
 									.newInstance());
 							break;
 						case comparator:
 							info.setSimilarityComparator((SimilarityComparator<?>) Class
 									.forName(
-											mSimilarityPackage
-													+ "."
-													+ parser.getAttributeValue(i))
+											getFullClassName(
+													parser.getAttributeValue(i),
+													mSimilarityPackage))
 									.newInstance());
 						default:
 							break;
@@ -231,4 +232,11 @@ public class TableParser {
 		mTables = tables;
 	}
 
+	private String getFullClassName(String name, String defaultPackage) {
+		if (name.startsWith(".")) {
+			return defaultPackage + name;
+		} else {
+			return name;
+		}
+	}
 }

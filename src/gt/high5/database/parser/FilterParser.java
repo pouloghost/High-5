@@ -1,4 +1,4 @@
-package gt.high5.database.accessor;
+package gt.high5.database.parser;
 
 import gt.high5.database.filter.Filter;
 import gt.high5.database.model.ClassUtils;

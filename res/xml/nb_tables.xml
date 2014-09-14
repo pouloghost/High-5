@@ -7,54 +7,54 @@
     version="1" >
 
     <table
-        clazz="Total"
+        clazz=".Total"
         title="Total" />
     <table
-        clazz="Time"
-        filler="TimeDataFiller"
-        naive_data="TimeData"
+        clazz=".Time"
+        filler=".TimeDataFiller"
+        naive_data=".TimeData"
         title="Time"
         weight="1" />
     <table
-        clazz="WifiName"
-        filler="WifiNameDataFiller"
-        naive_data="WifiNameData"
+        clazz=".WifiName"
+        filler=".WifiNameDataFiller"
+        naive_data=".WifiNameData"
         title="Wifi Name"
         weight="3" />
     <table
-        clazz="Network"
-        filler="NetworkDataFiller"
-        naive_data="NetworkData"
+        clazz=".Network"
+        filler=".NetworkDataFiller"
+        naive_data=".NetworkData"
         title="Network Type"
         weight="2" />
     <table
-        clazz="LastPackage"
-        filler="LastPackageDataFiller"
-        naive_data="LastPackageData"
+        clazz=".LastPackage"
+        filler=".LastPackageDataFiller"
+        naive_data=".LastPackageData"
         title="Last App"
         weight="3" />
     <table
-        clazz="WeekDay"
-        filler="WeekDayDataFiller"
-        naive_data="WeekDayData"
+        clazz=".WeekDay"
+        filler=".WeekDayDataFiller"
+        naive_data=".WeekDayData"
         title="Day Of Week"
         weight="4" />
     <table
-        clazz="DayOfMonth"
-        filler="DayOfMonthDataFiller"
-        naive_data="DayOfMonthData"
+        clazz=".DayOfMonth"
+        filler=".DayOfMonthDataFiller"
+        naive_data=".DayOfMonthData"
         title="Day Of Month"
         weight="4" />
     <table
-        clazz="RingVolumn"
-        filler="VolumnDataFiller"
-        naive_data="VolumnData"
+        clazz=".RingVolumn"
+        filler=".VolumnDataFiller"
+        naive_data=".VolumnData"
         title="Ring Volumn"
         weight="2" />
     <table
-        clazz="RingMode"
-        filler="RingModeDataFiller"
-        naive_data="RingModeData"
+        clazz=".RingMode"
+        filler=".RingModeDataFiller"
+        naive_data=".RingModeData"
         title="Ring Mode"
         weight="2" />
 

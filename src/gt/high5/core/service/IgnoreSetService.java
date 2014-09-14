@@ -3,10 +3,10 @@ package gt.high5.core.service;
 import gt.high5.R;
 import gt.high5.core.predictor.Predictor;
 import gt.high5.database.accessor.DatabaseAccessor;
-import gt.high5.database.accessor.FilterParser;
 import gt.high5.database.filter.Filter;
 import gt.high5.database.filter.FilterContext;
 import gt.high5.database.model.Table;
+import gt.high5.database.parser.FilterParser;
 import gt.high5.database.table.Ignore;
 
 import java.util.HashSet;

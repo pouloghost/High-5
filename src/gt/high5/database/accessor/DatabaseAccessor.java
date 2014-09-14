@@ -6,6 +6,7 @@ import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableInfo;
 import gt.high5.database.model.TableUtils;
+import gt.high5.database.parser.TableParser;
 
 import java.io.File;
 import java.io.FileInputStream;
