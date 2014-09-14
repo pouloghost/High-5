@@ -16,7 +16,7 @@ import android.content.Context;
 /**
  * @author ayi.zty
  * 
- *         service for read records without specified type
+ *         service for read records without specified type from current predictor's database
  */
 public class ReadService {
 

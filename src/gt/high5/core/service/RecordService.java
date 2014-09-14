@@ -22,7 +22,7 @@ import android.database.Cursor;
 /**
  * @author ayi.zty
  * 
- *         service for record current state
+ *         service for record current state and write to current predictor's database
  */
 public class RecordService {
 	private static int MAX_COUNT = 100;
