@@ -44,7 +44,6 @@ public class TableParser {
 	/**
 	 * table types in xml
 	 */
-	// private ArrayList<Class<? extends RecordTable>> mTables = null;
 	private HashMap<Class<? extends RecordTable>, TableInfo> mTables = null;
 
 	public TableParser(XmlPullParser parser) throws ClassNotFoundException,

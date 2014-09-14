@@ -9,8 +9,8 @@ import gt.high5.database.filter.FilterContext;
 import gt.high5.database.model.Table;
 import gt.high5.database.table.Ignore;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
@@ -125,7 +125,7 @@ public class IgnoreSetService {
 			}
 			FilterParser parser = new FilterParser(mContext.getResources()
 					.getXml(R.xml.filters));
-			ArrayList<Filter> filters = parser.getFilters();
+			LinkedList<Filter> filters = parser.getFilters();
 
 			List<ApplicationInfo> infos = mContext.getPackageManager()
 					.getInstalledApplications(PackageManager.GET_META_DATA);

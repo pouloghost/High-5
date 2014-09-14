@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -33,7 +34,7 @@ public class FilterParser {
 
 	private String mPackage = null;
 
-	private ArrayList<Filter> mFilters = null;
+	private LinkedList<Filter> mFilters = null;
 
 	public FilterParser(XmlPullParser parser) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException,
@@ -43,11 +44,11 @@ public class FilterParser {
 	}
 
 	@SuppressWarnings("unchecked")
-	public ArrayList<Filter> loadFilters(XmlPullParser parser)
+	public LinkedList<Filter> loadFilters(XmlPullParser parser)
 			throws XmlPullParserException, ClassNotFoundException,
 			InstantiationException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException, IOException {
-		ArrayList<Filter> result = null;
+		LinkedList<Filter> result = null;
 
 		int eventType = parser.getEventType();
 		Method method = null;
@@ -58,7 +59,7 @@ public class FilterParser {
 		while (XmlPullParser.END_DOCUMENT != eventType) {
 			switch (eventType) {
 			case XmlPullParser.START_DOCUMENT:
-				result = new ArrayList<Filter>();
+				result = new LinkedList<Filter>();
 				break;
 			case XmlPullParser.START_TAG:
 				String startName = parser.getName();
@@ -149,11 +150,11 @@ public class FilterParser {
 		return result;
 	}
 
-	public ArrayList<Filter> getFilters() {
+	public LinkedList<Filter> getFilters() {
 		return mFilters;
 	}
 
-	public void setFilters(ArrayList<Filter> mFilters) {
+	public void setFilters(LinkedList<Filter> mFilters) {
 		this.mFilters = mFilters;
 	}
 }
