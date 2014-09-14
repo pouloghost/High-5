@@ -115,4 +115,10 @@ public class SetPackageProvider extends PackageProvider {
 		}
 		return packages;
 	}
+
+	@Override
+	public List<String> getNoneCalculateZone(Context context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

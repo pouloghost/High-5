@@ -125,4 +125,10 @@ public class HackPackageProvider extends PackageProvider {
 		int count = mLaunchCountField.getInt(pkgStats);
 		return new LaunchInfo(componentName.getPackageName(), count);
 	}
+
+	@Override
+	public List<String> getNoneCalculateZone(Context context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

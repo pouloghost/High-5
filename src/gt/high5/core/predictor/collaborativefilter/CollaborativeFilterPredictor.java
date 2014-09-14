@@ -24,13 +24,10 @@ public class CollaborativeFilterPredictor extends Predictor {
 		// read five recent packages
 		PackageProvider provider = PackageProvider.getPackageProvider(context
 				.getContext());
-		List<String> lastApps = provider.getLastPackageOrder(context
+		List<String> lastApps = provider.getNoneCalculateZone(context
 				.getContext());
 		if (null == lastApps) {
 			return null;
-		}
-		if (lastApps.size() > 5) {
-			lastApps = lastApps.subList(0, 5);
 		}
 
 		// build up item of five recent apps
@@ -39,6 +36,10 @@ public class CollaborativeFilterPredictor extends Predictor {
 		List<CollaborativeFilterItem> lastItems = new LinkedList<CollaborativeFilterItem>();
 		for (String name : lastApps) {
 			queryTotal.setName(name);
+			ArrayList<Table> totalList = accessor.R(queryTotal);
+			if (null != totalList) {
+				queryTotal = (Total) totalList.get(0);
+			}
 			CollaborativeFilterItem item = buildItem(accessor, queryTotal);
 			if (null != item) {
 				lastItems.add(item);
@@ -49,13 +50,17 @@ public class CollaborativeFilterPredictor extends Predictor {
 		ArrayList<Table> allTotals = accessor.R(queryTotal);
 		if (null != allTotals) {
 			for (Table total : allTotals) {
-				CollaborativeFilterItem item = buildItem(accessor,
-						(Total) total);
-				float score = 0;
-				for (CollaborativeFilterItem last : lastItems) {
-					score += last.similarityWith(item, accessor);
+				if (!lastApps.contains(((Total) total).getName())) {// avoid
+																	// recommanding
+																	// recent 5
+					CollaborativeFilterItem item = buildItem(accessor,
+							(Total) total);
+					float score = 0;
+					for (CollaborativeFilterItem last : lastItems) {
+						score += last.similarityWith(item, accessor);
+					}
+					((Total) total).setPossibility(score);
 				}
-				((Total) total).setPossibility(score);
 			}
 		}
 		return allTotals;
@@ -74,21 +79,18 @@ public class CollaborativeFilterPredictor extends Predictor {
 
 	@Override
 	public float getMinThreshold() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 30;
 	}
 
 	private CollaborativeFilterItem buildItem(DatabaseAccessor accessor,
 			Total queryTotal) {
-		ArrayList<Table> totalList = accessor.R(queryTotal);
-		if (null != totalList) {
-			Total total = (Total) totalList.get(0);
-			RecordTable queryTable = null;
-			CollaborativeFilterItem item = new CollaborativeFilterItem();
-			for (Class<? extends RecordTable> clazz : accessor.getTables()) {
+		RecordTable queryTable = null;
+		CollaborativeFilterItem item = new CollaborativeFilterItem();
+		for (Class<? extends RecordTable> clazz : accessor.getTables()) {
+			if (Total.class != clazz) {// total not considered
 				try {
 					queryTable = clazz.newInstance();
-					queryTable.setPid(total.getId());
+					queryTable.setPid(queryTotal.getId());
 					ArrayList<Table> tableList = accessor.R(queryTable);
 					if (null != tableList) {
 						item.put(clazz, tableList);
@@ -96,11 +98,9 @@ public class CollaborativeFilterPredictor extends Predictor {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
 			}
-			return item;
 		}
-		return null;
+		return item;
 	}
 
 }

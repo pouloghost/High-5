@@ -25,8 +25,8 @@ public class Total extends RecordTable implements Parcelable {
 	private int count = DEFAULT_COUNT_INT;
 	@TableAnnotation(defaultValue = "-1")
 	private long timestamp = -1;
-	@TableAnnotation(defaultValue = "1", isTransient = true)
-	private float possibility = 1;
+	@TableAnnotation(defaultValue = "-1", isTransient = true)
+	private float possibility = -1;
 
 	@Override
 	public boolean initDefault(RecordContext context, RawRecord rawRecord) {

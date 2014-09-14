@@ -3,6 +3,7 @@ package gt.high5.core.predictor.naivebayes;
 import gt.high5.R;
 import gt.high5.core.predictor.PredictContext;
 import gt.high5.core.predictor.Predictor;
+import gt.high5.core.provider.PackageProvider;
 import gt.high5.core.service.LogService;
 import gt.high5.core.service.ReadService;
 import gt.high5.core.service.RecordContext;
@@ -13,6 +14,7 @@ import gt.high5.database.table.Total;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -39,11 +41,17 @@ public class NaiveBayesPredictor extends Predictor {
 		cursor.moveToFirst();
 		int all = cursor.getInt(cursor.getColumnIndex(column));
 
+		List<String> last = PackageProvider.getPackageProvider(
+				context.getContext())
+				.getNoneCalculateZone(context.getContext());
+
 		try {
 			if (null != allTotals) {
 				for (Table total : allTotals) {
-					context.setTotal((Total) total);
-					updatePossibility(context, all);
+					if (!last.contains(((Total) total).getName())) {
+						context.setTotal((Total) total);
+						updatePossibility(context, all);
+					}
 				}
 			}
 		} catch (Exception e) {

@@ -29,7 +29,7 @@ public abstract class PackageProvider {
 	static {
 		priority = new Class[1];
 		// priority[0] = HackPackageProvider.class;
-		priority[0] = SetPackageProvider.class;
+		priority[0] = OrderPackageProvider.class;
 	}
 
 	private static PackageProvider mInstance = null;
@@ -113,6 +113,8 @@ public abstract class PackageProvider {
 	public abstract Collection<LaunchInfo> getChangedPackages(Context context);
 
 	public abstract List<String> getLastPackageOrder(Context context);
+
+	public abstract List<String> getNoneCalculateZone(Context context);
 
 	public class CannotCreateException extends Exception {
 
