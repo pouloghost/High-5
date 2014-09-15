@@ -171,7 +171,7 @@ public class DatabaseOperationFragment extends Fragment {
 
 					@Override
 					public void run() {
-						DBService.getDBService(context).backupDB(context,
+						DBService.getDBService(context).restoreDB(context,
 								new DBService.Callbacks() {
 
 									@Override
