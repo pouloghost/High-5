@@ -89,19 +89,19 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 	 * @param allTotals
 	 * @return
 	 */
-	private List<Callable<Total>> createTaskList(List<String> lastApps,
+	private List<Callable<Total>> createTaskList(final List<String> lastApps,
 			final DatabaseAccessor accessor,
 			final List<CollaborativeFilterItem> lastItems, List<Table> allTotals) {
 		List<Callable<Total>> tasks = new LinkedList<Callable<Total>>();
 		for (Table table : allTotals) {
-			if (!lastApps.contains(((Total) table).getName())) {// avoid
-																// recommanding
-																// recent 5
-				final Total total = (Total) table;
-				tasks.add(new Callable<Total>() {
+			final Total total = (Total) table;
+			tasks.add(new Callable<Total>() {
 
-					@Override
-					public Total call() throws Exception {
+				@Override
+				public Total call() throws Exception {
+					if (!lastApps.contains((total.getName()))) {// avoid
+						// recommanding
+						// recent 5
 						CollaborativeFilterItem item = CollaborativeFilterItem
 								.buildItem(accessor, total);
 						float score = 0;
@@ -109,12 +109,11 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 							score += item.similarityWith(last, accessor);
 						}
 						total.setPossibility(score);
-						return total;
 					}
-				});
-			}
+					return total;
+				}
+			});
 		}
 		return tasks;
 	}
-
 }

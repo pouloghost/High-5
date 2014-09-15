@@ -106,28 +106,30 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 	 * @return
 	 */
 	private List<Callable<Total>> createTaskList(final PredictContext context,
-			List<Table> allTotals, final int all, List<String> last) {
+			List<Table> allTotals, final int all, final List<String> last) {
 		List<Callable<Total>> tasks = new LinkedList<Callable<Total>>();
 		for (Table table : allTotals) {
-			if (!last.contains(((Total) table).getName())) {
-				final Total total = (Total) table;
-				tasks.add(new Callable<Total>() {
 
-					@Override
-					public Total call() throws Exception {
+			final Total total = (Total) table;
+			tasks.add(new Callable<Total>() {
+
+				@Override
+				public Total call() throws Exception {
+					if (!last.contains((total.getName()))) {
 						updatePossibility(
 								new PredictContext(context.getContext(), total),
 								all);
-						return total;
 					}
-				});
-			}
+					return total;
+				}
+			});
 		}
 		return tasks;
 	}
 
 	/**
 	 * calculate a possibility using naive bayes upon a total
+	 * 
 	 * @param context
 	 * @param all
 	 */

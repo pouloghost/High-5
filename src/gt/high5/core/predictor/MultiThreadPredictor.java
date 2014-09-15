@@ -19,7 +19,10 @@ public abstract class MultiThreadPredictor extends Predictor {
 			List<Future<Total>> results = executor.invokeAll(tasks);
 			for (Future<Total> result : results) {
 				try {
-					allTotals.add(result.get());
+					Total total = result.get();
+					if (null != total) {
+						allTotals.add(total);
+					}
 				} catch (ExecutionException e) {
 					e.printStackTrace();
 				}
