@@ -1,8 +1,8 @@
 package gt.high5.core.predictor.naivebayes;
 
 import gt.high5.R;
+import gt.high5.core.predictor.MultiThreadPredictor;
 import gt.high5.core.predictor.PredictContext;
-import gt.high5.core.predictor.Predictor;
 import gt.high5.core.provider.PackageProvider;
 import gt.high5.core.service.LogService;
 import gt.high5.core.service.ReadService;
@@ -14,7 +14,9 @@ import gt.high5.database.table.Total;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -24,12 +26,12 @@ import android.database.Cursor;
  * 
  *         naive bayes
  */
-public class NaiveBayesPredictor extends Predictor {
+public class NaiveBayesPredictor extends MultiThreadPredictor {
 
 	private static int XML_ID = R.xml.nb_tables;
 
 	@Override
-	public List<Table> predictPossibility(PredictContext context) {
+	public List<Table> predictPossibility(final PredictContext context) {
 		DatabaseAccessor accessor = getAccessor(context.getContext());
 		// read all packages
 		Total queryTotal = new Total();
@@ -39,19 +41,21 @@ public class NaiveBayesPredictor extends Predictor {
 		Cursor cursor = accessor.query("SELECT " + column + " FROM "
 				+ Total.class.getSimpleName());
 		cursor.moveToFirst();
-		int all = cursor.getInt(cursor.getColumnIndex(column));
+		final int all = cursor.getInt(cursor.getColumnIndex(column));
 
 		List<String> last = PackageProvider.getPackageProvider(
 				context.getContext())
 				.getNoneCalculateZone(context.getContext());
 
 		if (null != allTotals) {
-			for (Table total : allTotals) {
-				if (!last.contains(((Total) total).getName())) {
-					context.setTotal((Total) total);
-					updatePossibility(context, all);
-				}
-			}
+			long start = System.currentTimeMillis();
+			List<Callable<Total>> tasks = createTaskList(context, allTotals,
+					all, last);
+
+			allTotals = execute(allTotals, tasks);
+			LogService.d(ReadService.class,
+					"time for predict " + (System.currentTimeMillis() - start),
+					context.getContext());
 		}
 
 		return allTotals;
@@ -92,6 +96,41 @@ public class NaiveBayesPredictor extends Predictor {
 		return 1E-20f;
 	}
 
+	/**
+	 * create task for each total
+	 * 
+	 * @param context
+	 * @param allTotals
+	 * @param all
+	 * @param last
+	 * @return
+	 */
+	private List<Callable<Total>> createTaskList(final PredictContext context,
+			List<Table> allTotals, final int all, List<String> last) {
+		List<Callable<Total>> tasks = new LinkedList<Callable<Total>>();
+		for (Table table : allTotals) {
+			if (!last.contains(((Total) table).getName())) {
+				final Total total = (Total) table;
+				tasks.add(new Callable<Total>() {
+
+					@Override
+					public Total call() throws Exception {
+						updatePossibility(
+								new PredictContext(context.getContext(), total),
+								all);
+						return total;
+					}
+				});
+			}
+		}
+		return tasks;
+	}
+
+	/**
+	 * calculate a possibility using naive bayes upon a total
+	 * @param context
+	 * @param all
+	 */
 	private void updatePossibility(PredictContext context, int all) {
 		Total total = context.getTotal();
 		StringBuilder possibilityLog = new StringBuilder("Possible ");
