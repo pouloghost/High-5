@@ -40,36 +40,7 @@ public class OrderPackageProvider extends PackageProvider {
 			// the packages are in the same order if nothing happens
 			// any inverse number means some actions are done to the app
 			// package name 2 index mapping
-			HashMap<String, Integer> indexOfPackage = new HashMap<String, Integer>();
-			for (int i = 0; i < mRecentPackage.size(); ++i) {
-				indexOfPackage.put(mRecentPackage.get(i), i);
-			}
-			// from the last app known
-			int last = MEMORY_SIZE + 1;
-			int i = packages.size() - 1;
-			for (; i >= 0; --i) {
-				Integer current = indexOfPackage.get(packages.get(i));
-				if (null == current) {// non-existing app, newly added
-					break;
-				}
-				if (current <= last) {// no inverse
-					last = current;
-				} else {// inverse
-					break;
-				}
-			}
-			// all right to the first one
-			if (i == -1) {
-				i = 0;
-				RecentTaskInfo info = getRunningTask(context);
-				if (null != info
-						&& packages.size() > 0
-						&& info.baseIntent.getComponent().getPackageName()
-								.equals(packages.get(0))) {
-					// the newest recent is running
-					i = 1;
-				}
-			}
+			int i = getOldestChangeIndex(context, packages);
 			changed = packages.subList(0, i);
 		} else {// first time
 			// record nothing
@@ -103,6 +74,47 @@ public class OrderPackageProvider extends PackageProvider {
 			last = last.subList(0, len);
 		}
 		return last;
+	}
+
+	/**
+	 * get the index of oldest change in recent task list
+	 * 
+	 * @param context
+	 * @param packages
+	 * @return
+	 */
+	private int getOldestChangeIndex(Context context, ArrayList<String> packages) {
+		HashMap<String, Integer> indexOfPackage = new HashMap<String, Integer>();
+		for (int i = 0; i < mRecentPackage.size(); ++i) {
+			indexOfPackage.put(mRecentPackage.get(i), i);
+		}
+		// from the last app known
+		int last = MEMORY_SIZE + 1;
+		int i = packages.size() - 1;
+		for (; i >= 0; --i) {
+			Integer current = indexOfPackage.get(packages.get(i));
+			if (null == current) {// non-existing app, newly added
+				break;
+			}
+			if (current <= last) {// no inverse
+				last = current;
+			} else {// inverse
+				break;
+			}
+		}
+		// all right to the first one
+		if (i == -1) {
+			i = 0;
+			RecentTaskInfo info = getRunningTask(context);
+			if (null != info
+					&& packages.size() > 0
+					&& info.baseIntent.getComponent().getPackageName()
+							.equals(packages.get(0))) {
+				// the newest recent is running
+				i = 1;
+			}
+		}
+		return i;
 	}
 
 	/**

@@ -22,7 +22,7 @@ import android.content.Context;
 @SuppressWarnings("unchecked")
 public abstract class PackageProvider {
 
-	protected static int MEMORY_SIZE = 10;
+	protected static final int MEMORY_SIZE = 10;
 	protected ActivityManager mActivityManager = null;
 
 	private static Class<? extends PackageProvider>[] priority = null;

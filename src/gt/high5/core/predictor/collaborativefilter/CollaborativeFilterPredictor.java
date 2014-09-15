@@ -19,7 +19,9 @@ import java.util.concurrent.Callable;
 import android.content.Context;
 
 public class CollaborativeFilterPredictor extends MultiThreadPredictor {
-	private static int XML_ID = R.xml.cf_tables;
+	private static final int XML_ID = R.xml.cf_tables;
+	private static final int RELATIVE_TASK_SIZE = 6;
+	private static final int MIN_THRESHOLD = RELATIVE_TASK_SIZE * 6;
 
 	@Override
 	public List<Table> predictPossibility(PredictContext context) {
@@ -27,7 +29,7 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 		PackageProvider provider = PackageProvider.getPackageProvider(context
 				.getContext());
 		List<String> lastApps = provider.getNoneCalculateZone(
-				context.getContext(), 6);
+				context.getContext(), RELATIVE_TASK_SIZE);
 		if (null == lastApps) {
 			return null;
 		}
@@ -77,7 +79,7 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 
 	@Override
 	public float getMinThreshold() {
-		return 30;
+		return MIN_THRESHOLD;
 	}
 
 	/**

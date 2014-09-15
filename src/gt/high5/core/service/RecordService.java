@@ -25,7 +25,7 @@ import android.database.Cursor;
  *         service for record current state and write to current predictor's database
  */
 public class RecordService {
-	private static int MAX_COUNT = 100;
+	private static final int MAX_COUNT = 100;
 
 	private Context mContext = null;
 	private DatabaseAccessor mAccessor = null;

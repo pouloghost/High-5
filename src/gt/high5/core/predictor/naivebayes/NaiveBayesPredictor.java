@@ -28,7 +28,7 @@ import android.database.Cursor;
  */
 public class NaiveBayesPredictor extends MultiThreadPredictor {
 
-	private static int XML_ID = R.xml.nb_tables;
+	private static final int XML_ID = R.xml.nb_tables;
 
 	@Override
 	public List<Table> predictPossibility(final PredictContext context) {

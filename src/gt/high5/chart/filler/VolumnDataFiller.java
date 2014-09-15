@@ -9,7 +9,7 @@ import gt.high5.database.table.AbstractVolumn;
 
 public class VolumnDataFiller extends SimpleDataFiller<AbstractVolumn> {
 
-	private static int LENGTH = 10;
+	private static final int LENGTH = 10;
 
 	@Override
 	protected String getName(AbstractVolumn record) {
