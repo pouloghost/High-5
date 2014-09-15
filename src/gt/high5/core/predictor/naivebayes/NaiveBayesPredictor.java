@@ -45,19 +45,15 @@ public class NaiveBayesPredictor extends Predictor {
 				context.getContext())
 				.getNoneCalculateZone(context.getContext());
 
-		try {
-			if (null != allTotals) {
-				for (Table total : allTotals) {
-					if (!last.contains(((Total) total).getName())) {
-						context.setTotal((Total) total);
-						updatePossibility(context, all);
-					}
+		if (null != allTotals) {
+			for (Table total : allTotals) {
+				if (!last.contains(((Total) total).getName())) {
+					context.setTotal((Total) total);
+					updatePossibility(context, all);
 				}
 			}
-		} catch (Exception e) {
-			allTotals = null;
-			e.printStackTrace();
 		}
+
 		return allTotals;
 	}
 
@@ -96,8 +92,7 @@ public class NaiveBayesPredictor extends Predictor {
 		return 1E-20f;
 	}
 
-	private void updatePossibility(PredictContext context, int all)
-			throws InstantiationException, IllegalAccessException {
+	private void updatePossibility(PredictContext context, int all) {
 		Total total = context.getTotal();
 		StringBuilder possibilityLog = new StringBuilder("Possible ");
 		possibilityLog.append(total.getName());
