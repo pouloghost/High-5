@@ -42,7 +42,8 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 			if (null != totalList) {
 				queryTotal = (Total) totalList.get(0);
 			}
-			CollaborativeFilterItem item = buildItem(accessor, queryTotal);
+			CollaborativeFilterItem item = CollaborativeFilterItem.buildItem(
+					accessor, queryTotal);
 			if (null != item) {
 				lastItems.add(item);
 			}
@@ -101,8 +102,8 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 
 					@Override
 					public Total call() throws Exception {
-						CollaborativeFilterItem item = buildItem(accessor,
-								total);
+						CollaborativeFilterItem item = CollaborativeFilterItem
+								.buildItem(accessor, total);
 						float score = 0;
 						for (CollaborativeFilterItem last : lastItems) {
 							score += item.similarityWith(last, accessor);
@@ -116,30 +117,4 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 		return tasks;
 	}
 
-	/**
-	 * factory method for an CollaborativeFilterItem
-	 * @param accessor
-	 * @param queryTotal
-	 * @return
-	 */
-	private CollaborativeFilterItem buildItem(DatabaseAccessor accessor,
-			Total queryTotal) {
-		RecordTable queryTable = null;
-		CollaborativeFilterItem item = new CollaborativeFilterItem();
-		for (Class<? extends RecordTable> clazz : accessor.getTables()) {
-			if (Total.class != clazz) {// total not considered
-				try {
-					queryTable = clazz.newInstance();
-					queryTable.setPid(queryTotal.getId());
-					List<Table> tableList = accessor.R(queryTable);
-					if (null != tableList) {
-						item.put(clazz, tableList);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return item;
-	}
 }

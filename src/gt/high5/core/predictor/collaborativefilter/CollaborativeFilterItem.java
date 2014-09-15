@@ -16,12 +16,46 @@ import android.support.v4.util.ArrayMap;
 /**
  * @author GT
  * 
- *         item base collaborative filtering, holding all records
+ *         item base collaborative filtering, holding all records and do real calculation
  * 
  */
 public class CollaborativeFilterItem {
 	ArrayMap<Class<? extends RecordTable>, List<Table>> mRecords = new ArrayMap<Class<? extends RecordTable>, List<Table>>();
 
+	/**
+	 * factory method for an CollaborativeFilterItem
+	 * 
+	 * @param accessor
+	 * @param queryTotal
+	 * @return
+	 */
+	public static CollaborativeFilterItem buildItem(DatabaseAccessor accessor,
+			Total queryTotal) {
+		RecordTable queryTable = null;
+		CollaborativeFilterItem item = new CollaborativeFilterItem();
+		for (Class<? extends RecordTable> clazz : accessor.getTables()) {
+			if (Total.class != clazz) {// total not considered
+				try {
+					queryTable = clazz.newInstance();
+					queryTable.setPid(queryTotal.getId());
+					List<Table> tableList = accessor.R(queryTable);
+					if (null != tableList) {
+						item.put(clazz, tableList);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return item;
+	}
+
+	/**
+	 * get similarity with item using i-cf
+	 * @param item
+	 * @param accessor
+	 * @return
+	 */
 	public float similarityWith(CollaborativeFilterItem item,
 			DatabaseAccessor accessor) {
 		Set<Class<? extends RecordTable>> otherKeys = item.mRecords.keySet();
