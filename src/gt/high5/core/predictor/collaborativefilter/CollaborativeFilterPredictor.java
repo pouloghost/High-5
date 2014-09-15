@@ -4,8 +4,6 @@ import gt.high5.R;
 import gt.high5.core.predictor.PredictContext;
 import gt.high5.core.predictor.Predictor;
 import gt.high5.core.provider.PackageProvider;
-import gt.high5.core.service.LogService;
-import gt.high5.core.service.ReadService;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
@@ -14,11 +12,6 @@ import gt.high5.database.table.Total;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import android.content.Context;
 
@@ -37,9 +30,9 @@ public class CollaborativeFilterPredictor extends Predictor {
 		}
 
 		// build up item of five recent apps
-		final DatabaseAccessor accessor = getAccessor(context.getContext());
+		DatabaseAccessor accessor = getAccessor(context.getContext());
 		Total queryTotal = new Total();
-		final List<CollaborativeFilterItem> lastItems = new LinkedList<CollaborativeFilterItem>();
+		List<CollaborativeFilterItem> lastItems = new LinkedList<CollaborativeFilterItem>();
 		for (String name : lastApps) {
 			queryTotal.setName(name);
 			List<Table> totalList = accessor.R(queryTotal);
@@ -55,48 +48,19 @@ public class CollaborativeFilterPredictor extends Predictor {
 		queryTotal = new Total();
 		List<Table> allTotals = accessor.R(queryTotal);
 		if (null != allTotals) {
-			long start = System.currentTimeMillis();
-			List<Callable<Total>> tasks = new LinkedList<Callable<Total>>();
-			for (Table table : allTotals) {
-				if (!lastApps.contains(((Total) table).getName())) {// avoid
+			for (Table total : allTotals) {
+				if (!lastApps.contains(((Total) total).getName())) {// avoid
 																	// recommanding
 																	// recent 5
-					final Total total = (Total) table;
-					tasks.add(new Callable<Total>() {
-
-						@Override
-						public Total call() throws Exception {
-							CollaborativeFilterItem item = buildItem(accessor,
-									total);
-							float score = 0;
-							for (CollaborativeFilterItem last : lastItems) {
-								score += item.similarityWith(last, accessor);
-							}
-							total.setPossibility(score);
-							return total;
-						}
-					});
-				}
-			}
-
-			ExecutorService executor = Executors.newCachedThreadPool();
-			try {
-				allTotals.clear();
-				List<Future<Total>> results = executor.invokeAll(tasks);
-				for (Future<Total> result : results) {
-					try {
-						allTotals.add(result.get());
-					} catch (ExecutionException e) {
-						e.printStackTrace();
+					CollaborativeFilterItem item = buildItem(accessor,
+							(Total) total);
+					float score = 0;
+					for (CollaborativeFilterItem last : lastItems) {
+						score += last.similarityWith(item, accessor);
 					}
+					((Total) total).setPossibility(score);
 				}
-			} catch (InterruptedException e) {
-				allTotals = null;
-				e.printStackTrace();
 			}
-			LogService.d(ReadService.class,
-					"time for predict " + (System.currentTimeMillis() - start),
-					context.getContext());
 		}
 		return allTotals;
 	}
@@ -137,4 +101,5 @@ public class CollaborativeFilterPredictor extends Predictor {
 		}
 		return item;
 	}
+
 }
