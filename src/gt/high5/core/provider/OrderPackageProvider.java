@@ -97,10 +97,10 @@ public class OrderPackageProvider extends PackageProvider {
 	}
 
 	@Override
-	public List<String> getNoneCalculateZone(Context context) {
+	public List<String> getNoneCalculateZone(Context context, int len) {
 		List<String> last = getLastPackageOrder(context);
-		if (last.size() > 5) {
-			last = last.subList(0, 5);
+		if (last.size() > len) {
+			last = last.subList(0, len);
 		}
 		return last;
 	}

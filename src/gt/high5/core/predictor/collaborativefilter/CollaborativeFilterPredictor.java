@@ -26,8 +26,8 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 		// read five recent packages
 		PackageProvider provider = PackageProvider.getPackageProvider(context
 				.getContext());
-		List<String> lastApps = provider.getNoneCalculateZone(context
-				.getContext());
+		List<String> lastApps = provider.getNoneCalculateZone(
+				context.getContext(), 6);
 		if (null == lastApps) {
 			return null;
 		}

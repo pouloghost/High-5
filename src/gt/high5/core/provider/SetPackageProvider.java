@@ -95,6 +95,11 @@ public class SetPackageProvider extends PackageProvider {
 		return mRecentPackage;
 	}
 
+	@Override
+	public List<String> getNoneCalculateZone(Context context, int len) {
+		return null;
+	}
+
 	/**
 	 * get recent packages up to MEMORY_SIZE
 	 * 
@@ -114,11 +119,5 @@ public class SetPackageProvider extends PackageProvider {
 			packages.add(recent.baseIntent.getComponent().getPackageName());
 		}
 		return packages;
-	}
-
-	@Override
-	public List<String> getNoneCalculateZone(Context context) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

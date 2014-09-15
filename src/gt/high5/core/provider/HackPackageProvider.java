@@ -127,8 +127,7 @@ public class HackPackageProvider extends PackageProvider {
 	}
 
 	@Override
-	public List<String> getNoneCalculateZone(Context context) {
-		// TODO Auto-generated method stub
+	public List<String> getNoneCalculateZone(Context context, int len) {
 		return null;
 	}
 }

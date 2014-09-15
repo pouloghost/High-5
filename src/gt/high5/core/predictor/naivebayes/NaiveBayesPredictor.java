@@ -44,8 +44,8 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 		final int all = cursor.getInt(cursor.getColumnIndex(column));
 
 		List<String> last = PackageProvider.getPackageProvider(
-				context.getContext())
-				.getNoneCalculateZone(context.getContext());
+				context.getContext()).getNoneCalculateZone(
+				context.getContext(), 5);
 
 		if (null != allTotals) {
 			long start = System.currentTimeMillis();

@@ -114,7 +114,7 @@ public abstract class PackageProvider {
 
 	public abstract List<String> getLastPackageOrder(Context context);
 
-	public abstract List<String> getNoneCalculateZone(Context context);
+	public abstract List<String> getNoneCalculateZone(Context context, int len);
 
 	public class CannotCreateException extends Exception {
 
