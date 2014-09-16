@@ -23,7 +23,7 @@ import android.widget.RemoteViewsService;
 @SuppressLint("NewApi")
 public class GridAdapterService extends RemoteViewsService {
 
-	private ArrayList<String> mApps = new ArrayList<String>();
+	private ArrayList<String> mApps = null;
 
 	private static PackageManager mPackageManager = null;
 
@@ -117,7 +117,7 @@ public class GridAdapterService extends RemoteViewsService {
 		public void onDataSetChanged() {
 			try {
 				mApps = ReadService.getReadService(getApplicationContext())
-						.getHigh5(mApps);
+						.getHigh5();
 
 				LogService.d(GridAdapterService.class, "data set changed",
 						getApplicationContext());

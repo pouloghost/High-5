@@ -2,6 +2,7 @@ package gt.high5.core.service;
 
 import gt.high5.core.predictor.PredictContext;
 import gt.high5.core.predictor.Predictor;
+import gt.high5.core.provider.PackageProvider;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.Table;
 import gt.high5.database.table.Total;
@@ -27,9 +28,10 @@ public class ReadService {
 
 	private Context mContext = null;
 
-	private ArrayList<String> mLastHigh5 = null;
-
-	// private DatabaseAccessor mAccessor = null;
+	private ArrayList<String> mLastHigh5 = new ArrayList<String>();
+	private float mHit = 0;
+	private float mWrong = 0;
+	private float mMiss = 0;
 
 	private ReadService(Context context) {
 		mContext = context;
@@ -57,17 +59,18 @@ public class ReadService {
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	public ArrayList<String> getHigh5(ArrayList<String> last)
-			throws InstantiationException, IllegalAccessException {
+	public ArrayList<String> getHigh5() throws InstantiationException,
+			IllegalAccessException {
 		DatabaseAccessor accessor = Predictor.getPredictor().getAccessor(
 				mContext);
 		float minThreshold = Predictor.getPredictor().getMinThreshold();
 		if (null != accessor) {
-			last.clear();
 			PredictContext predictContext = new PredictContext(mContext);
 			List<Table> allTotals = Predictor.getPredictor()
 					.predictPossibility(predictContext);
 			if (null != allTotals) {
+				updateScore();
+				// sort
 				Collections.sort(allTotals, new Comparator<Table>() {
 					@Override
 					public int compare(Table arg0, Table arg1) {
@@ -87,32 +90,59 @@ public class ReadService {
 				LogService.d(ReadService.class, sortLog.toString(),
 						mContext.getApplicationContext());
 
-				HashSet<String> ignoredSet = IgnoreSetService
-						.getIgnoreSetService(mContext).getIgnoreSet(accessor);
-
-				int listSize = allTotals.size();
-				int size = Math.min(5, listSize);
-				for (int i = 0, j = 0; j < size && i < listSize; ++i) {
-					if (minThreshold > ((Total) allTotals.get(i))
-							.getPossibility()) {// nearly impossible
-						break;
-					}
-					String name = ((Total) allTotals.get(i)).getName();
-					if (!ignoredSet.contains(name)) {
-						last.add(name);
-						++j;
-					}
-				}
+				eliminateIgnored(accessor, minThreshold, allTotals);
 			}
 		} else {
 			LogService.d(ReadService.class, "data accessor is null",
 					mContext.getApplicationContext());
 		}
-		return last;
+		return mLastHigh5;
 	}
 
 	public List<Table> getAll() {
 		PredictContext predictContext = new PredictContext(mContext);
 		return Predictor.getPredictor().predictPossibility(predictContext);
+	}
+
+	public float getRecallRate() {
+		return mHit / (mHit + mMiss);
+	}
+
+	public float getAccuracy() {
+		return mHit / (mHit + mWrong);
+	}
+
+	private void eliminateIgnored(DatabaseAccessor accessor,
+			float minThreshold, List<Table> allTotals) {
+		HashSet<String> ignoredSet = IgnoreSetService
+				.getIgnoreSetService(mContext).getIgnoreSet(accessor);
+	
+		int listSize = allTotals.size();
+		int size = Math.min(5, listSize);
+		mLastHigh5 = new ArrayList<String>(size);
+		for (int i = 0, j = 0; j < size && i < listSize; ++i) {
+			if (minThreshold > ((Total) allTotals.get(i))
+					.getPossibility()) {// nearly impossible
+				break;
+			}
+			String name = ((Total) allTotals.get(i)).getName();
+			if (!ignoredSet.contains(name)) {
+				mLastHigh5.add(name);
+				++j;
+			}
+		}
+	}
+
+	private void updateScore() {
+		ArrayList<String> last = mLastHigh5;
+		List<String> changes = PackageProvider.getPackageProvider(mContext)
+				.getLastPackageOrder(mContext);
+		int recommandSize = last.size();
+		int changeSize = changes.size();
+		last.retainAll(changes);
+		int hit = last.size();
+		mHit += hit;
+		mWrong += (recommandSize - hit);
+		mMiss += (changeSize - hit);
 	}
 }
