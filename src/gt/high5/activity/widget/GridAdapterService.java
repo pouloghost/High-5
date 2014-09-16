@@ -23,7 +23,7 @@ import android.widget.RemoteViewsService;
 @SuppressLint("NewApi")
 public class GridAdapterService extends RemoteViewsService {
 
-	private ArrayList<String> apps = new ArrayList<String>();
+	private ArrayList<String> mApps = new ArrayList<String>();
 
 	private static PackageManager mPackageManager = null;
 
@@ -42,9 +42,9 @@ public class GridAdapterService extends RemoteViewsService {
 		public int getCount() {
 
 			LogService.d(GridAdapterService.class,
-					"data set size " + apps.size(), getApplicationContext());
+					"data set size " + mApps.size(), getApplicationContext());
 
-			return apps.size();
+			return mApps.size();
 		}
 
 		@Override
@@ -65,7 +65,7 @@ public class GridAdapterService extends RemoteViewsService {
 			LogService.d(GridAdapterService.class, "view at " + position,
 					getApplicationContext());
 
-			if (apps.size() < position) {
+			if (mApps.size() < position) {
 				return null;
 			}
 			Context context = GridAdapterService.this;
@@ -73,7 +73,7 @@ public class GridAdapterService extends RemoteViewsService {
 				mPackageManager = context.getPackageManager();
 			}
 			// retrieve application icon and name
-			String packageName = apps.get(position);
+			String packageName = mApps.get(position);
 			RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
 					R.layout.widget_item);
 			ApplicationInfo info;
@@ -116,8 +116,8 @@ public class GridAdapterService extends RemoteViewsService {
 		@Override
 		public void onDataSetChanged() {
 			try {
-				apps = ReadService.getReadService(getApplicationContext())
-						.getHigh5(apps);
+				mApps = ReadService.getReadService(getApplicationContext())
+						.getHigh5(mApps);
 
 				LogService.d(GridAdapterService.class, "data set changed",
 						getApplicationContext());

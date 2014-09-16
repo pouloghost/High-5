@@ -2,8 +2,7 @@ package gt.high5.activity.fragment;
 
 import gt.high5.R;
 import gt.high5.activity.AsyncImageTask;
-import gt.high5.core.predictor.PredictContext;
-import gt.high5.core.predictor.Predictor;
+import gt.high5.core.service.ReadService;
 import gt.high5.database.model.Table;
 import gt.high5.database.table.Total;
 
@@ -216,9 +215,8 @@ public class TotalListFragment extends Fragment {
 	private ArrayList<HashMap<String, Object>> loadData() {
 		// load all records
 		Context context = getActivity().getApplicationContext();
-		PredictContext predictContext = new PredictContext(context);
-		List<Table> totals = Predictor.getPredictor().predictPossibility(
-				predictContext);
+
+		List<Table> totals = ReadService.getReadService(context).getAll();
 
 		mDataList = new ArrayList<HashMap<String, Object>>();
 		if (null != totals) {

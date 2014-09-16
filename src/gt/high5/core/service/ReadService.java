@@ -27,6 +27,8 @@ public class ReadService {
 
 	private Context mContext = null;
 
+	private ArrayList<String> mLastHigh5 = null;
+
 	// private DatabaseAccessor mAccessor = null;
 
 	private ReadService(Context context) {
@@ -107,5 +109,10 @@ public class ReadService {
 					mContext.getApplicationContext());
 		}
 		return last;
+	}
+
+	public List<Table> getAll() {
+		PredictContext predictContext = new PredictContext(mContext);
+		return Predictor.getPredictor().predictPossibility(predictContext);
 	}
 }
