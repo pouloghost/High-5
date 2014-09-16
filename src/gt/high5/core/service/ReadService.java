@@ -90,7 +90,7 @@ public class ReadService {
 				LogService.d(ReadService.class, sortLog.toString(),
 						mContext.getApplicationContext());
 
-				eliminateIgnored(accessor, minThreshold, allTotals);
+				fillUpHigh5(accessor, minThreshold, allTotals);
 			}
 		} else {
 			LogService.d(ReadService.class, "data accessor is null",
@@ -112,8 +112,8 @@ public class ReadService {
 		return mHit == 0 ? 0 : mHit / (mHit + mWrong);
 	}
 
-	private void eliminateIgnored(DatabaseAccessor accessor,
-			float minThreshold, List<Table> allTotals) {
+	private void fillUpHigh5(DatabaseAccessor accessor, float minThreshold,
+			List<Table> allTotals) {
 		HashSet<String> ignoredSet = IgnoreSetService.getIgnoreSetService(
 				mContext).getIgnoreSet(accessor);
 
@@ -136,13 +136,15 @@ public class ReadService {
 	private void updateScore() {
 		ArrayList<String> last = mLastHigh5;
 		List<String> changes = PackageProvider.getPackageProvider(mContext)
-				.getLastPackageOrder(mContext);
-		int recommandSize = last.size();
-		int changeSize = changes.size();
-		last.retainAll(changes);
-		int hit = last.size();
-		mHit += hit;
-		mWrong += (recommandSize - hit);
-		mMiss += (changeSize - hit);
+				.getLastChangedPackage();
+		if (null != changes) {
+			int recommandSize = last.size();
+			int changeSize = changes.size();
+			last.retainAll(changes);
+			int hit = last.size();
+			mHit += hit;
+			mWrong += (recommandSize - hit);
+			mMiss += (changeSize - hit);
+		}
 	}
 }

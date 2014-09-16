@@ -15,6 +15,7 @@ import android.content.Context;
 public class SetPackageProvider extends PackageProvider {
 
 	private ArrayList<String> mRecentPackage = null;
+	private ArrayList<String> mLastChanged = null;
 
 	public SetPackageProvider() throws CannotCreateException {
 		super();
@@ -23,26 +24,27 @@ public class SetPackageProvider extends PackageProvider {
 	@Override
 	public Collection<LaunchInfo> getChangedPackages(Context context) {
 		// get recent package
-		ArrayList<String> packages = getRecentPackages(context);
+		mLastChanged = getRecentPackages(context);
 
 		// backup for save to mRecentMemory
 		@SuppressWarnings("unchecked")
-		ArrayList<String> currentBackup = (ArrayList<String>) packages.clone();
+		ArrayList<String> currentBackup = (ArrayList<String>) mLastChanged
+				.clone();
 
 		if (null != mRecentPackage) {// normal
 			// the relative complement of mRecentMemory in memory
-			packages.removeAll(mRecentPackage);
+			mLastChanged.removeAll(mRecentPackage);
 
 		} else {// first time
 			// record nothing
-			packages.clear();
+			mLastChanged.clear();
 		}
 
 		mRecentPackage = currentBackup;
 
 		ArrayList<LaunchInfo> result = new ArrayList<LaunchInfo>(
-				packages.size());
-		for (String name : packages) {
+				mLastChanged.size());
+		for (String name : mLastChanged) {
 			result.add(new LaunchInfo(name, 1));
 		}
 		return result;
@@ -58,7 +60,16 @@ public class SetPackageProvider extends PackageProvider {
 
 	@Override
 	public List<String> getNoneCalculateZone(Context context, int len) {
-		return null;
+		List<String> last = getLastPackageOrder(context);
+		if (last.size() > len) {
+			last = last.subList(0, len);
+		}
+		return last;
+	}
+
+	@Override
+	public List<String> getLastChangedPackage() {
+		return mLastChanged;
 	}
 
 	/**

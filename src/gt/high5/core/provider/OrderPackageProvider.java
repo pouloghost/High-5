@@ -20,6 +20,7 @@ import android.content.Context;
 public class OrderPackageProvider extends PackageProvider {
 
 	private ArrayList<String> mRecentPackage = null;
+	private List<String> mLastChanged = null;
 
 	public OrderPackageProvider() throws CannotCreateException {
 		super();
@@ -35,23 +36,22 @@ public class OrderPackageProvider extends PackageProvider {
 		for (String name : packages) {
 			log.append(name).append(";\t");
 		}
-		List<String> changed = null;
 		if (null != mRecentPackage) {// normal
 			// the packages are in the same order if nothing happens
 			// any inverse number means some actions are done to the app
 			// package name 2 index mapping
 			int i = getOldestChangeIndex(context, packages);
-			changed = packages.subList(0, i);
+			mLastChanged = packages.subList(0, i);
 		} else {// first time
 			// record nothing
-			changed = new ArrayList<String>();
+			mLastChanged = new ArrayList<String>();
 		}
 
 		mRecentPackage = packages;
 
-		ArrayList<LaunchInfo> result = new ArrayList<LaunchInfo>(changed.size());
+		ArrayList<LaunchInfo> result = new ArrayList<LaunchInfo>(mLastChanged.size());
 		log.append("\nleft:\t");
-		for (String name : changed) {
+		for (String name : mLastChanged) {
 			log.append(name).append(";\t");
 			result.add(new LaunchInfo(name, 1));
 		}
@@ -74,6 +74,11 @@ public class OrderPackageProvider extends PackageProvider {
 			last = last.subList(0, len);
 		}
 		return last;
+	}
+
+	@Override
+	public List<String> getLastChangedPackage() {
+		return mLastChanged;
 	}
 
 	/**

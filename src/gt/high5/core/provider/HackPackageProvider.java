@@ -92,6 +92,18 @@ public class HackPackageProvider extends PackageProvider {
 		return mOrderedPackages;
 	}
 
+	@Override
+	public List<String> getNoneCalculateZone(Context context, int len) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<String> getLastChangedPackage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	private ArrayList<LaunchInfo> getRecentLaunchInfo(Context context) {
 
 		ArrayList<LaunchInfo> infos = new ArrayList<LaunchInfo>(MEMORY_SIZE);
@@ -124,10 +136,5 @@ public class HackPackageProvider extends PackageProvider {
 				componentName);
 		int count = mLaunchCountField.getInt(pkgStats);
 		return new LaunchInfo(componentName.getPackageName(), count);
-	}
-
-	@Override
-	public List<String> getNoneCalculateZone(Context context, int len) {
-		return null;
 	}
 }
