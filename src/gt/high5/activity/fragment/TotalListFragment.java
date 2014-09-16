@@ -43,6 +43,7 @@ public class TotalListFragment extends Fragment {
 	private SimpleAdapter mAdapter = null;
 	private ArrayList<HashMap<String, Object>> mDataList = null;
 	private SparseArray<Total> mTotals = new SparseArray<Total>();
+	private View mHeader = null;
 
 	private ProgressDialog mDialog = null;
 	private Spinner mSortSpinner = null;
@@ -325,14 +326,16 @@ public class TotalListFragment extends Fragment {
 	}
 
 	private void addHeader() {
-		View header = LayoutInflater.from(getActivity()).inflate(
-				R.layout.total_list_header, mTotalList, false);
+		if (null == mHeader) {
+			mHeader = LayoutInflater.from(getActivity()).inflate(
+					R.layout.total_list_header, mTotalList, false);
+			mTotalList.addHeaderView(mHeader);
+		}
 		ReadService readService = ReadService.getReadService(getActivity()
 				.getApplicationContext());
-		((TextView) header.findViewById(R.id.total_list_header_accuracy))
+		((TextView) mHeader.findViewById(R.id.total_list_header_accuracy))
 				.setText("" + readService.getAccuracy());
-		((TextView) header.findViewById(R.id.total_list_header_recall))
+		((TextView) mHeader.findViewById(R.id.total_list_header_recall))
 				.setText("" + readService.getRecallRate());
-		mTotalList.addHeaderView(header);
 	}
 }

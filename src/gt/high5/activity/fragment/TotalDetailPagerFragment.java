@@ -40,8 +40,6 @@ import android.widget.Toast;
 public class TotalDetailPagerFragment extends Fragment implements
 		CancelableTask {
 
-	private static final int SPLITTER_SIZE = 3;
-
 	private RelativeLayout mNameWrapper = null;
 	private RelativeLayout mCountWrapper = null;
 	private RelativeLayout mOperationWrapper = null;
@@ -54,7 +52,6 @@ public class TotalDetailPagerFragment extends Fragment implements
 	private TableLayout mRecordList = null;
 
 	private RelativeLayout[] mWrappers = null;
-	private View[] mSplitters = null;
 
 	private ProgressBar mLoadingBar = null;
 	private ImageView mErrorImage = null;
@@ -98,18 +95,6 @@ public class TotalDetailPagerFragment extends Fragment implements
 				.findViewById(R.id.total_detail_records_wrapper);
 		mWrappers = new RelativeLayout[] { mNameWrapper, mCountWrapper,
 				mOperationWrapper, mRecordWrapper };
-		// for more segments
-		mSplitters = new View[SPLITTER_SIZE];
-		String prefix = getResources().getResourcePackageName(
-				R.id.total_detail_app_icon)
-				+ ":"
-				+ getResources()
-						.getResourceTypeName(R.id.total_detail_app_icon)
-				+ "/total_detail_splitter_";
-		for (int i = 0; i < SPLITTER_SIZE; ++i) {
-			mSplitters[i] = root.findViewById(getResources().getIdentifier(
-					prefix + i, null, null));
-		}
 		// controllers
 		mDeleteButton.setOnClickListener(new View.OnClickListener() {
 
@@ -282,9 +267,6 @@ public class TotalDetailPagerFragment extends Fragment implements
 	private void showLoading() {
 		mErrorImage.setVisibility(View.GONE);
 		mLoadingBar.setVisibility(View.VISIBLE);
-		for (View v : mSplitters) {
-			v.setVisibility(View.GONE);
-		}
 		for (RelativeLayout l : mWrappers) {
 			l.setVisibility(View.GONE);
 		}
@@ -301,17 +283,18 @@ public class TotalDetailPagerFragment extends Fragment implements
 		mLoader = null;
 		// if view not filled properly the reference in fillContext will be
 		// set to be null
-		if (null != result && null != result.getRecords()) {
+		if (null != result) {
 			mAppIconImage.setImageDrawable(result.getIcon());
 			mAppNameText.setText(result.getName());
 			mCountText.setText(mTotal.getCount() + "");
-			for (View v : mSplitters) {
-				v.setVisibility(View.VISIBLE);
-			}
 			for (RelativeLayout l : mWrappers) {
 				l.setVisibility(View.VISIBLE);
 			}
-			fillRecordTable(result.getRecords());
+			if (null != result.getRecords()) {
+				fillRecordTable(result.getRecords());
+			} else {
+				mRecordWrapper.setVisibility(View.GONE);
+			}
 		} else {
 			mErrorImage.setVisibility(View.VISIBLE);
 		}

@@ -105,24 +105,24 @@ public class ReadService {
 	}
 
 	public float getRecallRate() {
-		return mHit / (mHit + mMiss);
+		return mHit == 0 ? 0 : mHit / (mHit + mMiss);
 	}
 
 	public float getAccuracy() {
-		return mHit / (mHit + mWrong);
+		return mHit == 0 ? 0 : mHit / (mHit + mWrong);
 	}
 
 	private void eliminateIgnored(DatabaseAccessor accessor,
 			float minThreshold, List<Table> allTotals) {
-		HashSet<String> ignoredSet = IgnoreSetService
-				.getIgnoreSetService(mContext).getIgnoreSet(accessor);
-	
+		HashSet<String> ignoredSet = IgnoreSetService.getIgnoreSetService(
+				mContext).getIgnoreSet(accessor);
+
 		int listSize = allTotals.size();
 		int size = Math.min(5, listSize);
 		mLastHigh5 = new ArrayList<String>(size);
 		for (int i = 0, j = 0; j < size && i < listSize; ++i) {
-			if (minThreshold > ((Total) allTotals.get(i))
-					.getPossibility()) {// nearly impossible
+			if (minThreshold > ((Total) allTotals.get(i)).getPossibility()) {// nearly
+																				// impossible
 				break;
 			}
 			String name = ((Total) allTotals.get(i)).getName();
