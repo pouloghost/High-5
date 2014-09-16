@@ -35,6 +35,9 @@
     <string name="settings_log_off">Log off</string>
     <string name="settings_log_to_console">Log to console</string>
     <string name="settings_log_to_file">Log to file</string>
+    <!-- total list -->
+    <string name="total_list_header_accuracy">Accuracy:</string>
+    <string name="total_list_header_recall">Recall:</string>
     <!-- detail chart -->
     <string name="total_detail_count_hint">Count:</string>
     <string name="total_detail_delete">Delete</string>

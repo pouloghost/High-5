@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class TotalListFragment extends Fragment {
 	private static enum KEYS {
@@ -253,6 +254,7 @@ public class TotalListFragment extends Fragment {
 	 *            data loaded from {@link loadData()}
 	 */
 	private void setData(ArrayList<HashMap<String, Object>> data) {
+		addHeader();
 		// set adapter
 		String[] from = { KEYS.ICON.toString(), KEYS.NAME.toString(),
 				KEYS.POSSIBILITY.toString() };
@@ -320,5 +322,17 @@ public class TotalListFragment extends Fragment {
 						}
 					}
 				});
+	}
+
+	private void addHeader() {
+		View header = LayoutInflater.from(getActivity()).inflate(
+				R.layout.total_list_header, mTotalList, false);
+		ReadService readService = ReadService.getReadService(getActivity()
+				.getApplicationContext());
+		((TextView) header.findViewById(R.id.total_list_header_accuracy))
+				.setText("" + readService.getAccuracy());
+		((TextView) header.findViewById(R.id.total_list_header_recall))
+				.setText("" + readService.getRecallRate());
+		mTotalList.addHeaderView(header);
 	}
 }
