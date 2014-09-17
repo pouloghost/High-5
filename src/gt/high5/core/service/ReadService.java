@@ -108,7 +108,7 @@ public class ReadService {
 		return mHit == 0 ? 0 : mHit / (mHit + mMiss);
 	}
 
-	public float getAccuracy() {
+	public float getPrecise() {
 		return mHit == 0 ? 0 : mHit / (mHit + mWrong);
 	}
 

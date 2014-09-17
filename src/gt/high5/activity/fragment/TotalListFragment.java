@@ -333,8 +333,8 @@ public class TotalListFragment extends Fragment {
 		}
 		ReadService readService = ReadService.getReadService(getActivity()
 				.getApplicationContext());
-		((TextView) mHeader.findViewById(R.id.total_list_header_accuracy))
-				.setText("" + readService.getAccuracy());
+		((TextView) mHeader.findViewById(R.id.total_list_header_precise))
+				.setText("" + readService.getPrecise());
 		((TextView) mHeader.findViewById(R.id.total_list_header_recall))
 				.setText("" + readService.getRecallRate());
 	}

@@ -12,21 +12,21 @@
         tools:ignore="UselessParent" >
 
         <TextView
-            android:id="@+id/total_list_header_accuracy_title"
+            android:id="@+id/total_list_header_precise_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:padding="10dp"
-            android:text="@string/total_list_header_accuracy"
+            android:text="@string/total_list_header_precise"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
-            android:id="@+id/total_list_header_accuracy"
+            android:id="@+id/total_list_header_precise"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/total_list_header_accuracy_title"
+            android:layout_toRightOf="@+id/total_list_header_precise_title"
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/total_list_header_accuracy_title"
+            android:layout_below="@+id/total_list_header_precise_title"
             android:padding="10dp"
             android:text="@string/total_list_header_recall"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -44,8 +44,8 @@
             android:id="@+id/total_list_header_recall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/total_list_header_accuracy"
-            android:layout_below="@+id/total_list_header_accuracy"
+            android:layout_alignLeft="@+id/total_list_header_precise"
+            android:layout_below="@+id/total_list_header_precise"
             android:padding="10dp"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
