@@ -119,12 +119,8 @@ public class WidgetProvider extends AppWidgetProvider {
 	 * @param context
 	 */
 	public static void restartUpdateAndRecord(Context context) {
-		try {
-			getUpdateIntent(context, null).send();
-			getRecordIntent(context).send();
-		} catch (CanceledException e) {
-			e.printStackTrace();
-		}
+		forceRecord(context);
+		forceRefresh(context);
 	}
 
 	/**
