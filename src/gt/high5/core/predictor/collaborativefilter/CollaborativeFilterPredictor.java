@@ -21,7 +21,9 @@ import android.content.Context;
 public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 	private static final int XML_ID = R.xml.cf_tables;
 	private static final int RELATIVE_TASK_SIZE = 6;
-	private static final int MIN_THRESHOLD = RELATIVE_TASK_SIZE * 6;
+	private static final int TASK_THRESHOLD = 6;
+
+	private int mThreshold = 0;
 
 	@Override
 	public List<Table> predictPossibility(PredictContext context) {
@@ -31,9 +33,10 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 		List<String> lastApps = provider.getNoneCalculateZone(
 				context.getContext(), RELATIVE_TASK_SIZE);
 		if (null == lastApps) {
+			mThreshold = 0;
 			return null;
 		}
-
+		mThreshold = lastApps.size() * TASK_THRESHOLD;
 		// build up item of five recent apps
 		final DatabaseAccessor accessor = getAccessor(context.getContext());
 		Total queryTotal = new Total();
@@ -79,7 +82,7 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 
 	@Override
 	public float getMinThreshold() {
-		return MIN_THRESHOLD;
+		return mThreshold;
 	}
 
 	/**
