@@ -22,7 +22,8 @@ import android.database.Cursor;
 /**
  * @author ayi.zty
  * 
- *         service for record current state and write to current predictor's database
+ *         service for record current state and write to current predictor's
+ *         database
  */
 public class RecordService {
 	private static final int MAX_COUNT = 100;
@@ -86,7 +87,8 @@ public class RecordService {
 		if (null != list) {
 			total = (Total) list.get(0);
 			mAccessor.D(total);
-			Class<? extends RecordTable>[] clazzes = mAccessor.getTables();
+			Class<? extends RecordTable>[] clazzes = Predictor.getPredictor()
+					.getTables();
 			for (Class<? extends RecordTable> clazz : clazzes) {
 				RecordTable table;
 				try {
@@ -151,7 +153,8 @@ public class RecordService {
 				mAccessor.C(rawRecord);
 				++mRawRecordCount;
 				// each type of record
-				Class<? extends RecordTable>[] clazzes = mAccessor.getTables();
+				Class<? extends RecordTable>[] clazzes = Predictor
+						.getPredictor().getTables();
 				for (Class<? extends RecordTable> clazz : clazzes) {
 					recordTable(context, recordContext, rawRecord, clazz);
 				}
