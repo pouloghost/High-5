@@ -1,12 +1,18 @@
 package gt.high5.core.service;
 
+import gt.high5.chart.core.DataFiller;
 import gt.high5.core.predictor.PredictContext;
 import gt.high5.core.predictor.Predictor;
+import gt.high5.core.predictor.TableParserProxy;
 import gt.high5.core.provider.PackageProvider;
 import gt.high5.database.accessor.DatabaseAccessor;
+import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
+import gt.high5.database.model.TableInfo;
+import gt.high5.database.parser.TableParser;
 import gt.high5.database.table.Total;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,7 +27,7 @@ import android.content.Context;
  *         service for read records without specified type from current
  *         predictor's database
  */
-public class ReadService {
+public class ReadService implements TableParserProxy {
 
 	// singleton
 	private static ReadService mInstance = null;
@@ -146,5 +152,49 @@ public class ReadService {
 			mWrong += (recommandSize - hit);
 			mMiss += (changeSize - hit);
 		}
+	}
+
+	// predictor proxy
+	@Override
+	public TableParser getTableParser() {
+		return Predictor.getPredictor().getTableParser();
+	}
+
+	@Override
+	public void setTableParser(TableParser mTableParser) {
+		Predictor.getPredictor().setTableParser(mTableParser);
+	}
+
+	@Override
+	public TableParser initTableParser(Context context) {
+		return Predictor.getPredictor().initTableParser(context);
+	}
+
+	@Override
+	public Class<? extends RecordTable>[] getTables() {
+		return Predictor.getPredictor().getTables();
+	}
+
+	@Override
+	public DataFiller getDataFiller(Class<? extends RecordTable> clazz)
+			throws InstantiationException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException,
+			NoSuchMethodException {
+		return Predictor.getPredictor().getDataFiller(clazz);
+	}
+
+	@Override
+	public String getTableTitle(Class<? extends RecordTable> clazz) {
+		return Predictor.getPredictor().getTableTitle(clazz);
+	}
+
+	@Override
+	public int getTableWeight(Class<? extends RecordTable> clazz) {
+		return Predictor.getPredictor().getTableWeight(clazz);
+	}
+
+	@Override
+	public TableInfo getTableInfo(Class<? extends RecordTable> clazz) {
+		return Predictor.getPredictor().getTableInfo(clazz);
 	}
 }

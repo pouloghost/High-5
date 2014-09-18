@@ -6,7 +6,7 @@ import gt.high5.activity.fragment.RecordDetailFragment.BUNDLE_KEYS;
 import gt.high5.chart.core.DataFiller;
 import gt.high5.chart.core.DataFiller.ViewFiller;
 import gt.high5.chart.core.FillContext;
-import gt.high5.core.predictor.Predictor;
+import gt.high5.core.service.ReadService;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
 import android.content.res.Resources;
@@ -89,9 +89,9 @@ public class RecordDetailPagerFragment extends Fragment implements
 				});
 
 		try {
-			mFiller = Predictor.getPredictor()
-					.getAccessor(getActivity().getApplicationContext())
-					.getDataFiller(mRecordType);
+			mFiller = ReadService.getReadService(
+					getActivity().getApplicationContext()).getDataFiller(
+					mRecordType);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

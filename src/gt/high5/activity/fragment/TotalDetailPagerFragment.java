@@ -5,6 +5,7 @@ import gt.high5.activity.CancelableTask;
 import gt.high5.activity.fragment.RecordDetailFragment.BUNDLE_KEYS;
 import gt.high5.core.predictor.PredictContext;
 import gt.high5.core.predictor.Predictor;
+import gt.high5.core.service.ReadService;
 import gt.high5.core.service.RecordService;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.parser.TableParser;
@@ -301,9 +302,8 @@ public class TotalDetailPagerFragment extends Fragment implements
 	}
 
 	private void fillRecordTable(Collection<RecordTable> records) {
-		TableParser tableParser = Predictor.getPredictor()
-				.getAccessor(getActivity().getApplicationContext())
-				.getTableParser();
+		TableParser tableParser = ReadService.getReadService(
+				getActivity().getApplicationContext()).getTableParser();
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
 		for (RecordTable record : records) {
 			View row = inflater.inflate(

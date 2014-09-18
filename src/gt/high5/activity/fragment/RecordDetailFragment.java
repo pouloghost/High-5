@@ -2,8 +2,7 @@ package gt.high5.activity.fragment;
 
 import gt.high5.R;
 import gt.high5.activity.CancelableTask;
-import gt.high5.core.predictor.Predictor;
-import gt.high5.database.accessor.DatabaseAccessor;
+import gt.high5.core.service.ReadService;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.parser.TableParser;
 import gt.high5.database.table.Total;
@@ -72,10 +71,10 @@ public class RecordDetailFragment extends Fragment implements CancelableTask {
 		public ChartFragmentAdapter(FragmentManager fm) {
 			super(fm);
 
-			DatabaseAccessor accessor = Predictor.getPredictor().getAccessor(
-					getActivity().getApplicationContext());
-			mParser = accessor.getTableParser();
-			Class<? extends RecordTable>[] tables = accessor.getTables();
+			ReadService readService = ReadService.getReadService(getActivity()
+					.getApplicationContext());
+			mParser = readService.getTableParser();
+			Class<? extends RecordTable>[] tables = readService.getTables();
 			mRecords = new Class[tables.length];
 			for (int i = 0; i < tables.length - 1; ++i) {
 				if (Total.class == tables[i]) {// delete total
