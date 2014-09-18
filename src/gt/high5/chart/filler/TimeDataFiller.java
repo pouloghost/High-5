@@ -4,6 +4,7 @@ import gt.high5.R;
 import gt.high5.chart.core.DataFiller;
 import gt.high5.chart.core.RendererFactory;
 import gt.high5.core.predictor.Predictor;
+import gt.high5.core.predictor.TableParserProxy;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.Table;
 import gt.high5.database.table.Time;
@@ -63,7 +64,7 @@ public class TimeDataFiller extends DataFiller {
 			public boolean fillView() {
 				if (null != mContext) {
 					loadData();
-					String title = getAccessor().getTableTitle(
+					String title = getTableProxy().getTableTitle(
 							mContext.getRecord());
 					mRenderer = RendererFactory.buildPieRenderer(
 							mContext.getContext(), getColors(mData.size()));
@@ -101,7 +102,7 @@ public class TimeDataFiller extends DataFiller {
 				if (null != mContext) {
 					try {
 						loadData();
-						String title = getAccessor().getTableTitle(
+						String title = getTableProxy().getTableTitle(
 								mContext.getRecord());
 						mRenderer = RendererFactory.buildBarRenderer(
 								mContext.getContext(), Color.BLUE);
@@ -140,7 +141,7 @@ public class TimeDataFiller extends DataFiller {
 				if (null != mContext) {
 					try {
 						loadData();
-						String title = getAccessor().getTableTitle(
+						String title = getTableProxy().getTableTitle(
 								mContext.getRecord());
 						mRenderer = RendererFactory.buildLineRenderer(
 								mContext.getContext(), Color.BLUE);
@@ -173,6 +174,13 @@ public class TimeDataFiller extends DataFiller {
 	public DatabaseAccessor getAccessor() {
 		if (null != mContext) {
 			return Predictor.getPredictor().getAccessor(mContext.getContext());
+		}
+		return null;
+	}
+
+	public TableParserProxy getTableProxy() {
+		if (null != mContext) {
+			return Predictor.getPredictor();
 		}
 		return null;
 	}

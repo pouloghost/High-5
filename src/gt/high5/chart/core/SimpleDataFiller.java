@@ -2,6 +2,7 @@ package gt.high5.chart.core;
 
 import gt.high5.R;
 import gt.high5.core.predictor.Predictor;
+import gt.high5.core.predictor.TableParserProxy;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
@@ -70,7 +71,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 						if (null != mContext) {
 							try {
 								loadData();
-								String title = getAccessor().getTableTitle(
+								String title = getTableProxy().getTableTitle(
 										mContext.getRecord());
 								try {
 									mRenderer = RendererFactory
@@ -120,7 +121,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 						if (null != mContext) {
 							try {
 								loadData();
-								String title = getAccessor().getTableTitle(
+								String title = getTableProxy().getTableTitle(
 										mContext.getRecord());
 								mRenderer = RendererFactory.buildBarRenderer(
 										mContext.getContext(), Color.BLUE);
@@ -162,7 +163,7 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 						if (null != mContext) {
 							try {
 								loadData();
-								String title = getAccessor().getTableTitle(
+								String title = getTableProxy().getTableTitle(
 										mContext.getRecord());
 								mRenderer = RendererFactory.buildLineRenderer(
 										mContext.getContext(), Color.BLUE);
@@ -201,6 +202,13 @@ public abstract class SimpleDataFiller<T> extends DataFiller {
 	public DatabaseAccessor getAccessor() {
 		if (null != mContext) {
 			return Predictor.getPredictor().getAccessor(mContext.getContext());
+		}
+		return null;
+	}
+
+	public TableParserProxy getTableProxy() {
+		if (null != mContext) {
+			return Predictor.getPredictor();
 		}
 		return null;
 	}
