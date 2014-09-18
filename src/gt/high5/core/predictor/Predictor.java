@@ -7,6 +7,7 @@ import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableInfo;
 import gt.high5.database.parser.TableParser;
+import gt.high5.database.parser.TableParserProxy;
 import gt.high5.database.table.Total;
 
 import java.lang.reflect.InvocationTargetException;

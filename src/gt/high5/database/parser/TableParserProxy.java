@@ -1,4 +1,4 @@
-package gt.high5.core.predictor;
+package gt.high5.database.parser;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -7,7 +7,6 @@ import android.content.Context;
 import gt.high5.chart.core.DataFiller;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.TableInfo;
-import gt.high5.database.parser.TableParser;
 
 public interface TableParserProxy {
 

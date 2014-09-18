@@ -3,13 +3,13 @@ package gt.high5.core.service;
 import gt.high5.chart.core.DataFiller;
 import gt.high5.core.predictor.PredictContext;
 import gt.high5.core.predictor.Predictor;
-import gt.high5.core.predictor.TableParserProxy;
 import gt.high5.core.provider.PackageProvider;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableInfo;
 import gt.high5.database.parser.TableParser;
+import gt.high5.database.parser.TableParserProxy;
 import gt.high5.database.table.Total;
 
 import java.lang.reflect.InvocationTargetException;

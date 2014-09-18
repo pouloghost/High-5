@@ -1,10 +1,10 @@
 package gt.high5.core.predictor.collaborativefilter;
 
-import gt.high5.core.predictor.TableParserProxy;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.model.TableInfo;
+import gt.high5.database.parser.TableParserProxy;
 import gt.high5.database.table.Total;
 
 import java.util.ArrayList;
