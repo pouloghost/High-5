@@ -66,7 +66,7 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 			Total total) {
 		ArrayList<RecordTable> records = new ArrayList<RecordTable>();
 		DatabaseAccessor accessor = getAccessor(context.getContext());
-		Class<? extends RecordTable>[] tables = accessor.getTables();
+		Class<? extends RecordTable>[] tables = getTables();
 		for (Class<? extends RecordTable> clazz : tables) {
 			RecordTable queryTable;
 			try {
@@ -94,6 +94,11 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 	@Override
 	public float getMinThreshold() {
 		return 1E-20f;
+	}
+
+	@Override
+	protected int getXmlId() {
+		return XML_ID;
 	}
 
 	/**
@@ -148,8 +153,7 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 		Collection<RecordTable> relates = getRelativeRecords(context, total);
 		for (RecordTable table : relates) {
 			if (RecordTable.DEFAULT_COUNT_INT == table.getCount()) {
-				float defaultPossibility = getAccessor(context.getContext())
-						.getTableInfo(table.getClass())
+				float defaultPossibility = getTableInfo(table.getClass())
 						.getNaiveBayesData()
 						.getDefaultPossibility(
 								new PredictContext(context.getContext(), total));
@@ -160,10 +164,8 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 				possibilityLog.append(",");
 			} else {
 				// weight for each feature
-				possibility *= Math.pow(
-						table.getCount() / totalCount,
-						getAccessor(context.getContext()).getTableWeight(
-								table.getClass()));
+				possibility *= Math.pow(table.getCount() / totalCount,
+						getTableWeight(table.getClass()));
 				possibilityLog.append(table.getClass().getSimpleName());
 				possibilityLog.append(":");
 				possibilityLog.append(table.getCount());

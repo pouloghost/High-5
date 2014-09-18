@@ -1,5 +1,6 @@
 package gt.high5.core.predictor.collaborativefilter;
 
+import gt.high5.core.predictor.TableParserProxy;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
@@ -16,7 +17,8 @@ import android.support.v4.util.ArrayMap;
 /**
  * @author GT
  * 
- *         item base collaborative filtering, holding all records and do real calculation
+ *         item base collaborative filtering, holding all records and do real
+ *         calculation
  * 
  */
 public class CollaborativeFilterItem {
@@ -29,11 +31,11 @@ public class CollaborativeFilterItem {
 	 * @param queryTotal
 	 * @return
 	 */
-	public static CollaborativeFilterItem buildItem(DatabaseAccessor accessor,
-			Total queryTotal) {
+	public static CollaborativeFilterItem buildItem(TableParserProxy proxy,
+			DatabaseAccessor accessor, Total queryTotal) {
 		RecordTable queryTable = null;
 		CollaborativeFilterItem item = new CollaborativeFilterItem();
-		for (Class<? extends RecordTable> clazz : accessor.getTables()) {
+		for (Class<? extends RecordTable> clazz : proxy.getTables()) {
 			if (Total.class != clazz) {// total not considered
 				try {
 					queryTable = clazz.newInstance();
@@ -52,17 +54,18 @@ public class CollaborativeFilterItem {
 
 	/**
 	 * get similarity with item using i-cf
+	 * 
 	 * @param item
 	 * @param accessor
 	 * @return
 	 */
 	public float similarityWith(CollaborativeFilterItem item,
-			DatabaseAccessor accessor) {
+			TableParserProxy proxy) {
 		Set<Class<? extends RecordTable>> otherKeys = item.mRecords.keySet();
 		float similarity = 0;
 		for (Class<? extends RecordTable> key : mRecords.keySet()) {
 			if (Total.class != key && otherKeys.contains(key)) {
-				TableInfo info = accessor.getTableInfo(key);
+				TableInfo info = proxy.getTableInfo(key);
 				// similarity comparator is null
 				similarity += info.getWeight()
 						* info.getSimilarityComparator().getSimilarity(

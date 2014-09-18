@@ -1,11 +1,15 @@
 package gt.high5.core.predictor;
 
+import gt.high5.chart.core.DataFiller;
 import gt.high5.core.predictor.collaborativefilter.CollaborativeFilterPredictor;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
+import gt.high5.database.model.TableInfo;
+import gt.high5.database.parser.TableParser;
 import gt.high5.database.table.Total;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,13 +20,15 @@ import android.content.Context;
  * 
  *         a strategy for calculating the possibility of tables
  */
-public abstract class Predictor {
+public abstract class Predictor implements TableParserProxy {
 
 	private static Predictor instance = new CollaborativeFilterPredictor();
 
 	public static Predictor getPredictor() {
 		return instance;
 	}
+
+	private TableParser mTableParser = null;
 
 	/**
 	 * input a context calculate all the possibilities of tables and return the
@@ -50,4 +56,60 @@ public abstract class Predictor {
 	public abstract float getMinThreshold();
 
 	public abstract DatabaseAccessor getAccessor(Context context);
+
+	protected abstract int getXmlId();
+
+	// --------table proxy
+	@Override
+	public TableParser getTableParser() {
+
+		return mTableParser;
+	}
+
+	@Override
+	public void setTableParser(TableParser mTableParser) {
+		this.mTableParser = mTableParser;
+	}
+
+	public TableParser initTableParser(Context context) {
+		if (null == mTableParser) {
+			try {
+				mTableParser = new TableParser(context.getResources().getXml(
+						getXmlId()));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return mTableParser;
+	}
+
+	@Override
+	public Class<? extends RecordTable>[] getTables() {
+		return getTableParser().getTables();
+	}
+
+	@Override
+	public DataFiller getDataFiller(Class<? extends RecordTable> clazz)
+			throws InstantiationException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException,
+			NoSuchMethodException {
+		return (DataFiller) getTableParser().getInfo(clazz).getFiller()
+				.getDeclaredConstructor().newInstance();
+	}
+
+	@Override
+	public String getTableTitle(Class<? extends RecordTable> clazz) {
+		return getTableInfo(clazz).getTitle();
+	}
+
+	@Override
+	public int getTableWeight(Class<? extends RecordTable> clazz) {
+		return getTableInfo(clazz).getWeight();
+	}
+
+	@Override
+	public TableInfo getTableInfo(Class<? extends RecordTable> clazz) {
+		return getTableParser().getInfo(clazz);
+	}
 }

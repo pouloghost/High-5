@@ -1,10 +1,8 @@
 package gt.high5.database.accessor;
 
-import gt.high5.chart.core.DataFiller;
 import gt.high5.database.model.ClassUtils;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
-import gt.high5.database.model.TableInfo;
 import gt.high5.database.model.TableUtils;
 import gt.high5.database.parser.TableParser;
 
@@ -13,7 +11,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +35,9 @@ public class DatabaseAccessor {
 	private static final String BACKUP_PATH = "high5";
 
 	private SQLiteDatabase mDatabase = null;
-	private TableParser mTableParser = null;
 	private DatabaseManager mManager = null;
+
+	private String mFile = null;
 
 	/**
 	 * cached accessor for each xml file
@@ -55,7 +53,7 @@ public class DatabaseAccessor {
 	 * @param parser
 	 */
 	private DatabaseAccessor(Context context, TableParser parser) {
-		setTableParser(parser);
+		mFile = parser.getFile();
 		mManager = new DatabaseManager(context, parser);
 		mDatabase = mManager.getWritableDatabase();
 	}
@@ -111,52 +109,6 @@ public class DatabaseAccessor {
 			return null;
 		}
 		return reference.get();
-	}
-
-	/**
-	 * @return record tables defined in xml
-	 */
-	public Class<? extends RecordTable>[] getTables() {
-		return getTableParser().getTables();
-	}
-
-	/**
-	 * proxy accessor for data filler, a factory
-	 * 
-	 * @param clazz
-	 *            type
-	 * @return data filler
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 * @throws NoSuchMethodException
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 */
-	public DataFiller getDataFiller(Class<? extends RecordTable> clazz)
-			throws InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException {
-		return (DataFiller) getTableParser().getInfo(clazz).getFiller()
-				.getDeclaredConstructor().newInstance();
-	}
-
-	/**
-	 * proxy accessor for title in pager, a factory
-	 * 
-	 * @param clazz
-	 *            type
-	 * @return title
-	 */
-	public String getTableTitle(Class<? extends RecordTable> clazz) {
-		return getTableParser().getInfo(clazz).getTitle();
-	}
-
-	public int getTableWeight(Class<? extends RecordTable> clazz) {
-		return getTableParser().getInfo(clazz).getWeight();
-	}
-
-	public TableInfo getTableInfo(Class<? extends RecordTable> clazz) {
-		return getTableParser().getInfo(clazz);
 	}
 
 	// ---------------------CRUD--------------------------
@@ -324,7 +276,7 @@ public class DatabaseAccessor {
 				if (!dstFolder.exists()) {
 					dstFolder.mkdir();
 				}
-				File dstFile = new File(dstFolder, getTableParser().getFile());
+				File dstFile = new File(dstFolder, mFile);
 				if (!dstFile.exists()) {
 					dstFile.createNewFile();
 				}
@@ -366,7 +318,7 @@ public class DatabaseAccessor {
 				if (!srcFolder.exists()) {
 					throw new Exception();
 				}
-				File srcFile = new File(srcFolder, getTableParser().getFile());
+				File srcFile = new File(srcFolder, mFile);
 				if (!srcFile.exists()) {
 					throw new Exception();
 				}
@@ -395,17 +347,9 @@ public class DatabaseAccessor {
 		// String path = mDatabase.getPath();
 		// File file = new File(path);
 		// file.delete();
-		context.deleteDatabase(getTableParser().getFile());
+		context.deleteDatabase(mFile);
 		mDatabase = mManager.getWritableDatabase();
 		mManager.onCreate(mDatabase);
-	}
-
-	public TableParser getTableParser() {
-		return mTableParser;
-	}
-
-	public void setTableParser(TableParser mTableParser) {
-		this.mTableParser = mTableParser;
 	}
 
 	private void setValue(Cursor cursor, Table data, Field field)

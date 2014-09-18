@@ -9,6 +9,7 @@ import gt.high5.core.service.ReadService;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
+import gt.high5.database.parser.TableParser;
 import gt.high5.database.table.Total;
 
 import java.util.Collection;
@@ -48,7 +49,7 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 				queryTotal = (Total) totalList.get(0);
 			}
 			CollaborativeFilterItem item = CollaborativeFilterItem.buildItem(
-					accessor, queryTotal);
+					this, accessor, queryTotal);
 			if (null != item) {
 				lastItems.add(item);
 			}
@@ -77,12 +78,21 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 
 	@Override
 	public DatabaseAccessor getAccessor(Context context) {
-		return DatabaseAccessor.getAccessor(context, XML_ID);
+		TableParser parser = getTableParser();
+		if (null == parser) {
+			parser = initTableParser(context);
+		}
+		return DatabaseAccessor.getAccessor(context, parser, XML_ID);
 	}
 
 	@Override
 	public float getMinThreshold() {
 		return mThreshold;
+	}
+
+	@Override
+	protected int getXmlId() {
+		return XML_ID;
 	}
 
 	/**
@@ -108,10 +118,12 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 						// recommanding
 						// recent 5
 						CollaborativeFilterItem item = CollaborativeFilterItem
-								.buildItem(accessor, total);
+								.buildItem(CollaborativeFilterPredictor.this,
+										accessor, total);
 						float score = 0;
 						for (CollaborativeFilterItem last : lastItems) {
-							score += item.similarityWith(last, accessor);
+							score += item.similarityWith(last,
+									CollaborativeFilterPredictor.this);
 						}
 						total.setPossibility(score);
 					}
@@ -121,4 +133,5 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 		}
 		return tasks;
 	}
+
 }
