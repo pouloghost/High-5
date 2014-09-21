@@ -118,42 +118,6 @@ public class ReadService implements TableParserProxy {
 		return mHit == 0 ? 0 : mHit / (mHit + mWrong);
 	}
 
-	private void fillUpHigh5(DatabaseAccessor accessor, float minThreshold,
-			List<Table> allTotals) {
-		HashSet<String> ignoredSet = IgnoreSetService.getIgnoreSetService(
-				mContext).getIgnoreSet(accessor);
-
-		int listSize = allTotals.size();
-		int size = Math.min(5, listSize);
-		mLastHigh5 = new ArrayList<String>(size);
-		for (int i = 0, j = 0; j < size && i < listSize; ++i) {
-			if (minThreshold > ((Total) allTotals.get(i)).getPossibility()) {// nearly
-																				// impossible
-				break;
-			}
-			String name = ((Total) allTotals.get(i)).getName();
-			if (!ignoredSet.contains(name)) {
-				mLastHigh5.add(name);
-				++j;
-			}
-		}
-	}
-
-	private void updateScore() {
-		ArrayList<String> last = mLastHigh5;
-		List<String> changes = PackageProvider.getPackageProvider(mContext)
-				.getLastChangedPackage();
-		if (null != changes) {
-			int recommandSize = last.size();
-			int changeSize = changes.size();
-			last.retainAll(changes);
-			int hit = last.size();
-			mHit += hit;
-			mWrong += (recommandSize - hit);
-			mMiss += (changeSize - hit);
-		}
-	}
-
 	// predictor proxy
 	@Override
 	public TableParser getTableParser() {
@@ -196,5 +160,47 @@ public class ReadService implements TableParserProxy {
 	@Override
 	public TableInfo getTableInfo(Class<? extends RecordTable> clazz) {
 		return Predictor.getPredictor().getTableInfo(clazz);
+	}
+
+	@Override
+	public boolean shouldReadTable(Class<?> clazz, Context context) {
+		return PreferenceService.getPreferenceReadService(context).shouldRead(
+				clazz);
+	}
+
+	private void fillUpHigh5(DatabaseAccessor accessor, float minThreshold,
+			List<Table> allTotals) {
+		HashSet<String> ignoredSet = IgnoreSetService.getIgnoreSetService(
+				mContext).getIgnoreSet(accessor);
+
+		int listSize = allTotals.size();
+		int size = Math.min(5, listSize);
+		mLastHigh5 = new ArrayList<String>(size);
+		for (int i = 0, j = 0; j < size && i < listSize; ++i) {
+			if (minThreshold > ((Total) allTotals.get(i)).getPossibility()) {// nearly
+																				// impossible
+				break;
+			}
+			String name = ((Total) allTotals.get(i)).getName();
+			if (!ignoredSet.contains(name)) {
+				mLastHigh5.add(name);
+				++j;
+			}
+		}
+	}
+
+	private void updateScore() {
+		ArrayList<String> last = mLastHigh5;
+		List<String> changes = PackageProvider.getPackageProvider(mContext)
+				.getLastChangedPackage();
+		if (null != changes) {
+			int recommandSize = last.size();
+			int changeSize = changes.size();
+			last.retainAll(changes);
+			int hit = last.size();
+			mHit += hit;
+			mWrong += (recommandSize - hit);
+			mMiss += (changeSize - hit);
+		}
 	}
 }

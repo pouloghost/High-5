@@ -2,6 +2,7 @@ package gt.high5.core.predictor;
 
 import gt.high5.chart.core.DataFiller;
 import gt.high5.core.predictor.collaborativefilter.CollaborativeFilterPredictor;
+import gt.high5.core.service.PreferenceService;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
@@ -112,5 +113,11 @@ public abstract class Predictor implements TableParserProxy {
 	@Override
 	public TableInfo getTableInfo(Class<? extends RecordTable> clazz) {
 		return getTableParser().getInfo(clazz);
+	}
+
+	@Override
+	public boolean shouldReadTable(Class<?> clazz, Context context) {
+		return PreferenceService.getPreferenceReadService(context).shouldRead(
+				clazz);
 	}
 }

@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import android.content.Context;
 import android.support.v4.util.ArrayMap;
 
 /**
@@ -32,11 +33,13 @@ public class CollaborativeFilterItem {
 	 * @return
 	 */
 	public static CollaborativeFilterItem buildItem(TableParserProxy proxy,
-			DatabaseAccessor accessor, Total queryTotal) {
+			DatabaseAccessor accessor, Total queryTotal, Context context) {
 		RecordTable queryTable = null;
 		CollaborativeFilterItem item = new CollaborativeFilterItem();
 		for (Class<? extends RecordTable> clazz : proxy.getTables()) {
-			if (Total.class != clazz) {// total not considered
+			if (Total.class != clazz && proxy.shouldReadTable(clazz, context)) {// total
+																				// not
+																				// considered
 				try {
 					queryTable = clazz.newInstance();
 					queryTable.setPid(queryTotal.getId());

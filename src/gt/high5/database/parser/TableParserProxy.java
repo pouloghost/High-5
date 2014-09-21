@@ -50,4 +50,6 @@ public interface TableParserProxy {
 	public int getTableWeight(Class<? extends RecordTable> clazz);
 
 	public TableInfo getTableInfo(Class<? extends RecordTable> clazz);
+
+	public boolean shouldReadTable(Class<?> clazz, Context context);
 }

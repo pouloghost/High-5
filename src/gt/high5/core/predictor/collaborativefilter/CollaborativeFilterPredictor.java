@@ -49,7 +49,7 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 				queryTotal = (Total) totalList.get(0);
 			}
 			CollaborativeFilterItem item = CollaborativeFilterItem.buildItem(
-					this, accessor, queryTotal);
+					this, accessor, queryTotal, context.getContext());
 			if (null != item) {
 				lastItems.add(item);
 			}
@@ -60,7 +60,7 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 		if (null != allTotals) {
 			long start = System.currentTimeMillis();
 			List<Callable<Total>> tasks = createTaskList(lastApps, accessor,
-					lastItems, allTotals);
+					lastItems, allTotals, context.getContext());
 
 			allTotals = execute(allTotals, tasks);
 			LogService.d(ReadService.class,
@@ -106,7 +106,8 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 	 */
 	private List<Callable<Total>> createTaskList(final List<String> lastApps,
 			final DatabaseAccessor accessor,
-			final List<CollaborativeFilterItem> lastItems, List<Table> allTotals) {
+			final List<CollaborativeFilterItem> lastItems,
+			List<Table> allTotals, final Context context) {
 		List<Callable<Total>> tasks = new LinkedList<Callable<Total>>();
 		for (Table table : allTotals) {
 			final Total total = (Total) table;
@@ -119,7 +120,7 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 						// recent 5
 						CollaborativeFilterItem item = CollaborativeFilterItem
 								.buildItem(CollaborativeFilterPredictor.this,
-										accessor, total);
+										accessor, total, context);
 						float score = 0;
 						for (CollaborativeFilterItem last : lastItems) {
 							score += item.similarityWith(last,

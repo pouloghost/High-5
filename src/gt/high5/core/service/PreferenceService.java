@@ -14,6 +14,8 @@ import android.preference.PreferenceManager;
 
 public class PreferenceService {
 
+	private static String lOG_SUFFIX = "_Log";
+	private static String READ_SUFFIX = "_Read";
 	private static PreferenceService mInstance = null;
 
 	public static PreferenceService getPreferenceReadService(Context context) {
@@ -63,12 +65,23 @@ public class PreferenceService {
 	}
 
 	public boolean shouldLog(Class<?> clazz) {
-		String key = clazz.getSimpleName();
+		String key = clazz.getSimpleName() + lOG_SUFFIX;
 		return mPreferences.getBoolean(key, false);
 	}
 
 	public boolean shouldLogToFile() {
 		return mPreferences.getBoolean("log_to_file", false);
+	}
+
+	// filter out unnecessary tables
+	public boolean shouldRead(Class<?> clazz) {
+		String key = clazz.getSimpleName() + READ_SUFFIX;
+		return mPreferences.getBoolean(key, true);
+	}
+
+	public void setShouldRead(Class<?> clazz, boolean shouldRead) {
+		String key = clazz.getSimpleName() + READ_SUFFIX;
+		mPreferences.edit().putBoolean(key, shouldRead).commit();
 	}
 
 	@SuppressWarnings("resource")
