@@ -1,15 +1,12 @@
 package gt.high5.database.table;
 
 import gt.high5.core.service.RecordContext;
-import gt.high5.database.model.TableAnnotation;
 import gt.high5.database.raw.RawRecord;
 import gt.high5.database.raw.RingVolumnRecordOperation;
 
 public class RingVolumn extends AbstractVolumn {
 
 	private static RingVolumnRecordOperation recordOperation = new RingVolumnRecordOperation();
-	@TableAnnotation(defaultValue = "-1")
-	private int percent = -1;
 
 	@Override
 	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
