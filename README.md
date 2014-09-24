@@ -15,8 +15,6 @@ accessed via orm objects, class<? extends Table>.
 ###Packages:###
 --------
 
-* android.support.v4.preference: copied preference fragment from [v4 compatible preference fragment](https://github.com/kolavar/android-support-v4-preferencefragment).
-
 * gt.high5: Application for initialize resources:
 * gt.high5.activity: UI related classes:
   * gt.high5.activity: Activity, broadcast receiver and UI related utils.
@@ -43,4 +41,3 @@ accessed via orm objects, class<? extends Table>.
   * [android-xlog, log to file](https://github.com/curioustechizen/android-xlog)
   * [android plot, chart library](http://androidplot.com/) for branch androidplot
   * [achartengine, chart library](http://achartengine.org/) for branch achartengine, this is significently more robust than androidplot.
-  * [v4 compatible preference fragment](https://github.com/kolavar/android-support-v4-preferencefragment)
