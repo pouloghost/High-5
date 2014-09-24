@@ -204,7 +204,7 @@ public class DatabaseOperationFragment extends Fragment {
 					public void run() {
 						try {
 							PreferenceService.getPreferenceReadService(context)
-									.backup(context);
+									.backup();
 						} catch (Exception e) {
 							e.printStackTrace();
 							mHandler.post(new Runnable() {
@@ -228,7 +228,7 @@ public class DatabaseOperationFragment extends Fragment {
 					public void run() {
 						try {
 							PreferenceService.getPreferenceReadService(context)
-									.restore(context);
+									.restore();
 						} catch (Exception e) {
 							e.printStackTrace();
 							mHandler.post(new Runnable() {

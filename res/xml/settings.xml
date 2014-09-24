@@ -36,47 +36,47 @@
             android:summaryOn="@string/settings_log_to_file"
             android:title="Log To File" />
         <CheckBoxPreference
-            android:key="ReadService"
+            android:key="ReadService_Log"
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"
             android:title="ReadService" />
         <CheckBoxPreference
-            android:key="RecordService"
+            android:key="RecordService_Log"
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"
             android:title="RecordService" />
         <CheckBoxPreference
-            android:key="GridAdapterService"
+            android:key="GridAdapterService_Log"
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"
             android:title="GridAdapterService" />
         <CheckBoxPreference
-            android:key="WidgetProvider"
+            android:key="WidgetProvider_Log"
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"
             android:title="WidgetProvider" />
         <CheckBoxPreference
-            android:key="IgnoreSetService"
+            android:key="IgnoreSetService_Log"
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"
             android:title="IgnoreSetService" />
         <CheckBoxPreference
-            android:key="TableUtils"
+            android:key="TableUtils_Log"
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"
             android:title="TableUtils" />
         <CheckBoxPreference
-            android:key="SystemBroadcastReceiver"
+            android:key="SystemBroadcastReceiver_Log"
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"
             android:title="SystemBroadcastReceiver" />
         <CheckBoxPreference
-            android:key="PackageProvider"
+            android:key="PackageProvider_Log"
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"
             android:title="PackageProvider" />
         <CheckBoxPreference
-            android:key="RawRecord"
+            android:key="RawRecord_Log"
             android:summaryOff="@string/settings_log_off"
             android:summaryOn="@string/settings_log_on"
             android:title="RawRecord" />

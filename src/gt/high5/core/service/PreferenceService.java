@@ -19,6 +19,34 @@ public class PreferenceService {
 	private static String READ_SUFFIX = "_Read";
 	private static PreferenceService mInstance = null;
 
+	@SuppressLint("SdCardPath")
+	private static final String PREFERENCE_PATH = "/data/data/gt.high5/shared_prefs/gt.high5_preferences.xml";
+	private static final String BACKUP_PATH = "high5";
+	private static final String BACKUP_FILE = "gt.high5_preferences.xml";
+
+	private SharedPreferences mPreferences = null;
+	private Context mContext = null;
+	// preference listener exposed to outside
+	private LinkedList<OnSharedPreferenceChangeListener> mPreferenceListeners = new LinkedList<OnSharedPreferenceChangeListener>();
+	private OnSharedPreferenceChangeListener mListener = new OnSharedPreferenceChangeListener() {
+
+		@Override
+		public void onSharedPreferenceChanged(SharedPreferences arg0,
+				String arg1) {
+			// update preference after it gets changed
+			mPreferences = PreferenceManager
+					.getDefaultSharedPreferences(mContext);
+			for (OnSharedPreferenceChangeListener listener : mPreferenceListeners) {
+				listener.onSharedPreferenceChanged(arg0, arg1);
+			}
+		}
+	};
+
+	private PreferenceService(Context context) {
+		mContext = context;
+		mPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+	}
+
 	public static PreferenceService getPreferenceReadService(Context context) {
 		if (null == mInstance) {
 			synchronized (PreferenceService.class) {
@@ -28,29 +56,6 @@ public class PreferenceService {
 			}
 		}
 		return mInstance;
-	}
-
-	@SuppressLint("SdCardPath")
-	private static final String PREFERENCE_PATH = "/data/data/gt.high5/shared_prefs/gt.high5_preferences.xml";
-	private static final String BACKUP_PATH = "high5";
-	private static final String BACKUP_FILE = "gt.high5_preferences.xml";
-
-	private volatile SharedPreferences mPreferences = null;
-
-	private LinkedList<OnSharedPreferenceChangeListener> mPreferenceListeners = new LinkedList<OnSharedPreferenceChangeListener>();
-	private OnSharedPreferenceChangeListener mListener = new OnSharedPreferenceChangeListener() {
-
-		@Override
-		public void onSharedPreferenceChanged(SharedPreferences arg0,
-				String arg1) {
-			for (OnSharedPreferenceChangeListener listener : mPreferenceListeners) {
-				listener.onSharedPreferenceChanged(arg0, arg1);
-			}
-		}
-	};
-
-	private PreferenceService(Context context) {
-		mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 
 	public int getUpdateInterval() {
@@ -88,7 +93,7 @@ public class PreferenceService {
 	}
 
 	@SuppressWarnings("resource")
-	public void backup(Context context) throws Exception {
+	public void backup() throws Exception {
 		try {
 			if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
 					.getExternalStorageState())) {
@@ -117,12 +122,12 @@ public class PreferenceService {
 			}
 		} finally {
 			mPreferences = PreferenceManager
-					.getDefaultSharedPreferences(context);
+					.getDefaultSharedPreferences(mContext);
 		}
 	}
 
 	@SuppressWarnings("resource")
-	public void restore(Context context) throws Exception {
+	public void restore() throws Exception {
 		try {
 			if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
 					.getExternalStorageState())) {
@@ -151,7 +156,7 @@ public class PreferenceService {
 			}
 		} finally {
 			mPreferences = PreferenceManager
-					.getDefaultSharedPreferences(context);
+					.getDefaultSharedPreferences(mContext);
 		}
 	}
 
