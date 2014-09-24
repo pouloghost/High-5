@@ -6,15 +6,15 @@ import gt.high5.activity.fragment.IgnoreListManageFragment;
 import gt.high5.activity.fragment.SettingsFragment;
 import gt.high5.activity.fragment.TotalListFragment;
 import android.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends FragmentActivity implements
+public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
 
 	@SuppressWarnings("rawtypes")
@@ -72,7 +72,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
-		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentManager fragmentManager = getFragmentManager();
 		try {
 			mCurrentFragment = (Fragment) fragments[position].newInstance();
 			fragmentManager.beginTransaction()

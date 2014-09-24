@@ -9,10 +9,11 @@ import gt.high5.chart.core.FillContext;
 import gt.high5.core.service.ReadService;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
+import android.annotation.SuppressLint;
+import android.app.Fragment;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,6 +103,7 @@ public class RecordDetailPagerFragment extends Fragment implements
 	}
 
 	// replacement for onResume, this is actually functioning as onResume should
+	@SuppressLint("NewApi")
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);

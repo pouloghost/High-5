@@ -14,6 +14,7 @@ import gt.high5.database.table.Total;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -21,7 +22,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -213,7 +213,7 @@ public class TotalDetailPagerFragment extends Fragment implements
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
 			if (result) {
-				getActivity().getSupportFragmentManager().popBackStack();
+				getActivity().getFragmentManager().popBackStack();
 			} else {
 				Toast.makeText(getActivity(),
 						R.string.total_detail_delete_failed, Toast.LENGTH_LONG)

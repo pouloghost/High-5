@@ -7,9 +7,10 @@ import gt.high5.database.model.RecordTable;
 import gt.high5.database.parser.TableParser;
 import gt.high5.database.table.Total;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.annotation.SuppressLint;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ public class RecordDetailFragment extends Fragment implements CancelableTask {
 		getActivity().getActionBar().setTitle(title);
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

@@ -17,14 +17,10 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.util.ArrayMap;
 
 import com.github.curioustechizen.xlog.Log;
 
 public class High5Application extends Application {
-
-	private static ArrayMap<String, SharedPreferences.OnSharedPreferenceChangeListener> preferenceListeners = new ArrayMap<String, SharedPreferences.OnSharedPreferenceChangeListener>();
-
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -86,43 +82,63 @@ public class High5Application extends Application {
 				.getPreferenceReadService(getApplicationContext());
 		TimeRecordOperation
 				.setRegionLength(preferenceService.getRegionLength());
+		try {
+			Predictor.setPredictor(
+					PreferenceService.getPreferenceReadService(
+							getApplicationContext()).getString(
+							"predictor_class"), getApplicationContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		// preference change listener
 		// / TODO shared preference change listener not called
-		preferenceListeners.put("update_interval",
-				new SharedPreferences.OnSharedPreferenceChangeListener() {
+		preferenceService
+				.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
 
 					@Override
 					public void onSharedPreferenceChanged(
 							SharedPreferences preferences, String key) {
+						if (!"update_interval".equals(key)) {
+							return;
+						}
 						WidgetProvider.forceRefresh(getApplicationContext());
 						android.util.Log.d(LogService.LOG_TAG, "changed");
 					}
 				});
-		preferenceListeners.put("record_interval",
-				new SharedPreferences.OnSharedPreferenceChangeListener() {
+		preferenceService
+				.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
 
 					@Override
 					public void onSharedPreferenceChanged(
 							SharedPreferences preferences, String key) {
+						if (!"record_interval".equals(key)) {
+							return;
+						}
 						WidgetProvider.forceRecord(getApplicationContext());
 					}
 				});
-		preferenceListeners.put("region_length",
-				new SharedPreferences.OnSharedPreferenceChangeListener() {
+		preferenceService
+				.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
 
 					@Override
 					public void onSharedPreferenceChanged(
 							SharedPreferences preferences, String key) {
+						if (!"region_length".equals(key)) {
+							return;
+						}
 						TimeRecordOperation.setRegionLength(preferenceService
 								.getRegionLength());
 					}
 				});
-		preferenceListeners.put("predictor_class",
-				new SharedPreferences.OnSharedPreferenceChangeListener() {
+		preferenceService
+				.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
 
 					@Override
 					public void onSharedPreferenceChanged(
 							SharedPreferences preferences, String key) {
+						if (!"predictor_class".equals(key)) {
+							return;
+						}
 						try {
 							Predictor.setPredictor(
 									preferences.getString(key, ""),
@@ -134,26 +150,6 @@ public class High5Application extends Application {
 						}
 					}
 				});
-		try {
-			Predictor.setPredictor(
-					PreferenceService.getPreferenceReadService(
-							getApplicationContext()).getString(
-							"predictor_class"), getApplicationContext());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		preferenceService
-				.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
 
-					@Override
-					public void onSharedPreferenceChanged(
-							SharedPreferences preferences, String key) {
-						SharedPreferences.OnSharedPreferenceChangeListener listener = preferenceListeners
-								.get(key);
-						if (null != listener) {
-							listener.onSharedPreferenceChanged(preferences, key);
-						}
-					}
-				});
 	}
 }

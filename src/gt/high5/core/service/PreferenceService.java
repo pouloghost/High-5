@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import java.util.LinkedList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -36,18 +37,20 @@ public class PreferenceService {
 
 	private volatile SharedPreferences mPreferences = null;
 
+	private LinkedList<OnSharedPreferenceChangeListener> mPreferenceListeners = new LinkedList<OnSharedPreferenceChangeListener>();
+	private OnSharedPreferenceChangeListener mListener = new OnSharedPreferenceChangeListener() {
+
+		@Override
+		public void onSharedPreferenceChanged(SharedPreferences arg0,
+				String arg1) {
+			for (OnSharedPreferenceChangeListener listener : mPreferenceListeners) {
+				listener.onSharedPreferenceChanged(arg0, arg1);
+			}
+		}
+	};
+
 	private PreferenceService(Context context) {
 		mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-	}
-
-	public void registerOnSharedPreferenceChangeListener(
-			OnSharedPreferenceChangeListener listener) {
-		mPreferences.registerOnSharedPreferenceChangeListener(listener);
-	}
-
-	public void unregisterOnSharedPreferenceChangeListener(
-			OnSharedPreferenceChangeListener listener) {
-		mPreferences.unregisterOnSharedPreferenceChangeListener(listener);
 	}
 
 	public int getUpdateInterval() {
@@ -155,5 +158,20 @@ public class PreferenceService {
 	// proxy for preferences
 	public String getString(String key) {
 		return mPreferences.getString(key, key);
+	}
+
+	// preference listeners
+	public OnSharedPreferenceChangeListener getOnSharedPreferenceChangeListener() {
+		return mListener;
+	}
+
+	public void registerOnSharedPreferenceChangeListener(
+			OnSharedPreferenceChangeListener listener) {
+		mPreferenceListeners.add(listener);
+	}
+
+	public void unregisterOnSharedPreferenceChangeListener(
+			OnSharedPreferenceChangeListener listener) {
+		mPreferenceListeners.remove(listener);
 	}
 }
