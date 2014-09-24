@@ -151,4 +151,9 @@ public class PreferenceService {
 					.getDefaultSharedPreferences(context);
 		}
 	}
+
+	// proxy for preferences
+	public String getString(String key) {
+		return mPreferences.getString(key, key);
+	}
 }

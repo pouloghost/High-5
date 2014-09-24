@@ -30,6 +30,13 @@ public abstract class Predictor implements TableParserProxy {
 		return instance;
 	}
 
+	public static void setPredictor(String clazz, Context context)
+			throws InstantiationException, IllegalAccessException,
+			ClassNotFoundException {
+		instance = (Predictor) Class.forName(clazz).newInstance();
+		instance.initTableParser(context);
+	}
+
 	private TableParser mTableParser = null;
 
 	/**

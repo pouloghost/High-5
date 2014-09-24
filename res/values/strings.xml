@@ -10,41 +10,5 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
     <string name="unknown">Unknown</string>
-    <!-- db operation -->
-    <string name="db_title_db">Database</string>
-    <string name="db_title_pref">Preference</string>
-    <string name="db_backup">Backup</string>
-    <string name="db_restore">Restore</string>
-    <string name="db_clean">Clean</string>
-    <string name="db_backup_failed">Backup failed</string>
-    <string name="db_restore_failed">Restore failed</string>
-    <string name="db_clean_failed">Clean failed</string>
-    <!-- manage ignore -->
-    <string name="ignore_toggle_on">Ignored</string>
-    <string name="ignore_toggle_off">Record</string>
-    <!-- settings -->
-    <string name="settings_category_interval">Intervals</string>
-    <string name="settings_category_debug">Logs</string>
-    <string name="settings_update_interval_title">Refresh Interval</string>
-    <string name="settings_record_interval_title">Record Interval</string>
-    <string name="settings_region_length_title">Region Length</string>
-    <string name="settings_update_default">600000</string>
-    <string name="settings_record_default">600000</string>
-    <string name="settings_region_default">15</string>
-    <string name="settings_log_on">Log on</string>
-    <string name="settings_log_off">Log off</string>
-    <string name="settings_log_to_console">Log to console</string>
-    <string name="settings_log_to_file">Log to file</string>
-    <!-- total list -->
-    <string name="total_list_header_precise">Precise:</string>
-    <string name="total_list_header_recall">Recall:</string>
-    <!-- detail chart -->
-    <string name="total_detail_count_hint">Count:</string>
-    <string name="total_detail_delete">Delete</string>
-    <string name="total_detail_hide">Hide</string>
-    <string name="total_detail_delete_failed">Delete failed</string>
-    <string name="record_detail_spinner_pie">Pie</string>
-    <string name="record_detail_spinner_bar">Bar</string>
-    <string name="record_detail_spinner_line">Line</string>
 
 </resources>

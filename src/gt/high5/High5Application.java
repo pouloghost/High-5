@@ -2,6 +2,7 @@ package gt.high5;
 
 import gt.high5.activity.SystemBroadcastReceiver;
 import gt.high5.activity.widget.WidgetProvider;
+import gt.high5.core.predictor.Predictor;
 import gt.high5.core.service.IgnoreSetService;
 import gt.high5.core.service.LogService;
 import gt.high5.core.service.PreferenceService;
@@ -116,6 +117,31 @@ public class High5Application extends Application {
 								.getRegionLength());
 					}
 				});
+		preferenceListeners.put("predictor_class",
+				new SharedPreferences.OnSharedPreferenceChangeListener() {
+
+					@Override
+					public void onSharedPreferenceChanged(
+							SharedPreferences preferences, String key) {
+						try {
+							Predictor.setPredictor(
+									preferences.getString(key, ""),
+									getApplicationContext());
+							android.util.Log.d(LogService.LOG_TAG, Predictor
+									.getPredictor().getClass().getName());
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+		try {
+			Predictor.setPredictor(
+					PreferenceService.getPreferenceReadService(
+							getApplicationContext()).getString(
+							"predictor_class"), getApplicationContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		preferenceService
 				.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- interval -->
+    <string name="settings_category_interval">Intervals</string>
+    <string name="settings_update_interval_title">Refresh Interval</string>
+    <string name="settings_record_interval_title">Record Interval</string>
+    <string name="settings_region_length_title">Region Length</string>
+    <string name="settings_update_default">600000</string>
+    <string name="settings_record_default">600000</string>
+    <string name="settings_region_default">15</string>
+    <!-- log -->
+    <string name="settings_category_debug">Logs</string>
+    <string name="settings_log_on">Log on</string>
+    <string name="settings_log_off">Log off</string>
+    <string name="settings_log_to_console">Log to console</string>
+    <string name="settings_log_to_file">Log to file</string>
+    <!-- predictor -->
+    <string name="settings_category_predictor">Predictor</string>
+    <string name="settings_predictor_default">gt.high5.core.predictor.collaborativefilter.CollaborativeFilterPredictor</string>
+    <string name="settings_predictor_title">Predictor</string>
+
+</resources>

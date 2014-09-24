@@ -35,5 +35,13 @@
         <item>App Name</item>
         <item>Total Count</item>
     </string-array>
+    <string-array name="settings_predictor_entries">
+        <item>Collaborative Filter</item>
+        <item>Naive Bayes</item>
+    </string-array>
+    <string-array name="settings_predictor_values">
+        <item>gt.high5.core.predictor.collaborativefilter.CollaborativeFilterPredictor</item>
+        <item>gt.high5.core.predictor.naivebayes.NaiveBayesPredictor</item>
+    </string-array>
 
 </resources>

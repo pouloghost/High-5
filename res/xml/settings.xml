@@ -21,6 +21,14 @@
             android:key="region_length"
             android:title="@string/settings_region_length_title" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_category_predictor" >
+        <ListPreference
+            android:defaultValue="@string/settings_predictor_default"
+            android:entries="@array/settings_predictor_entries"
+            android:entryValues="@array/settings_predictor_values"
+            android:key="predictor_class"
+            android:title="@string/settings_predictor_title" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_category_debug" >
         <CheckBoxPreference
             android:key="log_to_file"
