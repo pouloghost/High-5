@@ -41,6 +41,15 @@ public class ReadService implements TableParserProxy {
 
 	private ReadService(Context context) {
 		mContext = context;
+		Predictor.registerCallback(new Predictor.Callbacks() {
+
+			@Override
+			public void onPredictorChanged() {
+				mHit = 0;
+				mMiss = 0;
+				mWrong = 0;
+			}
+		});
 	}
 
 	public static ReadService getReadService(Context context) {

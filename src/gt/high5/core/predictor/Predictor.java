@@ -13,6 +13,7 @@ import gt.high5.database.table.Total;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
@@ -23,6 +24,10 @@ import android.content.Context;
  *         a strategy for calculating the possibility of tables
  */
 public abstract class Predictor implements TableParserProxy {
+
+	public interface Callbacks {
+		public void onPredictorChanged();
+	}
 
 	private static Predictor instance = new CollaborativeFilterPredictor();
 
@@ -35,6 +40,16 @@ public abstract class Predictor implements TableParserProxy {
 			ClassNotFoundException {
 		instance = (Predictor) Class.forName(clazz).newInstance();
 		instance.initTableParser(context);
+	}
+
+	private static LinkedList<Callbacks> callbacks = new LinkedList<Callbacks>();
+
+	public static void registerCallback(Callbacks callback) {
+		callbacks.add(callback);
+	}
+
+	public static void unregisterCallback(Callbacks callback) {
+		callbacks.remove(callback);
 	}
 
 	private TableParser mTableParser = null;
