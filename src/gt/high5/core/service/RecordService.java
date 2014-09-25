@@ -17,7 +17,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
-import android.database.Cursor;
 
 /**
  * @author ayi.zty
@@ -26,11 +25,11 @@ import android.database.Cursor;
  *         database
  */
 public class RecordService {
-	private static final int MAX_COUNT = 100;
+	private static final int TRIM_MAX_COUNT = 100;
+	private static final int FEATURE_REDUCTION_COUNT = 1000;
 
 	private Context mContext = null;
 	private DatabaseAccessor mAccessor = null;
-	private int mRawRecordCount = 0;
 
 	// singleton
 	private static RecordService mInstance = null;
@@ -38,11 +37,6 @@ public class RecordService {
 	private RecordService(Context context) {
 		mContext = context;
 		mAccessor = Predictor.getPredictor().getAccessor(mContext);
-		Cursor cursor = mAccessor.query(RawRecord.RCount());
-		if (cursor.moveToFirst()) {
-			mRawRecordCount = cursor.getInt(0);
-		}
-		cursor.close();
 	}
 
 	public static RecordService getRecordService(Context context)
@@ -71,7 +65,7 @@ public class RecordService {
 		for (LaunchInfo info : packages) {
 			recordPackage(context, info.getPackage(), info.getLaunchCount());
 		}
-		trimDB();
+		postRecordDBOperation();
 	}
 
 	/**
@@ -102,12 +96,31 @@ public class RecordService {
 		}
 	}
 
+	private void postRecordDBOperation() {
+		trimDB();
+		featureReduction();
+		PreferenceService.getPreferenceReadService(mContext)
+				.increaseRecordCount();
+	}
+
+	private void featureReduction() {
+		PreferenceService service = PreferenceService
+				.getPreferenceReadService(mContext);
+		int count = service.getRecordCount();
+		if (count > FEATURE_REDUCTION_COUNT) {
+			// TODO feature reduction
+			service.resetRecordCount();
+		}
+	}
+
 	private void trimDB() {
-		int count = mRawRecordCount - MAX_COUNT;
-		if (count > 0) {
-			String sql = RawRecord.D(count);
+		PreferenceService service = PreferenceService
+				.getPreferenceReadService(mContext);
+		int count = service.getRecordCount();
+		int diff = count % TRIM_MAX_COUNT;
+		if (0 == diff) {
+			String sql = RawRecord.D(diff);
 			mAccessor.excute(sql);
-			mRawRecordCount = MAX_COUNT;
 		}
 	}
 
@@ -151,7 +164,6 @@ public class RecordService {
 				// record context
 				rawRecord.record(recordContext, count);
 				mAccessor.C(rawRecord);
-				++mRawRecordCount;
 				// each type of record
 				Class<? extends RecordTable>[] clazzes = Predictor
 						.getPredictor().getTables();

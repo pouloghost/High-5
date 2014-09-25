@@ -17,6 +17,7 @@ public class PreferenceService {
 
 	private static String lOG_SUFFIX = "_Log";
 	private static String READ_SUFFIX = "_Read";
+	private static String RECORD_COUNT = "record_count";
 	private static PreferenceService mInstance = null;
 
 	@SuppressLint("SdCardPath")
@@ -158,6 +159,19 @@ public class PreferenceService {
 			mPreferences = PreferenceManager
 					.getDefaultSharedPreferences(mContext);
 		}
+	}
+
+	public int getRecordCount() {
+		return mPreferences.getInt(RECORD_COUNT, 0);
+	}
+
+	public void increaseRecordCount() {
+		int count = mPreferences.getInt(RECORD_COUNT, 0);
+		mPreferences.edit().putInt(RECORD_COUNT, 1 + count).commit();
+	}
+
+	public void resetRecordCount() {
+		mPreferences.edit().putInt(RECORD_COUNT, 0).commit();
 	}
 
 	// proxy for preferences
