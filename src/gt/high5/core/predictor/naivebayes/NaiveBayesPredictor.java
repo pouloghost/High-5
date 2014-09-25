@@ -93,7 +93,7 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 
 	@Override
 	public float getMinThreshold() {
-		return 1E-20f;
+		return getTables().length * 1.01f;
 	}
 
 	@Override
@@ -147,7 +147,7 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 		possibilityLog.append(".");
 
 		float totalCount = total.getCount();
-		float possibility = (float) totalCount / (float) all;
+		float possibility = 1 + (float) totalCount / (float) all;
 		// punish records that appears quite occasionally
 		possibility = (float) Math.pow(possibility, 5.0f);
 		Collection<RecordTable> relates = getRelativeRecords(context, total);
@@ -164,7 +164,7 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 				possibilityLog.append(",");
 			} else {
 				// weight for each feature
-				possibility *= Math.pow(table.getCount() / totalCount,
+				possibility *= Math.pow(1 + table.getCount() / totalCount,
 						getTableWeight(table.getClass()));
 				possibilityLog.append(table.getClass().getSimpleName());
 				possibilityLog.append(":");
