@@ -93,7 +93,7 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 
 	@Override
 	public float getMinThreshold() {
-		return getTables().length * 1.01f;
+		return getTables().length / 3;
 	}
 
 	@Override
@@ -149,7 +149,7 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 		float totalCount = total.getCount();
 		float possibility = 1 + (float) totalCount / (float) all;
 		// punish records that appears quite occasionally
-		possibility = (float) Math.pow(possibility, 5.0f);
+		possibility = (float) Math.pow(possibility, 9.0f);
 		Collection<RecordTable> relates = getRelativeRecords(context, total);
 		for (RecordTable table : relates) {
 			if (RecordTable.DEFAULT_COUNT_INT == table.getCount()) {
