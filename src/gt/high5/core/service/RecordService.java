@@ -7,16 +7,20 @@ import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.raw.RawRecord;
+import gt.high5.database.reducer.Reducer;
 import gt.high5.database.table.Total;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
+import android.support.v4.util.ArrayMap;
 
 /**
  * @author ayi.zty
@@ -108,7 +112,31 @@ public class RecordService {
 				.getPreferenceReadService(mContext);
 		int count = service.getRecordCount();
 		if (count > FEATURE_REDUCTION_COUNT) {
-			// TODO feature reduction
+			RecordTable queryTable = null;
+			ArrayMap<Class<? extends RecordTable>, List<Table>> records = new ArrayMap<Class<? extends RecordTable>, List<Table>>();
+			List<Class<? extends RecordTable>> filtered = new LinkedList<Class<? extends RecordTable>>();
+			Collections.addAll(filtered, Predictor.getPredictor().getTables());
+			// read all data
+			for (Class<? extends RecordTable> clazz : filtered) {
+				service.setShouldRead(clazz, true);
+				try {
+					queryTable = clazz.newInstance();
+					List<Table> tableList = mAccessor.R(queryTable);
+					if (null != tableList) {
+						records.put(clazz, tableList);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			// filter
+			for (Reducer reducer : Reducer.getReducers()) {
+				filtered.removeAll(reducer.shouldRead(records));
+			}
+			// set preference
+			for (Class<? extends RecordTable> clazz : filtered) {
+				service.setShouldRead(clazz, false);
+			}
 			service.resetRecordCount();
 		}
 	}
