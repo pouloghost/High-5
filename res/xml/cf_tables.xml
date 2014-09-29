@@ -11,49 +11,49 @@
         title="Total" />
     <table
         clazz=".Time"
-        comparator=".TimeComparator"
+        comparator=".IntegerComparator"
         filler=".TimeDataFiller"
         title="Time"
         weight="5" />
     <table
         clazz=".WifiName"
-        comparator=".WifiNameComparator"
+        comparator=".StringComparator"
         filler=".WifiNameDataFiller"
         title="Wifi Name"
         weight="2" />
     <table
         clazz=".Network"
-        comparator=".NetworkComparator"
+        comparator=".StringComparator"
         filler=".NetworkDataFiller"
         title="Network Type"
         weight="3" />
     <table
         clazz=".LastPackage"
-        comparator=".LastPackageComparator"
+        comparator=".StringComparator"
         filler=".LastPackageDataFiller"
         title="Last App"
         weight="2" />
     <table
         clazz=".WeekDay"
-        comparator=".WeekDayComparator"
+        comparator=".IntegerComparator"
         filler=".WeekDayDataFiller"
         title="Day Of Week"
         weight="1" />
     <table
         clazz=".DayOfMonth"
-        comparator=".DayOfMonthComparator"
+        comparator=".IntegerComparator"
         filler=".DayOfMonthDataFiller"
         title="Day Of Month"
         weight="1" />
     <table
         clazz=".RingVolumn"
-        comparator=".VolumnComparator"
+        comparator=".IntegerComparator"
         filler=".VolumnDataFiller"
         title="Ring Volumn"
         weight="3" />
     <table
         clazz=".RingMode"
-        comparator=".RingModeComparator"
+        comparator=".IntegerComparator"
         filler=".RingModeDataFiller"
         title="Ring Mode"
         weight="3" />
