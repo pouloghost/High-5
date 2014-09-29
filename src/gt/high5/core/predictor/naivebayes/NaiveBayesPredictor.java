@@ -93,7 +93,7 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 
 	@Override
 	public float getMinThreshold() {
-		return getTables().length / 3;
+		return getTables().length * 1e-25f;
 	}
 
 	@Override
