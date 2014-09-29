@@ -41,6 +41,11 @@ public class Network extends SimpleRecordTable {
 		this.connection = connection;
 	}
 
+	@Override
+	public Object getValue() {
+		return getConnection();
+	}
+
 	private boolean checkAndSetConnection(String value) {
 		if (null != value) {
 			setConnection(value);

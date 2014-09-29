@@ -29,6 +29,11 @@ public class RingVolumn extends AbstractVolumn {
 				.queryForRecord(context));
 	}
 
+	@Override
+	public Object getValue() {
+		return getPercent();
+	}
+
 	private boolean checkAndSetPercent(Integer value) {
 		if (null != value) {
 			setPercent(value);

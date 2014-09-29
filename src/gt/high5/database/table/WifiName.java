@@ -46,6 +46,11 @@ public class WifiName extends SimpleRecordTable {
 		this.bssid = bssid;
 	}
 
+	@Override
+	public Object getValue() {
+		return getBssid();
+	}
+
 	private boolean checkAndSetConnection(String value) {
 		if (null != value) {
 			setBssid(value);

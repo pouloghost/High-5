@@ -202,4 +202,9 @@ public class Total extends RecordTable implements Parcelable {
 		dest.writeInt(count);
 		dest.writeFloat(possibility);
 	}
+
+	@Override
+	public Object getValue() {
+		return getName();
+	}
 }

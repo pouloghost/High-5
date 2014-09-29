@@ -39,6 +39,11 @@ public class WeekDay extends SimpleRecordTable {
 		this.day = day;
 	}
 
+	@Override
+	public Object getValue() {
+		return getDay();
+	}
+
 	private boolean checkAndSetDay(Integer value) {
 		if (null != value) {
 			setDay(value.intValue());

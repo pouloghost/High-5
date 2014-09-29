@@ -76,4 +76,9 @@ public final class LastPackage extends SimpleRecordTable {
 	public void setLastPackage(String lastPackage) {
 		this.lastPackage = lastPackage;
 	}
+
+	@Override
+	public Object getValue() {
+		return getLastPackage();
+	}
 }

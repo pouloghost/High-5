@@ -39,6 +39,11 @@ public class RingMode extends SimpleRecordTable {
 		this.mode = mode;
 	}
 
+	@Override
+	public Object getValue() {
+		return getMode();
+	}
+
 	private boolean checkAndSetMode(Integer value) {
 		if (null != value) {
 			setMode(value.intValue());

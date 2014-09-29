@@ -10,6 +10,10 @@ import gt.high5.database.raw.RawRecord;
  * 
  *         all sub classes must have a default constructor
  */
+/**
+ * @author GT
+ * 
+ */
 public abstract class RecordTable extends Table {
 
 	public static final int DEFAULT_COUNT_INT = -1;
@@ -61,5 +65,11 @@ public abstract class RecordTable extends Table {
 	 * 
 	 */
 	public abstract void setPid(int pid);
+
+	/**
+	 * @return the value of data field, if more than one field, a map will be
+	 *         returned
+	 */
+	public abstract Object getValue();
 
 }

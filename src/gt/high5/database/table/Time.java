@@ -45,6 +45,11 @@ public class Time extends SimpleRecordTable {
 		this.region = region;
 	}
 
+	@Override
+	public Object getValue() {
+		return getRegion();
+	}
+
 	private boolean checkAndSetRegion(Integer value) {
 		if (null != value) {
 			setRegion(value);
