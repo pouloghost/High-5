@@ -41,8 +41,8 @@ public class Total extends RecordTable implements Parcelable {
 	}
 
 	@Override
-	public boolean queryForRead(RecordContext context) {
-		return queryForRecord(context, null);
+	public int queryForRead(RecordContext context) {
+		return queryForRecord(context, null) ? READ_DONE : READ_FAILED;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package gt.high5.core.service;
 
+import gt.high5.database.model.RecordTable;
 import gt.high5.database.table.Total;
 import android.content.Context;
 
@@ -11,6 +12,7 @@ import android.content.Context;
 public class RecordContext {
 	private Context context = null;
 	private Total total = null;
+	private int state = RecordTable.READ_DONE;
 
 	public RecordContext(Context context, Total total) {
 		setContext(context);
@@ -31,5 +33,17 @@ public class RecordContext {
 
 	public void setTotal(Total total) {
 		this.total = total;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+	public void recordNext() {
+		++this.state;
 	}
 }

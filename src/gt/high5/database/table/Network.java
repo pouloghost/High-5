@@ -27,10 +27,10 @@ public class Network extends SimpleRecordTable {
 	}
 
 	@Override
-	public boolean queryForRead(RecordContext context) {
+	public int queryForRead(RecordContext context) {
 		setPid(context.getTotal().getId());
 		String value = (String) recordOperation.queryForRecord(context);
-		return checkAndSetConnection(value);
+		return checkAndSetConnection(value) ? READ_DONE : READ_FAILED;
 	}
 
 	public String getConnection() {

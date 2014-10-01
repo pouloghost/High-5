@@ -17,8 +17,11 @@ import java.util.List;
  */
 public final class LastPackage extends SimpleRecordTable {
 
+	private static final int TIMES = 3;
 	@TableAnnotation(defaultValue = "")
 	private String lastPackage = "";
+	@TableAnnotation(isTransient = true)
+	private int time = 0;
 
 	/*
 	 * @see
@@ -52,7 +55,7 @@ public final class LastPackage extends SimpleRecordTable {
 	 * set the first package in recent list
 	 */
 	@Override
-	public boolean queryForRead(RecordContext context) {
+	public int queryForRead(RecordContext context) {
 		setPid(context.getTotal().getId());
 		PackageProvider provider = null;
 		List<String> order = null;
@@ -60,13 +63,13 @@ public final class LastPackage extends SimpleRecordTable {
 				.getContext()))
 				&& null != (order = provider.getLastPackageOrder(context
 						.getContext()))) {
-			if (order.size() > 0) {
-				lastPackage = order.get(0);
-				setPid(context.getTotal().getId());
-				return true;
+			if (order.size() > time) {
+				lastPackage = order.get(time);
+				++time;
+				return TIMES == time ? READ_DONE : READ_CONTINUE;
 			}
 		}
-		return false;
+		return READ_FAILED;
 	}
 
 	public String getLastPackage() {

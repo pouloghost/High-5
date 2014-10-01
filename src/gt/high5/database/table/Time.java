@@ -31,10 +31,10 @@ public class Time extends SimpleRecordTable {
 	}
 
 	@Override
-	public boolean queryForRead(RecordContext context) {
+	public int queryForRead(RecordContext context) {
 		setPid(context.getTotal().getId());
 		return checkAndSetRegion((Integer) recordOperation
-				.queryForRecord(context));
+				.queryForRecord(context)) ? READ_DONE : READ_FAILED;
 	}
 
 	public int getRegion() {

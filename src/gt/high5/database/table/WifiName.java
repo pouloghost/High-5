@@ -32,10 +32,10 @@ public class WifiName extends SimpleRecordTable {
 	}
 
 	@Override
-	public boolean queryForRead(RecordContext context) {
+	public int queryForRead(RecordContext context) {
 		setPid(context.getTotal().getId());
 		return checkAndSetConnection((String) recordOperation
-				.queryForRecord(context));
+				.queryForRecord(context)) ? READ_DONE : READ_FAILED;
 	}
 
 	public String getBssid() {

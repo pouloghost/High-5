@@ -23,10 +23,10 @@ public class RingVolumn extends AbstractVolumn {
 	}
 
 	@Override
-	public boolean queryForRead(RecordContext context) {
+	public int queryForRead(RecordContext context) {
 		setPid(context.getTotal().getId());
 		return checkAndSetPercent((Integer) recordOperation
-				.queryForRecord(context));
+				.queryForRecord(context)) ? READ_DONE : READ_FAILED;
 	}
 
 	@Override

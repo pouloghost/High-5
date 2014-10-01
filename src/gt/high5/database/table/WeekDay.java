@@ -26,9 +26,10 @@ public class WeekDay extends SimpleRecordTable {
 	}
 
 	@Override
-	public boolean queryForRead(RecordContext context) {
+	public int queryForRead(RecordContext context) {
 		setPid(context.getTotal().getId());
-		return checkAndSetDay((Integer) recordOperation.queryForRecord(context));
+		return checkAndSetDay((Integer) recordOperation.queryForRecord(context)) ? READ_DONE
+				: READ_FAILED;
 	}
 
 	public int getDay() {

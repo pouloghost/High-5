@@ -15,6 +15,10 @@ import gt.high5.database.raw.RawRecord;
  * 
  */
 public abstract class RecordTable extends Table {
+	// return value of queryForRead
+	public static final int READ_FAILED = -1;
+	public static final int READ_DONE = 0;
+	public static final int READ_CONTINUE = 1;
 
 	public static final int DEFAULT_COUNT_INT = -1;
 	public static final String DEFAULT_COUNT_STRING = "-1";
@@ -41,7 +45,7 @@ public abstract class RecordTable extends Table {
 	public abstract boolean queryForRecord(RecordContext context,
 			RawRecord rawRecord);
 
-	public abstract boolean queryForRead(RecordContext context);
+	public abstract int queryForRead(RecordContext context);
 
 	/**
 	 * return a default possibility when there is no existing result
