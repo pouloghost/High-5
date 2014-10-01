@@ -67,18 +67,24 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 		ArrayList<RecordTable> records = new ArrayList<RecordTable>();
 		DatabaseAccessor accessor = getAccessor(context.getContext());
 		Class<? extends RecordTable>[] tables = getTables();
+		RecordContext recordContext = new RecordContext(context.getContext(),
+				total);
 		for (Class<? extends RecordTable> clazz : tables) {
 			RecordTable queryTable;
 			try {
 				queryTable = clazz.newInstance();
-				if (queryTable.queryForRead(new RecordContext(context
-						.getContext(), total))) {
+				int state = RecordTable.READ_FAILED;
+				do {
+					state = queryTable.queryForRead(recordContext);
+					if (RecordTable.READ_FAILED == state) {
+						break;
+					}
 					List<Table> allTables = accessor.R(queryTable);
 					if (null != allTables) {// available record
-						queryTable = (RecordTable) allTables.get(0);
+						records.add((RecordTable) allTables.get(0));
 					}
-				}
-				records.add(queryTable);
+					recordContext.recordNext();
+				} while (RecordTable.READ_CONTINUE == state);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -93,7 +99,7 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 
 	@Override
 	public float getMinThreshold() {
-		return getTables().length * 1e-25f;
+		return getTables().length * 1e-40f;
 	}
 
 	@Override
