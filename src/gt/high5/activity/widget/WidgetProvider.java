@@ -14,6 +14,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.widget.RemoteViews;
 
 /**
@@ -194,25 +195,39 @@ public class WidgetProvider extends AppWidgetProvider {
 				PendingIntent.FLAG_CANCEL_CURRENT);
 	}
 
-	private void recordCurrentStatus(Context context) {
-		try {
-			RecordService.getRecordService(context).record(context);
-			LogService.d(
-					WidgetProvider.class,
-					"record "
-							+ PreferenceService.getPreferenceReadService(
-									context.getApplicationContext())
-									.getRecordInterval(), context
-							.getApplicationContext());
+	private void recordCurrentStatus(final Context context) {
+		new AsyncTask<Void, Void, Void>() {
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			startInterval(
-					context,
-					PreferenceService.getPreferenceReadService(
-							context.getApplicationContext())
-							.getRecordInterval(), getRecordIntent(context));
-		}
+			@Override
+			protected Void doInBackground(Void... params) {
+				try {
+					RecordService.getRecordService(context).record(context);
+					LogService
+							.d(WidgetProvider.class,
+									"record "
+											+ PreferenceService
+													.getPreferenceReadService(
+															context.getApplicationContext())
+													.getRecordInterval(),
+									context.getApplicationContext());
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				startInterval(
+						context,
+						PreferenceService.getPreferenceReadService(
+								context.getApplicationContext())
+								.getRecordInterval(), getRecordIntent(context));
+				super.onPostExecute(result);
+			}
+
+		}.execute();
+
 	}
 }
