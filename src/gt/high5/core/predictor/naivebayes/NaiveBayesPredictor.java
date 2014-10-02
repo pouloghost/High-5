@@ -82,7 +82,7 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 					List<Table> allTables = accessor.R(queryTable);
 					if (null != allTables) {// available record
 						records.add((RecordTable) allTables.get(0));
-					}else{
+					} else {
 						records.add(queryTable);
 					}
 					recordContext.recordNext();
@@ -102,6 +102,11 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 	@Override
 	public float getMinThreshold() {
 		return getTables().length * 1e-30f;
+	}
+
+	@Override
+	public void onRecordSuccess(List<RecordTable> records) {
+
 	}
 
 	@Override

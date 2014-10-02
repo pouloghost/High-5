@@ -193,17 +193,25 @@ public class RecordService {
 				rawRecord.record(recordContext, count);
 				mAccessor.C(rawRecord);
 				// each type of record
-				Class<? extends RecordTable>[] clazzes = Predictor
-						.getPredictor().getTables();
+				Predictor predictor = Predictor.getPredictor();
+				LinkedList<RecordTable> recordTables = new LinkedList<RecordTable>();
+				RecordTable recordTable = null;
+				Class<? extends RecordTable>[] clazzes = predictor.getTables();
 				for (Class<? extends RecordTable> clazz : clazzes) {
-					recordTable(context, recordContext, rawRecord, clazz);
+					recordTable = recordTable(context, recordContext,
+							rawRecord, clazz);
+					if (null != recordTable) {
+						recordTables.add(recordTable);
+					}
 				}
+				predictor.onRecordSuccess(recordTables);
 			}
 		}
 	}
 
-	private void recordTable(Context context, RecordContext recordContext,
-			RawRecord rawRecord, Class<? extends RecordTable> clazz) {
+	private RecordTable recordTable(Context context,
+			RecordContext recordContext, RawRecord rawRecord,
+			Class<? extends RecordTable> clazz) {
 		List<Table> list;
 
 		try {
@@ -234,9 +242,12 @@ public class RecordService {
 					table.increaseCount(rawRecord.getCount());
 					mAccessor.U(select, table);
 				}
+				return table;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+
 		}
+		return null;
 	}
 }

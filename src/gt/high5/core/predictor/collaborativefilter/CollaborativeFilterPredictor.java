@@ -91,6 +91,11 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 	}
 
 	@Override
+	public void onRecordSuccess(List<RecordTable> records) {
+	
+	}
+
+	@Override
 	protected int getXmlId() {
 		return XML_ID;
 	}
