@@ -3,10 +3,10 @@ package gt.high5.core.predictor.naivebayes;
 import gt.high5.R;
 import gt.high5.core.predictor.MultiThreadPredictor;
 import gt.high5.core.predictor.PredictContext;
+import gt.high5.core.predictor.PredictorUtils;
 import gt.high5.core.provider.PackageProvider;
 import gt.high5.core.service.LogService;
 import gt.high5.core.service.ReadService;
-import gt.high5.core.service.RecordContext;
 import gt.high5.database.accessor.DatabaseAccessor;
 import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
@@ -63,34 +63,8 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 	@Override
 	public List<RecordTable> getRelativeRecords(PredictContext context,
 			Total total) {
-		LinkedList<RecordTable> records = new LinkedList<RecordTable>();
-		DatabaseAccessor accessor = getAccessor(context.getContext());
-		Class<? extends RecordTable>[] tables = getTables();
-		RecordContext recordContext = new RecordContext(context.getContext(),
-				total);
-		for (Class<? extends RecordTable> clazz : tables) {
-			RecordTable queryTable;
-			try {
-				queryTable = clazz.newInstance();
-				int state = RecordTable.READ_FAILED;
-				do {
-					state = queryTable.queryForRead(recordContext);
-					if (RecordTable.READ_FAILED == state) {
-						break;
-					}
-					List<Table> allTables = accessor.R(queryTable);
-					if (null != allTables) {// available record
-						records.add((RecordTable) allTables.get(0));
-					} else {
-						records.add(queryTable);
-					}
-					recordContext.recordNext();
-				} while (RecordTable.READ_CONTINUE == state);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return records;
+		return PredictorUtils.getRelativeRecordsBasedOnContext(context, total,
+				getAccessor(context.getContext()), getTables());
 	}
 
 	@Override

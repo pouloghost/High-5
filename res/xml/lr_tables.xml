@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tables
+    file="statics.db"
+    filler_pack="gt.high5.chart.filler"
+    model_pack="gt.high5.database.table"
+    version="1" >
+
+    <table
+        clazz=".Total"
+        title="Total" />
+    <table
+        clazz=".Time"
+        filler=".TimeDataFiller"
+        title="Time" />
+    <table
+        clazz=".WifiName"
+        filler=".WifiNameDataFiller"
+        title="Wifi Name" />
+    <table
+        clazz=".Network"
+        filler=".NetworkDataFiller"
+        title="Network Type" />
+    <table
+        clazz=".LastPackage"
+        filler=".LastPackageDataFiller"
+        title="Last App" />
+    <table
+        clazz=".WeekDay"
+        filler=".WeekDayDataFiller"
+        title="Day Of Week" />
+    <table
+        clazz=".DayOfMonth"
+        filler=".DayOfMonthDataFiller"
+        title="Day Of Month" />
+    <table
+        clazz=".RingVolumn"
+        filler=".VolumnDataFiller"
+        title="Ring Volumn" />
+    <table
+        clazz=".RingMode"
+        filler=".RingModeDataFiller"
+        title="Ring Mode" />
+
+</tables>
