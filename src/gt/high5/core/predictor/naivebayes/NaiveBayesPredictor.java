@@ -82,6 +82,8 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 					List<Table> allTables = accessor.R(queryTable);
 					if (null != allTables) {// available record
 						records.add((RecordTable) allTables.get(0));
+					}else{
+						records.add(queryTable);
 					}
 					recordContext.recordNext();
 				} while (RecordTable.READ_CONTINUE == state);
