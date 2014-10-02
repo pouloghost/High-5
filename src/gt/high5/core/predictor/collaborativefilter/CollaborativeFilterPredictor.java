@@ -12,7 +12,6 @@ import gt.high5.database.model.Table;
 import gt.high5.database.parser.TableParser;
 import gt.high5.database.table.Total;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -71,7 +70,7 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 	}
 
 	@Override
-	public Collection<RecordTable> getRelativeRecords(PredictContext context,
+	public List<RecordTable> getRelativeRecords(PredictContext context,
 			Total total) {
 		return null;
 	}
@@ -92,7 +91,7 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 
 	@Override
 	public void onRecordSuccess(List<RecordTable> records) {
-	
+
 	}
 
 	@Override

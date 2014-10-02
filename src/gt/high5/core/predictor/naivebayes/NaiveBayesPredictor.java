@@ -12,7 +12,6 @@ import gt.high5.database.model.RecordTable;
 import gt.high5.database.model.Table;
 import gt.high5.database.table.Total;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,9 +61,9 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 	}
 
 	@Override
-	public Collection<RecordTable> getRelativeRecords(PredictContext context,
+	public List<RecordTable> getRelativeRecords(PredictContext context,
 			Total total) {
-		ArrayList<RecordTable> records = new ArrayList<RecordTable>();
+		LinkedList<RecordTable> records = new LinkedList<RecordTable>();
 		DatabaseAccessor accessor = getAccessor(context.getContext());
 		Class<? extends RecordTable>[] tables = getTables();
 		RecordContext recordContext = new RecordContext(context.getContext(),

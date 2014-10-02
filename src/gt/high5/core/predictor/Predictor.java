@@ -12,7 +12,6 @@ import gt.high5.database.parser.TableParserProxy;
 import gt.high5.database.table.Total;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -71,7 +70,7 @@ public abstract class Predictor implements TableParserProxy {
 	 * @param total
 	 * @return
 	 */
-	public abstract Collection<RecordTable> getRelativeRecords(
+	public abstract List<RecordTable> getRelativeRecords(
 			PredictContext context, Total total);
 
 	/**
