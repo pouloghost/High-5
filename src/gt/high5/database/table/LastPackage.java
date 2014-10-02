@@ -17,11 +17,11 @@ import java.util.List;
  */
 public final class LastPackage extends SimpleRecordTable {
 
-	private static final int TIMES = 3;
+	private static final int END = 3;
 	@TableAnnotation(defaultValue = "")
 	private String lastPackage = "";
 	@TableAnnotation(isTransient = true)
-	private int time = 0;
+	private int state = 0;
 
 	/*
 	 * @see
@@ -63,10 +63,10 @@ public final class LastPackage extends SimpleRecordTable {
 				.getContext()))
 				&& null != (order = provider.getLastPackageOrder(context
 						.getContext()))) {
-			if (order.size() > time) {
-				lastPackage = order.get(time);
-				++time;
-				return TIMES == time ? READ_DONE : READ_CONTINUE;
+			if (order.size() > state) {
+				lastPackage = order.get(state);
+				++state;
+				return END == state ? READ_DONE : READ_CONTINUE;
 			}
 		}
 		return READ_FAILED;

@@ -13,9 +13,13 @@ import gt.high5.database.raw.TimeRecordOperation;
  */
 public class Time extends SimpleRecordTable {
 
+	private static final int END = 3;
+	private static final int BACKWARD = 1;
 	private static TimeRecordOperation recordOperation = new TimeRecordOperation();
 	@TableAnnotation(defaultValue = "-1")
 	private int region = -1;
+	@TableAnnotation(isTransient = true)
+	private int state = 0;
 
 	@Override
 	public boolean initDefault(RecordContext context, RawRecord rawRecord) {
@@ -33,8 +37,13 @@ public class Time extends SimpleRecordTable {
 	@Override
 	public int queryForRead(RecordContext context) {
 		setPid(context.getTotal().getId());
-		return checkAndSetRegion((Integer) recordOperation
-				.queryForRecord(context)) ? READ_DONE : READ_FAILED;
+		Integer value = (Integer) recordOperation.queryForRecord(context);
+		if (null == value) {
+			return READ_FAILED;
+		}
+		setRegion(value - BACKWARD + state);
+		++state;
+		return END == state ? READ_DONE : READ_CONTINUE;
 	}
 
 	public int getRegion() {
