@@ -90,7 +90,7 @@ public class CollaborativeFilterPredictor extends MultiThreadPredictor {
 	}
 
 	@Override
-	public void onRecordSuccess(List<RecordTable> records) {
+	public void onRecordSuccess(List<RecordTable> records, Context context) {
 
 	}
 

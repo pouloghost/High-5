@@ -80,7 +80,8 @@ public abstract class Predictor implements TableParserProxy {
 
 	public abstract DatabaseAccessor getAccessor(Context context);
 
-	public abstract void onRecordSuccess(List<RecordTable> records);
+	public abstract void onRecordSuccess(List<RecordTable> records,
+			Context context);
 
 	protected abstract int getXmlId();
 

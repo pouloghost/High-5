@@ -204,7 +204,7 @@ public class RecordService {
 						recordTables.add(recordTable);
 					}
 				}
-				predictor.onRecordSuccess(recordTables);
+				predictor.onRecordSuccess(recordTables, context);
 			}
 		}
 	}

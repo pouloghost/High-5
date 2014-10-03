@@ -35,18 +35,18 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 		// read all packages
 		Total queryTotal = new Total();
 		List<Table> allTotals = accessor.R(queryTotal);
-		// read all counts in total
-		String column = "SUM(count)";
-		Cursor cursor = accessor.query("SELECT " + column + " FROM "
-				+ Total.class.getSimpleName());
-		cursor.moveToFirst();
-		final int all = cursor.getInt(cursor.getColumnIndex(column));
-
-		List<String> last = PackageProvider.getPackageProvider(
-				context.getContext()).getNoneCalculateZone(
-				context.getContext(), 5);
 
 		if (null != allTotals) {
+			// read all counts in total
+			String column = "SUM(count)";
+			Cursor cursor = accessor.query("SELECT " + column + " FROM "
+					+ Total.class.getSimpleName());
+			cursor.moveToFirst();
+			final int all = cursor.getInt(cursor.getColumnIndex(column));
+
+			List<String> last = PackageProvider.getPackageProvider(
+					context.getContext()).getNoneCalculateZone(
+					context.getContext(), 5);
 			long start = System.currentTimeMillis();
 			List<Callable<Total>> tasks = createTaskList(context, allTotals,
 					all, last);
@@ -78,7 +78,7 @@ public class NaiveBayesPredictor extends MultiThreadPredictor {
 	}
 
 	@Override
-	public void onRecordSuccess(List<RecordTable> records) {
+	public void onRecordSuccess(List<RecordTable> records, Context context) {
 
 	}
 
