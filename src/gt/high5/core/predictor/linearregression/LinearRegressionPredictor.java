@@ -50,7 +50,7 @@ public class LinearRegressionPredictor extends MultiThreadPredictor {
 					context.getContext());
 
 		}
-		return null;
+		return allTotals;
 	}
 
 	@Override
@@ -80,13 +80,15 @@ public class LinearRegressionPredictor extends MultiThreadPredictor {
 			}
 		}
 		int all = getAllCount(getAccessor(context));
+		// possibility is for each record object
 		Map<Object, Float> possibilities = getPossibilities(total, records, all);
+		// data is for each class
 		LinearRegressionDataPreference data = LinearRegressionDataPreference
 				.getPreference(context);
 		float hypothesis = 0;
 		for (Object key : possibilities.keySet()) {
 			hypothesis += data.getTheta(key.getClass())
-					* possibilities.get(key.getClass());
+					* possibilities.get(key);
 		}
 		float diff = hypothesis - 1;
 		for (Object key : possibilities.keySet()) {
@@ -100,6 +102,12 @@ public class LinearRegressionPredictor extends MultiThreadPredictor {
 		return XML_ID;
 	}
 
+	/**
+	 * read record sum
+	 * 
+	 * @param accessor
+	 * @return
+	 */
 	private int getAllCount(DatabaseAccessor accessor) {
 		String column = "SUM(count)";
 		Cursor cursor = accessor.query("SELECT " + column + " FROM "

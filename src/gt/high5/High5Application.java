@@ -91,7 +91,6 @@ public class High5Application extends Application {
 			e.printStackTrace();
 		}
 		// preference change listener
-		// / TODO shared preference change listener not called
 		preferenceService
 				.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
 
