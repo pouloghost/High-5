@@ -2,7 +2,9 @@ package gt.high5.core.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.LinkedList;
 
@@ -21,9 +23,10 @@ public class PreferenceService {
 	private static PreferenceService mInstance = null;
 
 	@SuppressLint("SdCardPath")
-	private static final String PREFERENCE_PATH = "/data/data/gt.high5/shared_prefs/gt.high5_preferences.xml";
+	private static final String PREFERENCE_PATH = "/data/data/gt.high5/shared_prefs/";
 	private static final String BACKUP_PATH = "high5";
-	private static final String BACKUP_FILE = "gt.high5_preferences.xml";
+	private static final String[] BACKUP_FILES = { "gt.high5_preferences.xml",
+			"LinearRegressionTheta.xml" };
 
 	private SharedPreferences mPreferences = null;
 	private Context mContext = null;
@@ -93,33 +96,19 @@ public class PreferenceService {
 		mPreferences.edit().putBoolean(key, shouldRead).commit();
 	}
 
-	@SuppressWarnings("resource")
 	public void backup() throws Exception {
 		try {
-			if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
-					.getExternalStorageState())) {
-				// source db
-				String srcPath = PREFERENCE_PATH;
-				File srcFile = new File(srcPath);
-				// destination file
-				File dstFolder = new File(
-						Environment.getExternalStorageDirectory(), BACKUP_PATH);
-				if (!dstFolder.exists()) {
-					dstFolder.mkdir();
+			Exception exception = null;
+			for (String name : BACKUP_FILES) {
+				try {
+					backupPreferenceFile(name);
+				} catch (Exception e) {
+					e.printStackTrace();
+					exception = e;
 				}
-				File dstFile = new File(dstFolder, BACKUP_FILE);
-				if (!dstFile.exists()) {
-					dstFile.createNewFile();
-				}
-				// copy
-				FileChannel src = new FileInputStream(srcFile).getChannel();
-				FileChannel dst = new FileOutputStream(dstFile).getChannel();
-
-				dst.transferFrom(src, 0, src.size());
-				src.close();
-				dst.close();
-			} else {
-				throw new Exception();
+			}
+			if (null != exception) {
+				throw exception;
 			}
 		} finally {
 			mPreferences = PreferenceManager
@@ -127,33 +116,10 @@ public class PreferenceService {
 		}
 	}
 
-	@SuppressWarnings("resource")
 	public void restore() throws Exception {
 		try {
-			if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
-					.getExternalStorageState())) {
-				// data/data db
-				String dstPath = PREFERENCE_PATH;
-				File dstFile = new File(dstPath);
-				// backup file
-				File srcFolder = new File(
-						Environment.getExternalStorageDirectory(), BACKUP_PATH);
-				if (!srcFolder.exists()) {
-					throw new Exception();
-				}
-				File srcFile = new File(srcFolder, BACKUP_FILE);
-				if (!srcFile.exists()) {
-					throw new Exception();
-				}
-				// copy
-				FileChannel src = new FileInputStream(srcFile).getChannel();
-				FileChannel dst = new FileOutputStream(dstFile).getChannel();
-
-				dst.transferFrom(src, 0, src.size());
-				src.close();
-				dst.close();
-			} else {
-				throw new Exception();
+			for (String name : BACKUP_FILES) {
+				restorePreferenceFile(name);
 			}
 		} finally {
 			mPreferences = PreferenceManager
@@ -192,5 +158,65 @@ public class PreferenceService {
 	public void unregisterOnSharedPreferenceChangeListener(
 			OnSharedPreferenceChangeListener listener) {
 		mPreferenceListeners.remove(listener);
+	}
+
+	@SuppressWarnings("resource")
+	private void backupPreferenceFile(String name) throws IOException,
+			FileNotFoundException, Exception {
+		if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
+				.getExternalStorageState())) {
+			// source db
+			String srcPath = PREFERENCE_PATH + name;
+			File srcFile = new File(srcPath);
+			// destination file
+			File dstFolder = new File(
+					Environment.getExternalStorageDirectory(), BACKUP_PATH);
+			if (!dstFolder.exists()) {
+				dstFolder.mkdir();
+			}
+			File dstFile = new File(dstFolder, name);
+			if (!dstFile.exists()) {
+				dstFile.createNewFile();
+			}
+			// copy
+			FileChannel src = new FileInputStream(srcFile).getChannel();
+			FileChannel dst = new FileOutputStream(dstFile).getChannel();
+
+			dst.transferFrom(src, 0, src.size());
+			src.close();
+			dst.close();
+		} else {
+			throw new Exception();
+		}
+	}
+
+	@SuppressWarnings("resource")
+	private void restorePreferenceFile(String name) throws Exception,
+			FileNotFoundException, IOException {
+		if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment
+				.getExternalStorageState())) {
+			// data/data db
+			String dstPath = PREFERENCE_PATH + name;
+			File dstFile = new File(dstPath);
+			// backup file
+			File srcFolder = new File(
+					Environment.getExternalStorageDirectory(), BACKUP_PATH);
+			if (!srcFolder.exists()) {
+				throw new Exception();
+			}
+			File srcFile = new File(srcFolder, name);
+			if (!srcFile.exists()) {
+				throw new Exception();
+			}
+			// copy
+			FileChannel src = new FileInputStream(srcFile).getChannel();
+			FileChannel dst = new FileOutputStream(dstFile).getChannel();
+
+			dst.transferFrom(src, 0, src.size());
+			src.close();
+			dst.close();
+		} else {
+			throw new Exception();
+		}
 	}
 }
