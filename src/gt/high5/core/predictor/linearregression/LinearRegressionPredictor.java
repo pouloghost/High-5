@@ -62,8 +62,7 @@ public class LinearRegressionPredictor extends MultiThreadPredictor {
 
 	@Override
 	public float getMinThreshold() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 
 	@Override
@@ -168,7 +167,7 @@ public class LinearRegressionPredictor extends MultiThreadPredictor {
 			possibilityLog.append(possibilities.get(key));
 			possibilityLog.append(",");
 			possibility += data.getTheta(key.getClass())
-					* possibilities.get(key.getClass());
+					* possibilities.get(key);
 		}
 		total.setPossibility(possibility);
 		LogService.d(ReadService.class, possibilityLog.toString(),
