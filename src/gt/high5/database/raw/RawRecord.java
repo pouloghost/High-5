@@ -1,5 +1,8 @@
 package gt.high5.database.raw;
 
+import gt.high5.collector.JsonUtils;
+import gt.high5.collector.Jsonable;
+import gt.high5.collector.LogCollector;
 import gt.high5.core.service.LogService;
 import gt.high5.core.service.RecordContext;
 import gt.high5.database.model.Table;
@@ -15,7 +18,7 @@ import android.support.v4.util.ArrayMap;
  * 
  *         raw record table
  */
-public class RawRecord extends Table {
+public class RawRecord extends Table implements Jsonable {
 	// all available data types
 	public static String TYPE_DAY_OF_MONTH = "DayOfMonth";
 	public static String TYPE_LAST_PACKAGE = "LastPackage";
@@ -169,6 +172,8 @@ public class RawRecord extends Table {
 			}
 		}
 		setCount(count);
+		// debug data
+		LogCollector.getLogCollector().write(this, context.getContext());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -202,5 +207,10 @@ public class RawRecord extends Table {
 			valueString = "" + value;
 		}
 		return valueString;
+	}
+
+	@Override
+	public String toJson() {
+		return JsonUtils.mapToJson(mValues);
 	}
 }
